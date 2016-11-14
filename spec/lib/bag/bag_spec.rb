@@ -1,9 +1,6 @@
-require 'bag'
-require 'item'
-
 RSpec.describe Bag do
   subject { Bag.new(path) }
-  let(:path) { File.join(File.dirname(__FILE__), "../../tmp/ITEM@1957-55523") }
+  let(:path) { File.join(File.dirname(__FILE__), "../../../tmp/bags/ITEM@1957-55523") }
 
   context "#initialize" do
     it "has a path" do
@@ -50,6 +47,13 @@ RSpec.describe Bag do
   context "having files" do
     it "has a list of files" do
       expect(subject.files.length).to be_truthy
+      subject.files.each do |f|
+        expect(f).to be_a_kind_of ItemFile
+      end
+    end
+
+    it "has an ordered sequence of files" do
+      expect(subject.files.map { |f| f.sequence_id }).to eq ["1", "2", "3"]
     end
   end
 end

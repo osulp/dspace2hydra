@@ -1,11 +1,8 @@
-require 'item'
-require 'nokogiri'
-
 RSpec.describe Item do
   subject { Item.new path }
 
   #path to the data directory for this "Item"
-  let(:path) { File.join(File.dirname(__FILE__), "../../tmp/ITEM@1957-55523/data")}
+  let(:path) { File.join(File.dirname(__FILE__), "../../../tmp/bags/ITEM@1957-55523/data")}
 
   context "#initialize" do
     it "has a path" do

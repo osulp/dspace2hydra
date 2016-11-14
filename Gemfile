@@ -1,6 +1,7 @@
 source :rubygems
 
 gem 'nokogiri'
+gem 'mechanize'
 
 group :test do
   gem 'rspec'
