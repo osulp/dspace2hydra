@@ -43,12 +43,18 @@ class HydraEndpoint
 
   ##
   # @todo need to update the form and submit it?
-  def submit_new_work(page, data)
+  def submit_new_work(page, data, file_ids=[])
     form = new_work_form page
     csrf = form.field_with(name: @config['new_work']['csrf_form_field'])
 
     #TODO: dynamically generate the field for keyword and determine visibility
-    data.merge!({"#{csrf.name}": csrf.value, "generic_work[keyword][]": "data migration", "generic_work[visibility]": "open", "agreement": 1})
+    data.merge!({
+                  "#{csrf.name}": csrf.value,
+                  "generic_work[keyword][]": "data migration",
+                  "generic_work[visibility]": "open",
+                  "agreement": 1,
+                  "uploaded_files[]": file_ids
+                })
     post_data @config['new_work']['form_action'], data
   end
 

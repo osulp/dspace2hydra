@@ -50,14 +50,16 @@ he = HydraEndpoint.new(CONFIG['hydra_endpoint'])
 login_page = he.login
 #pp login_page
 
-new_work_page = he.new_work
-submitted_page = he.submit_new_work new_work_page, data
-pp submitted_page
-
 #
-#upload_page = he.upload he.new_work_form(new_work_page), bags.first.files.first.file
-#json = JSON.parse upload_page.body
-#file_ids = json["files"].map { |f| f["id"] }
+new_work_page = he.new_work
+
+upload_page = he.upload he.new_work_form(new_work_page), bags.first.files.first.file
+json = JSON.parse upload_page.body
+file_ids = json["files"].map { |f| f["id"] }
 #file_ids needs to be added to new_work POST so that the files are associated with the new work?
 #pp upload_page
 #pp new_work_page
+
+submitted_page = he.submit_new_work new_work_page, data, file_ids
+pp submitted_page
+
