@@ -32,6 +32,7 @@ module Metadata
 
       type = @xml_node.attributes.has_key?("qualifier") ? @xml_node.attributes["qualifier"].value : "default"
       config = @config["qualifiers"].select { |k,v| k == type }
+      raise StandardError.new("#{@name} metadata configuration missing '#{type}' qualifier.") unless config[type]
       Metadata::Qualifier.new(type, config)
     end
   end
