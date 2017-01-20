@@ -1,0 +1,34 @@
+---
+-
+  from: OSU Community
+  to: OSU Community Embargo
+-
+  from: OSU_Users
+  to: OSU Community Embargo
+-
+  from: OSU Users
+  to: OSU Community Embargo
+-
+  from: OSU Community
+  to: Repository Administrator Embargo
+-
+  from: Repository Administrators
+  to: Repository Administrator Embargo
+-
+  from: SA Administrators
+  to: Repository Administrator Embargo
+-
+  from: 1DPU Administrators
+  to: Repository Administrator Embargo
+-
+  from: Repository Administrator Embargo
+  to: Repository Administrator Embargo
+-
+  from: DPU Administrator
+  to: Repository Administrator Embargo
+-
+  from: Repository Administators
+  to: Repository Administrator Embargo
+-
+  from: DPU Administrators
+  to: Repository Administrator Embargo
