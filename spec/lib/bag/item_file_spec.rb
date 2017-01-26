@@ -2,7 +2,7 @@ RSpec.describe ItemFile do
   subject { ItemFile.new full_path }
 
   #path to the for this "File"
-  let(:full_path) { File.join(File.dirname(__FILE__), "../../../tmp/bags/ITEM@1957-55523/data/ORIGINAL/1")}
+  let(:full_path) { File.join(File.dirname(__FILE__), "../../fixtures/ITEM@1957-57239/data/ORIGINAL/6")}
 
   it "has a full_path" do
     expect(subject.full_path).to eq full_path

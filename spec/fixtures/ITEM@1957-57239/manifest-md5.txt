@@ -1,0 +1,8 @@
+9cab17ae285f12c0c1af474d3d7b0693 data/object.properties
+afc896e6db3c9fe37e03e2e3fa65f016 data/metadata.xml
+07042c73329ad759cdcacf055eaafc26 data/ORIGINAL/6-metadata.xml
+3f9805d37dcd772e0f3b8b5cb8f669d1 data/ORIGINAL/6
+4454587532489e8c58700facefb6b26a data/SWORD/3-metadata.xml
+2f557a8cb004d295ff2994efb499ed47 data/SWORD/3
+78152e35aeffbd4680970393147dbc7c data/LICENSE/2-metadata.xml
+4fd325d1fb4abff182c04260632d999a data/LICENSE/2

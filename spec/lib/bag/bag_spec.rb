@@ -1,6 +1,7 @@
 RSpec.describe Bag do
-  subject { Bag.new(path) }
-  let(:path) { File.join(File.dirname(__FILE__), "../../../tmp/bags/ITEM@1957-55523") }
+  subject { Bag.new(path, type) }
+  let(:path) { File.join(File.dirname(__FILE__), "../../fixtures/ITEM@1957-57239") }
+  let(:type) { "test" }
 
   context "#initialize" do
     it "has a path" do
@@ -53,7 +54,7 @@ RSpec.describe Bag do
     end
 
     it "has an ordered sequence of files" do
-      expect(subject.files.map { |f| f.sequence_id }).to eq ["1", "2", "3"]
+      expect(subject.files.map { |f| f.sequence_id }).to eq ["2", "3", "6"]
     end
   end
 end
