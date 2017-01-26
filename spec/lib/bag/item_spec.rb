@@ -1,8 +1,9 @@
 RSpec.describe Item do
-  subject { Item.new path }
+  subject { Item.new path, type }
 
   #path to the data directory for this "Item"
-  let(:path) { File.join(File.dirname(__FILE__), "../../../tmp/bags/ITEM@1957-55523/data")}
+  let(:path) { File.join(File.dirname(__FILE__), "../../fixtures/ITEM@1957-57239/data")}
+  let(:type) { "test" }
 
   context "#initialize" do
     it "has a path" do
@@ -21,7 +22,7 @@ RSpec.describe Item do
       expect(subject.metadata_xml.xpath("//metadata/value[@schema='dc'][@element='identifier'][@qualifier='uri']").length).to eq 1
     end
     it "has three dates" do
-      expect(subject.metadata_xml.xpath("//metadata/value[@schema='dc'][@element='date']").length).to eq 3
+      expect(subject.metadata_xml.xpath("//metadata/value[@schema='dc'][@element='date']").length).to eq 4
     end
   end
 
@@ -35,9 +36,8 @@ RSpec.describe Item do
     end
     it "has an otherIds key with two values" do
       expect(subject.object_properties['otherIds']).not_to be_nil
-      expect(subject.object_properties['otherIds'].length).to eq 2
-      expect(subject.object_properties['otherIds']).to include "1957/1234"
-      expect(subject.object_properties['otherIds']).to include "1957/5678"
+      expect(subject.object_properties['otherIds'].length).to eq 1
+      expect(subject.object_properties['otherIds']).to include "1957/4"
       expect(subject.object_properties['otherIds']).not_to include "867/5309"
     end
   end
