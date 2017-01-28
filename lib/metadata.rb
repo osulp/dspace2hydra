@@ -1,3 +1,5 @@
 require 'nokogiri'
+require_relative '../mapping/mapping'
+require_relative 'metadata/class_method_runner'
 require_relative 'metadata/node'
 require_relative 'metadata/qualifier'

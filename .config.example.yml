@@ -18,11 +18,11 @@ hydra_endpoint:
     # relative to the form that is presented to the user for typing in their username and password.
 
     # The login form's ID, will default to using the first form on the page if this ID is not set.
-    form_id: "fm1"
+    form_id: "new_user"
     # The name of the username/login field on the form.
-    username_form_field: "username"
+    username_form_field: "user[name]"
     # The name of the password field on the form.
-    password_form_field: "password"
+    password_form_field: "user[password]"
 
   # Configuration for a "generic_work" on Hydra.. this configuration needs modification when operating with different
   # work types, such as "Book", "ETD", "Article", etc.
@@ -31,7 +31,7 @@ hydra_endpoint:
     url: "http://hydra.server/concern/generic_works/new"
     # The form action used on the new work page for posting a new work. This is used as a selector to properly identify
     # which form on the page will be used for manipulation and submission.. as well as grabbing the CSRF token from it.
-    form_action: "/concern/generic_works"
+    form_action: "/concern/generic_works?locale=en"
     # The CSRF hidden from field name to grab and use for actions such as posting file uploads. The web UI has an AJAX
     # file upload capability that makes use of this token with posting new files to the "uploads" url.
     csrf_form_field: "authenticity_token"
@@ -39,7 +39,7 @@ hydra_endpoint:
   # Standard Hydra file upload url.
   uploads:
     url: "http://hydra.server/uploads"
-    files_form_field: "files[]"
+    files_form_field: "uploaded_files[]"
 
 # dspace bag file default configurations
 bag:
@@ -70,11 +70,13 @@ bag:
 etd:
   creator:
     xpath: "//metadata/value[@element='creator']"
+    method: Mapping::Creator.unprocessed
     qualifiers:
       default:
         form_field: "generic_work[creator][]"
   date:
     xpath: "//metadata/value[@element='date']"
+    method: Mapping::Date.unprocessed
     qualifiers:
       default:
         form_field: "generic_work[create_date][]"
@@ -86,6 +88,7 @@ etd:
         form_field: "generic_work[date_issued][]"
   identifier:
     xpath: "//metadata/value[@element='identifier']"
+    method: Mapping::Identifier.unprocessed
     qualifiers:
       default:
         form_field: "generic_work[identifier][]"
@@ -97,11 +100,16 @@ etd:
         form_field: "generic_work[uri][]"
   description:
     xpath: "//metadata/value[@element='description']"
+    method: Mapping::Description.unprocessed
     qualifiers:
       default:
         form_field: "generic_work[description][]"
       peerreview:
-        form_field: "generic_work[description][]"
+        form_field: "generic_work[additional_information][]"
+        # example method with optional argument(s)
+        method:
+          - Mapping::Description.prepend
+          - 'description.peerreview : '
       peerreviewnotes:
         form_field: "generic_work[description][]"
       provenance:
@@ -110,6 +118,7 @@ etd:
         form_field: "generic_work[description][]"
   language:
     xpath: "//metadata/value[@element='language']"
+    method: Mapping::Language.unprocessed
     qualifiers:
       default:
         form_field: "generic_work[language][]"
@@ -117,11 +126,13 @@ etd:
         form_field: "generic_work[language][]"
   publisher:
     xpath: "//metadata/value[@element='publisher']"
+    method: Mapping::Publisher.unprocessed
     qualifiers:
       default:
         form_field: "generic_work[publisher][]"
   rights:
     xpath: "//metadata/value[@element='rights']"
+    method: Mapping::Rights.unprocessed
     qualifiers:
       default:
         form_field: "generic_work[rights][]"
@@ -129,16 +140,19 @@ etd:
         form_field: "generic_work[rights][]"
   subject:
     xpath: "//metadata/value[@element='subject']"
+    method: Mapping::Subject.unprocessed
     qualifiers:
       default:
         form_field: "generic_work[subject][]"
   title:
     xpath: "//metadata/value[@element='title']"
+    method: Mapping::Title.unprocessed
     qualifiers:
       default:
         form_field: "generic_work[title][]"
   type:
     xpath: "//metadata/value[@element='type']"
+    method: Mapping::Type.unprocessed
     qualifiers:
       default:
         form_field: "generic_work[resource_type][]"
