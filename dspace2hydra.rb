@@ -3,6 +3,7 @@ require 'pathname'
 require 'json'
 require_relative 'lib/bag'
 require_relative 'lib/hydra_endpoint'
+require_relative 'mapping/mapping'
 
 options = {}
 OptionParser.new do |opts|
@@ -37,14 +38,14 @@ data = {}
 bags.first.item.metadata.each do |k, nodes|
   nodes.each do |metadata_node|
     data[metadata_node.form_field] ||= []
-    data[metadata_node.form_field] << metadata_node.content
+    data[metadata_node.form_field] << metadata_node.run_method
     #puts "#{bags.first.path} => metadata for #{k} : qualifier type #{metadata_node.qualifier.type} => form field #{metadata_node.form_field} => content: #{metadata_node.content}"
   end
 end
 
 #TODO: Show data before it loads?
 pp data
-
+exit
 
 he = HydraEndpoint.new(CONFIG['hydra_endpoint'])
 login_page = he.login

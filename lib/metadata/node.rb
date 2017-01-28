@@ -1,5 +1,6 @@
 module Metadata
   class Node
+    include ClassMethodRunner
     attr_reader :config, :field, :qualifier, :xml_node
 
     def initialize(xml_node, field, config = {})
@@ -7,6 +8,26 @@ module Metadata
       @field = field
       @xml_node = xml_node
       @qualifier = build_qualifier
+    end
+
+    ##
+    # Given the value from this, run the method configured for the qualifier if it exists otherwise the default
+    # @return [String] the result of the configured method should be a string to store in hydra
+    def run_method
+      if @qualifier.has_method?
+        @qualifier.run_method(content)
+      else
+        raise StandardError.new("#{field} run_method is missing method configuration") unless has_method?
+        send(method, content)
+      end
+    end
+
+    def method
+      @config['method']
+    end
+
+    def has_method?
+      !method.nil?
     end
 
     def content
@@ -31,9 +52,9 @@ module Metadata
       raise StandardError.new("#{@name} metadata configuration missing qualifiers.") if @config['qualifiers'].keys.empty?
 
       type = @xml_node.attributes.has_key?("qualifier") ? @xml_node.attributes["qualifier"].value : "default"
-      config = @config["qualifiers"].select { |k,v| k == type }
+      config = @config["qualifiers"].select { |k, v| k == type }
       raise StandardError.new("#{@name} metadata configuration missing '#{type}' qualifier.") unless config[type]
-      Metadata::Qualifier.new(type, config)
+      Metadata::Qualifier.new(field, type, config)
     end
   end
 end
