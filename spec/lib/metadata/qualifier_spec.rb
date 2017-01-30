@@ -12,10 +12,10 @@ RSpec.describe Metadata::Qualifier do
   let(:config) {
     {
       "default" => {
-        "form_field" => "generic_work['field_name'][]"
+        "form_field_name" => "field_name"
       },
       "test_qualifier" => {
-        "form_field" => "generic_work['test_field_name'][]",
+        "form_field_name" => "test_field_name",
         "method" => "QualifierSomeClass.test_method"
       }
     }
@@ -33,8 +33,8 @@ RSpec.describe Metadata::Qualifier do
     expect{ subject.run_method('blah') }.to raise_error(StandardError)
   end
 
-  it "has a form_field" do
-    expect(subject.form_field).to eq config['default']['form_field']
+  it "has a form_field_name" do
+    expect(subject.form_field_name).to eq config['default']['form_field_name']
   end
 
   it "is default" do
@@ -43,8 +43,8 @@ RSpec.describe Metadata::Qualifier do
 
   context "with a test_qualifier" do
     let(:type) { "test_qualifier" }
-    it "has a form_field" do
-      expect(subject.form_field).to eq config['test_qualifier']['form_field']
+    it "has a form_field_name" do
+      expect(subject.form_field_name).to eq config['test_qualifier']['form_field_name']
     end
 
     it "has a method" do
@@ -60,10 +60,10 @@ RSpec.describe Metadata::Qualifier do
       let(:config) {
         {
           "default" => {
-            "form_field" => "generic_work['field_name'][]"
+            "form_field_name" => "field_name"
           },
           "test_qualifier" => {
-            "form_field" => "generic_work['test_field_name'][]",
+            "form_field_name" => "test_field_name",
             "method" => ["QualifierSomeClass.test_method", "arg1", "arg2"]
           }
         }
