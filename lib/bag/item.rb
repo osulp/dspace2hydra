@@ -1,13 +1,13 @@
 class Item
   attr_reader :path, :type
 
-  def initialize(path, type)
+  def initialize(path, config)
     @path = path
-    @type = type
+    @config = config
   end
 
   def metadata
-    @metadata ||= build_metadata_hash @type
+    @metadata ||= build_metadata_hash @config
   end
 
   def metadata_xml
@@ -38,12 +38,12 @@ class Item
 
   ##
   # Build a hash of Metadata::Nodes transformed using the appropriate configuration for this type of Item.
-  # @param [String] type - a "type" of configuration, such as "etd". @see .config.example.yml
-  def build_metadata_hash(type)
+  # @param [Hash] config - a configuration, such as "etd". @see config/etd.yml
+  def build_metadata_hash(config)
     h = {}
     # temp_xml will be the target of mutation during this process
     temp_xml = metadata_xml.clone
-    transform_configured_nodes temp_xml, h, type
+    transform_configured_nodes temp_xml, h, config
     clear_empty_text_nodes temp_xml
     # Nokogiri::XML doesn't have a method to handle evaluating if a document has valid children,
     # so creating a new document from the mutated temp_xml is effective, albeit hackish
@@ -72,9 +72,9 @@ class Item
   # or to raise an error and prevent operation.
   # @param [Nokogiri::XML::Document] xml_doc - The document to traverse
   # @param [Hash] h - the hash to fill with Metadata::Node objects
-  # @param [String] type - a "type" of configuration, such as "etd". @see .config.example.yml
-  def transform_configured_nodes(xml_doc, h, type)
-    CONFIG[type].each do |key, value|
+  # @param [Hash] config - this items configuration, such as "etd". @see config/etd.yml
+  def transform_configured_nodes(xml_doc, h, config)
+    config.each do |key, value|
       h[key] ||= []
       xml_doc.xpath(value['xpath']).each do |node|
         h[key] << Metadata::Node.new(node, key, value)
