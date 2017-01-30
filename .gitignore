@@ -27,3 +27,4 @@ Gemfile.lock
 # .ruby-version
 # .ruby-gemset
 .config.yml
+/.idea/*
