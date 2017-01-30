@@ -1,9 +1,9 @@
 class Bag
-  attr_reader :path, :type
+  attr_reader :path, :config
 
-  def initialize(path, type)
+  def initialize(path, config)
     @path = path
-    @type = type
+    @config = config
   end
 
   def bagit
@@ -15,7 +15,7 @@ class Bag
   end
 
   def item
-    @item ||= Item.new File.join(@path, CONFIG['bag']['item']['directory']), @type
+    @item ||= Item.new File.join(@path, CONFIG['bag']['item']['directory']), @config
   end
 
   def data_paths
