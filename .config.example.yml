@@ -71,88 +71,110 @@ etd:
   creator:
     xpath: "//metadata/value[@element='creator']"
     method: Mapping::Creator.unprocessed
+    form_field: "generic_work[%{form_field_name}][]"
     qualifiers:
       default:
-        form_field: "generic_work[creator][]"
+        form_field_name: creator
   date:
     xpath: "//metadata/value[@element='date']"
     method: Mapping::Date.unprocessed
+    form_field: "generic_work[%{form_field_name}][]"
     qualifiers:
       default:
-        form_field: "generic_work[create_date][]"
+        form_field_name: create_date
       accessioned:
-        form_field: "generic_work[create_date][]"
+        form_field_name: create_date
       available:
-        form_field: "generic_work[date_available][]"
+        form_field_name: date_available
       issued:
-        form_field: "generic_work[date_issued][]"
-  identifier:
-    xpath: "//metadata/value[@element='identifier']"
-    method: Mapping::Identifier.unprocessed
+        form_field_name: date_issued
+  degree:
+    xpath: "//metadata/value[@element='degree']"
+    method:
+      - Mapping::Degree.remapped_field_split
+      - degree_name
+      - degree_field
+    form_field: "generic_work[%{form_field_name}][]"
     qualifiers:
       default:
-        form_field: "generic_work[identifier][]"
-      citation:
-        form_field: "generic_work[citation][]"
-      isbn:
-        form_field: "generic_work[isbn][]"
-      uri:
-        form_field: "generic_work[uri][]"
+        form_field_name: degree_name
+      name:
+        form_field_name: degree_name
   description:
     xpath: "//metadata/value[@element='description']"
     method: Mapping::Description.unprocessed
+    form_field: "generic_work[%{form_field_name}][]"
     qualifiers:
       default:
-        form_field: "generic_work[description][]"
+        form_field_name: description
       peerreview:
-        form_field: "generic_work[additional_information][]"
+        form_field_name: additional_information
         # example method with optional argument(s)
         method:
           - Mapping::Description.prepend
           - 'description.peerreview : '
       peerreviewnotes:
-        form_field: "generic_work[description][]"
+        form_field_name: description
       provenance:
-        form_field: "generic_work[description][]"
+        form_field_name: description
       tableofcontents:
-        form_field: "generic_work[description][]"
+        form_field_name: description
+  identifier:
+    xpath: "//metadata/value[@element='identifier']"
+    method: Mapping::Identifier.unprocessed
+    form_field: "generic_work[%{form_field_name}][]"
+    qualifiers:
+      default:
+        form_field_name: identifier
+      citation:
+        form_field_name: citation
+      isbn:
+        form_field_name: isbn
+      uri:
+        form_field_name: uri
   language:
     xpath: "//metadata/value[@element='language']"
     method: Mapping::Language.unprocessed
+    form_field: "generic_work[%{form_field_name}][]"
     qualifiers:
       default:
-        form_field: "generic_work[language][]"
+        form_field_name: language
       iso:
-        form_field: "generic_work[language][]"
+        form_field_name: language
   publisher:
     xpath: "//metadata/value[@element='publisher']"
     method: Mapping::Publisher.unprocessed
+    form_field: "generic_work[%{form_field_name}][]"
     qualifiers:
       default:
-        form_field: "generic_work[publisher][]"
+        form_field_name: publisher
   rights:
     xpath: "//metadata/value[@element='rights']"
     method: Mapping::Rights.unprocessed
+    form_field: "generic_work[%{form_field_name}][]"
     qualifiers:
       default:
-        form_field: "generic_work[rights][]"
+        form_field_name: rights
       uri:
-        form_field: "generic_work[rights][]"
+        form_field_name: rights
   subject:
     xpath: "//metadata/value[@element='subject']"
     method: Mapping::Subject.unprocessed
+    form_field: "generic_work[%{form_field_name}][]"
     qualifiers:
       default:
-        form_field: "generic_work[subject][]"
+        form_field_name: subject
   title:
     xpath: "//metadata/value[@element='title']"
     method: Mapping::Title.unprocessed
+    form_field: "generic_work[%{form_field_name}][]"
     qualifiers:
       default:
-        form_field: "generic_work[title][]"
+        form_field_name: title
   type:
     xpath: "//metadata/value[@element='type']"
     method: Mapping::Type.unprocessed
+    form_field: "generic_work[%{form_field_name}][]"
     qualifiers:
       default:
-        form_field: "generic_work[resource_type][]"
+        form_field_name: resource_type

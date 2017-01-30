@@ -13,8 +13,8 @@ module Metadata
       @type == 'default'
     end
 
-    def form_field
-      @config[@type]['form_field']
+    def form_field_name
+      @config[@type]['form_field_name']
     end
 
     def method

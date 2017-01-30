@@ -12,7 +12,7 @@ OptionParser.new do |opts|
   opts.on('-b', '--bag PATH', 'The Dspace bag path to process.') { |v| options['bag_path'] = v }
   opts.on('-d', '--directory PATH', 'The directory path containing bags to bulk process.') { |v| options['bags_directory'] = v }
   opts.on('-t', '--type STRING', 'The Item type for each bag. (ie. "etd")') { |v| options['bag_type'] = v }
-  opts.on('-h', '--help', 'Display this screen' ) do
+  opts.on('-h', '--help', 'Display this screen') do
     puts opts
     exit
   end
@@ -37,9 +37,7 @@ end
 data = {}
 bags.first.item.metadata.each do |k, nodes|
   nodes.each do |metadata_node|
-    data[metadata_node.form_field] ||= []
-    data[metadata_node.form_field] << metadata_node.run_method
-    #puts "#{bags.first.path} => metadata for #{k} : qualifier type #{metadata_node.qualifier.type} => form field #{metadata_node.form_field} => content: #{metadata_node.content}"
+    data = metadata_node.process_node(data)
   end
 end
 
