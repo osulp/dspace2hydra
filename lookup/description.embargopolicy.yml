@@ -9,9 +9,6 @@
   from: OSU Users
   to: OSU Community Embargo
 -
-  from: OSU Community
-  to: Repository Administrator Embargo
--
   from: Repository Administrators
   to: Repository Administrator Embargo
 -
