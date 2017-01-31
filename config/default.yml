@@ -53,15 +53,15 @@ description:
     embargo:
       form_field_name: visibility
       method:
-      # set visibility to 'embargo' and embargo_release_date to the value from the node
+        # set visibility to 'embargo' and embargo_release_date to the value from the node
         - Mapping::Description.set_embargo
         - visibility
         - embargo_release_date
     embargopolicy:
       form_field_name: visibility_during_embargo
       method:
-        # set who can access contents during embargo with controlled vocabulary
-        - Mapping::Description.set_embargo_policy
+        # set embargo policy during and after embargo
+        - Mapping::Description.lookup_embargo_policy
         - visibility_during_embargo
         - visibility_after_embargo
     peerreview:
