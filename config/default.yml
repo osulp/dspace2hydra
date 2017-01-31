@@ -1,0 +1,169 @@
+---
+creator:
+  xpath: "//metadata/value[@element='creator']"
+  form_field: "default_work[%{form_field_name}][]"
+  method: Mapping::Creator.unprocessed
+  qualifiers:
+    default:
+      form_field_name: creator
+date:
+  xpath: "//metadata/value[@element='date']"
+  form_field: "default_work[%{form_field_name}][]"
+  method: Mapping::Date.unprocessed
+  qualifiers:
+    default:
+      form_field_name: date_created
+    accessioned:
+      form_field_name: date_created
+    available:
+      form_field_name: date_available
+    issued:
+      form_field_name: date_issued
+    updated:
+      form_field_name: date_updated
+identifier:
+  xpath: "//metadata/value[@element='identifier']"
+  form_field: "default_work[%{form_field_name}][]"
+  method: Mapping::Identifier.unprocessed
+  qualifiers:
+    default:
+      form_field_name: identifier
+    citation:
+      form_field_name: citation
+    isbn:
+      form_field_name: isbn
+    uri:
+      form_field_name: identifier_uri
+    doi:
+      form_field_name: doi
+description:
+  xpath: "//metadata/value[@element='description']"
+  form_field: "default_work[%{form_field_name}][]"
+  method: Mapping::Description.unprocessed
+  qualifiers:
+    default:
+      form_field_name: description
+    abstract:
+      form_field_name: abstract
+    digitization:
+      form_field_name: additional_information
+      method:
+        - Mapping::Description.prepend
+        - 'description.digitization : '    
+    embargo:
+      form_field_name: visibility
+      method:
+      # setvisibility will set values of visibility as 'embargo' with argument
+        - Mapping::Description.setvisibility
+        - 'embargo'
+    embargo:
+      form_field_name: embargo_release_date
+      method:
+      # setreleasedate will set values of embargo release with dspace value
+        - Mapping::Description.setreleasedate
+    embargopolicy:
+      form_field_name: visibility_during_embargo
+      method:
+        # set who can access contents during embargo with controlled vocabulary
+        - Mapping::Description.duringembargo
+    embargopolicy:
+      form_field_name: visibility_after_embargo
+      method:
+        # set visibilty to 'Open Access' after embargo
+        - Mapping::Description.afterembargo
+    peerreview:
+      form_field_name: additional_information
+      method:
+        - Mapping::Description.prepend
+        - 'description.peerreview : '
+    peerreviewnotes:
+      form_field_name: additional_information
+      method:
+        - Mapping::Description.prepend
+        - 'description.peerreviewnotes : '
+    provenance:
+      form_field_name: additional_information
+      method:
+        - Mapping::Description.prepend
+        - 'description.provenance : '
+    sponsorship:
+      form_field_name: additional_information
+      method:
+        - Mapping::Description.prepend
+        - 'description.sponsorship : '
+    tableofcontents:
+      form_field_name: additional_information
+      method:
+        - Mapping::Description.prepend
+        - 'description.tableofcontents : '
+language:
+  xpath: "//metadata/value[@element='language']"
+  form_field: "default_work[%{form_field_name}][]"
+  method: Mapping::Language.unprocessed
+  qualifiers:
+    default:
+      form_field_name: language
+    iso:
+      form_field_name: language
+publisher:
+  xpath: "//metadata/value[@element='publisher']"
+  form_field: "default_work[%{form_field_name}][]"
+  method: Mapping::Publisher.unprocessed
+  qualifiers:
+    default:
+      form_field_name: publisher
+rights:
+  xpath: "//metadata/value[@element='rights']"
+  form_field: "default_work[%{form_field_name}][]"
+  method: Mapping::Rights.unprocessed
+  qualifiers:
+    default:
+      form_field_name: rights
+    uri:
+      form_field_name: rights
+subject:
+  xpath: "//metadata/value[@element='subject']"
+  form_field: "default_work[%{form_field_name}][]"
+  method: Mapping::Subject.unprocessed
+  qualifiers:
+    default:
+      form_field_name: keyword
+      method:
+        # save keyword (each one is a node) in a field
+        - Mapping::Subject.unprocessed
+    lcsh:
+      form_field_name: subject
+      method:
+        # parse uri of lcsh (each one is a node) and save in a field 
+        - Mapping::Subject.parselcshuri
+title:
+  xpath: "//metadata/value[@element='title']"
+  form_field: "default_work[%{form_field_name}][]"
+  method: Mapping::Title.unprocessed
+  qualifiers:
+    default:
+      form_field_name: title
+    alternative:
+      form_field_name: additional_information
+      method:
+        - Mapping::Description.prepend
+        - 'description.title_alternative : '
+type:
+  xpath: "//metadata/value[@element='type']"
+  form_field: "default_work[%{form_field_name}][]"
+  method: Mapping::Type.unprocessed
+  qualifiers:
+    default:
+      form_field_name: resource_type
+relation:
+  xpath: "//metadata/value[@element='relation']"
+  form_field: "default_work[%{form_field_name}][]"
+  method: Mapping::Relation.unprocessed
+  qualifiers:
+    default:
+      form_field_name: relation
+    ispartofseries:
+      form_field_name: additional_information
+      method:
+        - Mapping::Description.prepend
+        - 'description.ispartofseries : '
