@@ -49,28 +49,21 @@ description:
       form_field_name: additional_information
       method:
         - Mapping::Description.prepend
-        - 'description.digitization : '    
+        - 'description.digitization : '
     embargo:
       form_field_name: visibility
       method:
-      # setvisibility will set values of visibility as 'embargo' with argument
-        - Mapping::Description.setvisibility
-        - 'embargo'
-    embargo:
-      form_field_name: embargo_release_date
-      method:
-      # setreleasedate will set values of embargo release with dspace value
-        - Mapping::Description.setreleasedate
+      # set visibility to 'embargo' and embargo_release_date to the value from the node
+        - Mapping::Description.set_embargo
+        - visibility
+        - embargo_release_date
     embargopolicy:
       form_field_name: visibility_during_embargo
       method:
         # set who can access contents during embargo with controlled vocabulary
-        - Mapping::Description.duringembargo
-    embargopolicy:
-      form_field_name: visibility_after_embargo
-      method:
-        # set visibilty to 'Open Access' after embargo
-        - Mapping::Description.afterembargo
+        - Mapping::Description.set_embargo_policy
+        - visibility_during_embargo
+        - visibility_after_embargo
     peerreview:
       form_field_name: additional_information
       method:
@@ -128,14 +121,9 @@ subject:
   qualifiers:
     default:
       form_field_name: keyword
-      method:
-        # save keyword (each one is a node) in a field
-        - Mapping::Subject.unprocessed
     lcsh:
       form_field_name: subject
-      method:
-        # parse uri of lcsh (each one is a node) and save in a field 
-        - Mapping::Subject.parselcshuri
+      method: Mapping::Subject.set_lcsh_uri
 title:
   xpath: "//metadata/value[@element='title']"
   form_field: "default_work[%{form_field_name}][]"
