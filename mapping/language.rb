@@ -1,5 +1,5 @@
 module Mapping
   class Language
-    extend BasicValueHandler
+    extend Extensions::BasicValueHandler
   end
 end

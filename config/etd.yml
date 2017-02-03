@@ -89,11 +89,14 @@ rights:
       form_field_name: rights
 subject:
   xpath: //metadata/value[@element='subject']
-  method: Mapping::Description.unprocessed
+  method: Mapping::Subject.unprocessed
   form_field: "generic_work[%{form_field_name}][]"
   qualifiers:
     default:
+      form_field_name: keyword
+    lcsh:
       form_field_name: subject
+      method: Mapping::Subject.uri
 title:
   xpath: //metadata/value[@element='title']
   method: Mapping::Title.unprocessed

@@ -1,6 +1,6 @@
 module Mapping
   class Description
-    extend BasicValueHandler
+    extend Extensions::BasicValueHandler
 
     ##
     # Set the visiblity to "embargo" and the embargo release date to the value from Dspace

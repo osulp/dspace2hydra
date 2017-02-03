@@ -1,5 +1,5 @@
 module Mapping
   class Type
-    extend BasicValueHandler
+    extend Extensions::BasicValueHandler
   end
 end
