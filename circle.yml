@@ -1,0 +1,21 @@
+version: 2
+executorType: docker
+containerInfo:
+  - image: ruby:latest
+stages:
+  build:
+    workDir: /home/ubuntu/app
+    steps:
+      - type: checkout
+      - type: shell
+        name: Install System Dependencies
+        command: apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs
+      - type: shell
+        name: Install Ruby Dependencies
+        command: bundle install
+      - type: shell
+        name: Create .config.yml
+        command: cp /home/ubuntu/app/.config.example.yml /home/ubuntu/app/.config.yml
+      - type: shell
+        name: Run Tests
+        command: bundle exec rspec -r rspec_junit_formatter --format progress --format RspecJunitFormatter -o $CIRCLE_TEST_REPORTS/rspec/junit.xml
