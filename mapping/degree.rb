@@ -1,6 +1,6 @@
 module Mapping
   class Degree
-    extend BasicValueHandler
+    extend Extensions::BasicValueHandler
 
     ##
     # Split the Degree value and remap values to new field names,

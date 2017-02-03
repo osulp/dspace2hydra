@@ -1,5 +1,5 @@
 module Mapping
   class Creator
-    extend BasicValueHandler
+    extend Extensions::BasicValueHandler
   end
 end

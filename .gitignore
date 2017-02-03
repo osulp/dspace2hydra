@@ -28,3 +28,5 @@ Gemfile.lock
 # .ruby-gemset
 .config.yml
 /.idea/*
+/cache/*
+!/cache/.keep

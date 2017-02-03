@@ -1,5 +1,5 @@
 module Mapping
   class Date
-    extend BasicValueHandler
+    extend Extensions::BasicValueHandler
   end
 end

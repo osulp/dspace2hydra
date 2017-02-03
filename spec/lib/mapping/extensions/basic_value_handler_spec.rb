@@ -1,5 +1,5 @@
-RSpec.describe Mapping::BasicValueHandler do
-  let(:klass) { Class.new { extend Mapping::BasicValueHandler }}
+RSpec.describe Mapping::Extensions::BasicValueHandler do
+  let(:klass) { Class.new { extend Mapping::Extensions::BasicValueHandler }}
   it 'returns an unprocessed value' do
     expect(klass.unprocessed('blah')).to eq "blah"
   end

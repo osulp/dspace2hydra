@@ -1,5 +1,5 @@
 module Mapping
   class Rights
-    extend BasicValueHandler
+    extend Extensions::BasicValueHandler
   end
 end
