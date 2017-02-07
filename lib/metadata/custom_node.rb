@@ -1,14 +1,11 @@
 module Metadata
-  class Node
+  class CustomNode
     include ClassMethodRunner
-    attr_reader :config, :field, :qualifier, :xml_node
+    attr_reader :config, :field
 
-    def initialize(xml_node, field, work_type, config = {})
+    def initialize(work_type, config = {})
       @config = config
-      @field = field
       @work_type = work_type
-      @xml_node = xml_node
-      @qualifier = build_qualifier
     end
 
     ##
@@ -18,7 +15,6 @@ module Metadata
     def process_node(data = {})
       # run_method may return a String, Array<String>, or an Array<Hash>
       result = run_method
-      field_name = form_field
       if result.is_a?(String)
         # ensure the form_field is set in the hash and add the processed value to it
         data[field_name] ||= []
@@ -44,12 +40,8 @@ module Metadata
     # Given the value from this, run the method configured for the qualifier if it exists otherwise the default
     # @return [String] the result of the configured method should be a string to store in hydra
     def run_method
-      if @qualifier.has_method?
-        @qualifier.run_method(content)
-      else
         raise StandardError.new("#{field} run_method is missing method configuration") unless has_method?
-        send(method, content)
-      end
+        send(method, @config['value'])
     end
 
     def method
@@ -60,8 +52,8 @@ module Metadata
       !method.nil?
     end
 
-    def content
-      @xml_node.content
+    def field_name
+      form_field(@config['form_field_name'])
     end
 
     ##
@@ -76,36 +68,7 @@ module Metadata
     # @return String - the properly formatted form field name by this nodes configured "form_field" and
     #                   the provided form_field_name or the qualifiers configured "form_field_name"
     def form_field(form_field_name = nil)
-      form_field_name ||= @qualifier.form_field_name
       sprintf(@config['form_field'], { work_type: @work_type, form_field_name: form_field_name })
-    end
-
-    def xpath
-      @config['xpath']
-    end
-
-    private
-
-    ##
-    # Determine if the xml_node has a qualifier attribute, and grab its value otherwise fallback on 'default',
-    # then find the appropriate configuration block to initialize a Metadata::Qualifier for mapping/looking/etc on this node
-    # @config represents the YAML block of configuration for this specific node, for example 'description' nodes config:
-    #
-    # description:
-    #   # Config hash
-    #   xpath: ...
-    #   method: ...
-    #   qualifiers:
-    #     default:
-    #       ...
-    def build_qualifier
-      @config["qualifiers"] ||= {}
-      raise StandardError.new("#{@name} metadata configuration missing qualifiers.") if @config['qualifiers'].keys.empty?
-
-      type = @xml_node.attributes.has_key?("qualifier") ? @xml_node.attributes["qualifier"].value : "default"
-      config = @config["qualifiers"].select { |k, v| k == type }
-      raise StandardError.new("#{@name} metadata configuration missing '#{type}' qualifier.") unless config[type]
-      Metadata::Qualifier.new(field, type, config)
     end
   end
 end

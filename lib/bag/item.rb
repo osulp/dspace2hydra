@@ -1,5 +1,5 @@
 class Item
-  attr_reader :path, :type
+  attr_reader :path
 
   def initialize(path, config)
     @path = path
@@ -16,6 +16,10 @@ class Item
 
   def object_properties
     @object_properties ||= object_properties_hash
+  end
+
+  def custom_metadata
+    @custom_metadata ||= build_custom_metadata_hash @config
   end
 
   private
@@ -36,20 +40,31 @@ class Item
     h
   end
 
+  def build_custom_metadata_hash(config)
+    work_type = config['work_type']
+    h = {}
+    config['custom_nodes'].each do |key, node_config|
+      h[key] ||= []
+      h[key] << Metadata::CustomNode.new(work_type, node_config)
+    end
+    h
+  end
+
   ##
   # Build a hash of Metadata::Nodes transformed using the appropriate configuration for this type of Item.
   # @param [Hash] config - a configuration, such as "etd". @see config/etd.yml
   def build_metadata_hash(config)
+    work_type = config['work_type']
     h = {}
     # temp_xml will be the target of mutation during this process
     temp_xml = metadata_xml.clone
-    transform_configured_nodes temp_xml, h, config
+    transform_configured_nodes temp_xml, h, work_type, config['migration_nodes']
     clear_empty_text_nodes temp_xml
     # Nokogiri::XML doesn't have a method to handle evaluating if a document has valid children,
     # so creating a new document from the mutated temp_xml is effective, albeit hackish
     remaining_xml = Nokogiri::XML.parse temp_xml.to_xml
     # todo : consider making this error configurable by Item type
-    raise StandardError.new("#{metadata_xml_path} unhandled nodes:\n#{remaining_xml.to_xml}") unless remaining_xml.root.children.empty?
+    raise StandardError.new("#{work_type} : #{metadata_xml_path} unhandled nodes:\n#{remaining_xml.to_xml}") unless remaining_xml.root.children.empty?
     h
   end
 
@@ -72,14 +87,16 @@ class Item
   # or to raise an error and prevent operation.
   # @param [Nokogiri::XML::Document] xml_doc - The document to traverse
   # @param [Hash] h - the hash to fill with Metadata::Node objects
-  # @param [Hash] config - this items configuration, such as "etd". @see config/etd.yml
-  def transform_configured_nodes(xml_doc, h, config)
-    config.each do |key, value|
+  # @param [String] work_type - the configured work type
+  # @param [Hash] node_configs - this items configuration, such as "etd". @see config/etd.yml
+  def transform_configured_nodes(xml_doc, h, work_type, node_configs)
+    node_configs.each do |key, node_config|
       h[key] ||= []
-      xml_doc.xpath(value['xpath']).each do |node|
-        h[key] << Metadata::Node.new(node, key, value)
+      xml_doc.xpath(node_config['xpath']).each do |node|
+        h[key] << Metadata::Node.new(node, key, work_type, node_config)
         node.remove
       end
     end
   end
+
 end
