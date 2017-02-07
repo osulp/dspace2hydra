@@ -16,14 +16,14 @@ migration_nodes:
   creator:
     xpath: //metadata/value[@element='creator']
     method: Mapping::Creator.unprocessed
-    form_field: "default_work[%{form_field_name}][]"
+    form_field: "%{work_type}[%{form_field_name}][]"
     qualifiers:
       default:
         form_field_name: creator
   date:
     xpath: //metadata/value[@element='date']
     method: Mapping::Date.unprocessed
-    form_field: "default_work[%{form_field_name}][]"
+    form_field: "%{work_type}[%{form_field_name}][]"
     qualifiers:
       default:
         form_field_name: date_created
@@ -39,7 +39,7 @@ migration_nodes:
       - Mapping::Degree.remapped_field_split
       - degree_name
       - degree_field
-    form_field: "default_work[%{form_field_name}][]"
+    form_field: "%{work_type}[%{form_field_name}][]"
     qualifiers:
       default:
         form_field_name: degree_name
@@ -48,7 +48,7 @@ migration_nodes:
   description:
     xpath: //metadata/value[@element='description']
     method: Mapping::Description.unprocessed
-    form_field: "default_work[%{form_field_name}][]"
+    form_field: "%{work_type}[%{form_field_name}][]"
     qualifiers:
       default:
         form_field_name: description
@@ -66,7 +66,7 @@ migration_nodes:
   identifier:
     xpath: //metadata/value[@element='identifier']
     method: Mapping::Identifier.unprocessed
-    form_field: "default_work[%{form_field_name}][]"
+    form_field: "%{work_type}[%{form_field_name}][]"
     qualifiers:
       default:
         form_field_name: identifier
@@ -79,7 +79,7 @@ migration_nodes:
   language:
     xpath: //metadata/value[@element='language']
     method: Mapping::Language.unprocessed
-    form_field: "default_work[%{form_field_name}][]"
+    form_field: "%{work_type}[%{form_field_name}][]"
     qualifiers:
       default:
         form_field_name: language
@@ -88,14 +88,14 @@ migration_nodes:
   publisher:
     xpath: //metadata/value[@element='publisher']
     method: Mapping::Description.unprocessed
-    form_field: "default_work[%{form_field_name}][]"
+    form_field: "%{work_type}[%{form_field_name}][]"
     qualifiers:
       default:
         form_field_name: publisher
   rights:
     xpath: //metadata/value[@element='rights']
     method: Mapping::Rights.unprocessed
-    form_field: "default_work[%{form_field_name}][]"
+    form_field: "%{work_type}[%{form_field_name}][]"
     qualifiers:
       default:
         form_field_name: rights
@@ -104,7 +104,7 @@ migration_nodes:
   subject:
     xpath: //metadata/value[@element='subject']
     method: Mapping::Subject.unprocessed
-    form_field: "default_work[%{form_field_name}][]"
+    form_field: "%{work_type}[%{form_field_name}][]"
     qualifiers:
       default:
         form_field_name: keyword
@@ -114,14 +114,14 @@ migration_nodes:
   title:
     xpath: //metadata/value[@element='title']
     method: Mapping::Title.unprocessed
-    form_field: "default_work[%{form_field_name}][]"
+    form_field: "%{work_type}[%{form_field_name}][]"
     qualifiers:
       default:
         form_field_name: title
   type:
     xpath: //metadata/value[@element='type']
     method: Mapping::Type.unprocessed
-    form_field: "default_work[%{form_field_name}][]"
+    form_field: "%{work_type}[%{form_field_name}][]"
     qualifiers:
       default:
          form_field_name: resource_type
