@@ -13,11 +13,12 @@ class NodeSomeClass
 end
 
 RSpec.describe Metadata::Node do
-  subject { Metadata::Node.new xml_node, field, config }
+  subject { Metadata::Node.new xml_node, field, work_type, config }
 
   let(:xml_doc) { Nokogiri::XML('<metadata><value schema="dc" element="some_element">A value</value></metadata>') }
   let(:xml_node) { xml_doc.at_xpath(config['xpath']) }
   let(:field) { "some_element" }
+  let(:work_type) { "default_work" }
   let(:config) {
     {
       "xpath" => "//metadata/value[@element='some_element']",

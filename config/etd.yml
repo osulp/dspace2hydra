@@ -1,113 +1,127 @@
 ---
-creator:
-  xpath: //metadata/value[@element='creator']
-  method: Mapping::Creator.unprocessed
-  form_field: "generic_work[%{form_field_name}][]"
-  qualifiers:
-    default:
-      form_field_name: creator
-date:
-  xpath: //metadata/value[@element='date']
-  method: Mapping::Date.unprocessed
-  form_field: "generic_work[%{form_field_name}][]"
-  qualifiers:
-    default:
-      form_field_name: date_created
-    accessioned:
-      form_field_name: date_created
-    available:
-      form_field_name: date_available
-    issued:
-      form_field_name: date_issued
-degree:
-  xpath: //metadata/value[@element='degree']
-  method:
-    - Mapping::Degree.remapped_field_split
-    - degree_name
-    - degree_field
-  form_field: "generic_work[%{form_field_name}][]"
-  qualifiers:
-    default:
-      form_field_name: degree_name
-    name:
-      form_field_name: degree_name
-description:
-  xpath: //metadata/value[@element='description']
-  method: Mapping::Description.unprocessed
-  form_field: "generic_work[%{form_field_name}][]"
-  qualifiers:
-    default:
-      form_field_name: description
-    peerreview:
-      form_field_name: additional_information
-      method:
-        - Mapping::Description.prepend
-        - 'description.peerreview : '
-    peerreviewnotes:
-      form_field_name: description
-    provenance:
-      form_field_name: description
-    tableofcontents:
-      form_field_name: description
-identifier:
-  xpath: //metadata/value[@element='identifier']
-  method: Mapping::Identifier.unprocessed
-  form_field: "generic_work[%{form_field_name}][]"
-  qualifiers:
-    default:
-      form_field_name: identifier
-    citation:
-      form_field_name: citation
-    isbn:
-      form_field_name: isbn
-    uri:
-      form_field_name: uri
-language:
-  xpath: //metadata/value[@element='language']
-  method: Mapping::Language.unprocessed
-  form_field: "generic_work[%{form_field_name}][]"
-  qualifiers:
-    default:
-      form_field_name: language
-    iso:
-      form_field_name: language
-publisher:
-  xpath: //metadata/value[@element='publisher']
-  method: Mapping::Description.unprocessed
-  form_field: "generic_work[%{form_field_name}][]"
-  qualifiers:
-    default:
-      form_field_name: publisher
-rights:
-  xpath: //metadata/value[@element='rights']
-  method: Mapping::Rights.unprocessed
-  form_field: "generic_work[%{form_field_name}][]"
-  qualifiers:
-    default:
-      form_field_name: rights
-    uri:
-      form_field_name: rights
-subject:
-  xpath: //metadata/value[@element='subject']
-  method: Mapping::Subject.unprocessed
-  form_field: "generic_work[%{form_field_name}][]"
-  qualifiers:
-    default:
-      form_field_name: keyword
-    lcsh:
-      form_field_name: subject
-      method: Mapping::Subject.uri
-title:
-  xpath: //metadata/value[@element='title']
-  method: Mapping::Title.unprocessed
-  form_field: "generic_work[%{form_field_name}][]"
-  qualifiers:
-    default:
-      form_field_name: title
-type:
-  xpath: //metadata/value[@element='type']
-  method: Mapping::Type.unprocessed
-  form_field: "generic_work[%{form_field_name}][]"
-  qualifiers:
-    default:
-       form_field_name: resource_type
+work_type: "default_work"
+custom_nodes:
+  visibility:
+    form_field: "%{work_type}[%{form_field_name}]"
+    form_field_name: visibility
+    method: Mapping::Visibility.unprocessed
+    value: open
+  keyword:
+    form_field: "%{work_type}[%{form_field_name}][]"
+    form_field_name: keyword
+    method: Mapping::Keyword.unprocessed
+    value: data-migration
+migration_nodes:
+migration_nodes:
+  creator:
+    xpath: //metadata/value[@element='creator']
+    method: Mapping::Creator.unprocessed
+    form_field: "%{work_type}[%{form_field_name}][]"
+    qualifiers:
+      default:
+        form_field_name: creator
+  date:
+    xpath: //metadata/value[@element='date']
+    method: Mapping::Date.unprocessed
+    form_field: "%{work_type}[%{form_field_name}][]"
+    qualifiers:
+      default:
+        form_field_name: date_created
+      accessioned:
+        form_field_name: date_created
+      available:
+        form_field_name: date_available
+      issued:
+        form_field_name: date_issued
+  degree:
+    xpath: //metadata/value[@element='degree']
+    method:
+      - Mapping::Degree.remapped_field_split
+      - degree_name
+      - degree_field
+    form_field: "%{work_type}[%{form_field_name}][]"
+    qualifiers:
+      default:
+        form_field_name: degree_name
+      name:
+        form_field_name: degree_name
+  description:
+    xpath: //metadata/value[@element='description']
+    method: Mapping::Description.unprocessed
+    form_field: "%{work_type}[%{form_field_name}][]"
+    qualifiers:
+      default:
+        form_field_name: description
+      peerreview:
+        form_field_name: additional_information
+        method:
+          - Mapping::Description.prepend
+          - 'description.peerreview : '
+      peerreviewnotes:
+        form_field_name: description
+      provenance:
+        form_field_name: description
+      tableofcontents:
+        form_field_name: description
+  identifier:
+    xpath: //metadata/value[@element='identifier']
+    method: Mapping::Identifier.unprocessed
+    form_field: "%{work_type}[%{form_field_name}][]"
+    qualifiers:
+      default:
+        form_field_name: identifier
+      citation:
+        form_field_name: citation
+      isbn:
+        form_field_name: isbn
+      uri:
+        form_field_name: uri
+  language:
+    xpath: //metadata/value[@element='language']
+    method: Mapping::Language.unprocessed
+    form_field: "%{work_type}[%{form_field_name}][]"
+    qualifiers:
+      default:
+        form_field_name: language
+      iso:
+        form_field_name: language
+  publisher:
+    xpath: //metadata/value[@element='publisher']
+    method: Mapping::Description.unprocessed
+    form_field: "%{work_type}[%{form_field_name}][]"
+    qualifiers:
+      default:
+        form_field_name: publisher
+  rights:
+    xpath: //metadata/value[@element='rights']
+    method: Mapping::Rights.unprocessed
+    form_field: "%{work_type}[%{form_field_name}][]"
+    qualifiers:
+      default:
+        form_field_name: rights
+      uri:
+        form_field_name: rights
+  subject:
+    xpath: //metadata/value[@element='subject']
+    method: Mapping::Subject.unprocessed
+    form_field: "%{work_type}[%{form_field_name}][]"
+    qualifiers:
+      default:
+        form_field_name: keyword
+      lcsh:
+        form_field_name: subject
+        method: Mapping::Subject.uri
+  title:
+    xpath: //metadata/value[@element='title']
+    method: Mapping::Title.unprocessed
+    form_field: "%{work_type}[%{form_field_name}][]"
+    qualifiers:
+      default:
+        form_field_name: title
+  type:
+    xpath: //metadata/value[@element='type']
+    method: Mapping::Type.unprocessed
+    form_field: "%{work_type}[%{form_field_name}][]"
+    qualifiers:
+      default:
+         form_field_name: resource_type

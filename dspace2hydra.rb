@@ -42,25 +42,26 @@ bags.first.item.metadata.each do |k, nodes|
     data = metadata_node.process_node(data)
   end
 end
+bags.first.item.custom_metadata.each do |k, nodes|
+  nodes.each do |custom_metadata_node|
+    data = custom_metadata_node.process_node(data)
+  end
+end
 
 #TODO: Show data before it loads?
-pp data
-exit
+#pp data
+#exit
 
 he = HydraEndpoint.new(CONFIG['hydra_endpoint'])
-login_page = he.login
-#pp login_page
 
-#
-new_work_page = he.new_work
+file_ids  = []
+bags.first.files.each do |item_file|
+  upload_response = he.upload(item_file.file)
+  json = JSON.parse(upload_response.body)
+  file_ids << json["files"].map { |f| f["id"] }
+end
+file_ids.flatten!.uniq!
 
-upload_page = he.upload he.new_work_form(new_work_page), bags.first.files.first.file
-json = JSON.parse upload_page.body
-file_ids = json["files"].map { |f| f["id"] }
-#file_ids needs to be added to new_work POST so that the files are associated with the new work?
-#pp upload_page
-#pp new_work_page
-
-submitted_page = he.submit_new_work new_work_page, data, file_ids
+submitted_page = he.submit_new_work data, file_ids
 pp submitted_page
 

@@ -1,13 +1,25 @@
 RSpec.describe Item do
-  subject { Item.new path, type }
+  subject { Item.new path, config }
 
   #path to the data directory for this "Item"
-  let(:path) { File.join(File.dirname(__FILE__), "../../fixtures/ITEM@1957-57239/data")}
-  let(:type) { "test" }
+  let(:path) { File.join(File.dirname(__FILE__), "../../fixtures/ITEM@1957-57239/data") }
+  let(:config) { File.open(File.join(File.dirname(__FILE__), "../../fixtures/mocks/default.yml")) { |f| YAML.load(f) } }
 
   context "#initialize" do
     it "has a path" do
       expect(subject.path).to eq path
+    end
+  end
+
+  context "#metadata" do
+    it "has built metadata" do
+      expect(subject.metadata).to be_a_kind_of Hash
+    end
+  end
+
+  context "#custom_metadata" do
+    it "has built custom_metadata" do
+      expect(subject.custom_metadata).to be_a_kind_of Hash
     end
   end
 
