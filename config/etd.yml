@@ -1,5 +1,8 @@
 ---
 work_type: "default_work"
+upload_data_directories:
+  - ORIGINAL
+  - SWORD
 custom_nodes:
   visibility:
     form_field: "%{work_type}[%{form_field_name}]"
@@ -11,7 +14,6 @@ custom_nodes:
     form_field_name: keyword
     method: Mapping::Keyword.unprocessed
     value: data-migration
-migration_nodes:
 migration_nodes:
   creator:
     xpath: //metadata/value[@element='creator']

@@ -55,7 +55,8 @@ end
 he = HydraEndpoint.new(CONFIG['hydra_endpoint'])
 
 file_ids  = []
-bags.first.files.each do |item_file|
+files_to_upload = bags.first.files.select { |item_file| mapping_config['upload_data_directories'].include?(item_file.parent_directory) }
+files_to_upload.each do |item_file|
   # Make a temporary copy of the file with the proper filename, upload it, grab the file_id from the servers response
   # and remove the temporary file
   item_file.copy_to_metadata_full_path
