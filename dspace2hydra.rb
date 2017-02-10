@@ -56,9 +56,13 @@ he = HydraEndpoint.new(CONFIG['hydra_endpoint'])
 
 file_ids  = []
 bags.first.files.each do |item_file|
-  upload_response = he.upload(item_file.file)
+  # Make a temporary copy of the file with the proper filename, upload it, grab the file_id from the servers response
+  # and remove the temporary file
+  item_file.copy_to_metadata_full_path
+  upload_response = he.upload(item_file.file(item_file.metadata_full_path))
   json = JSON.parse(upload_response.body)
   file_ids << json["files"].map { |f| f["id"] }
+  item_file.delete_metadata_full_path
 end
 file_ids.flatten!.uniq!
 
