@@ -30,3 +30,5 @@ Gemfile.lock
 /.idea/*
 /cache/*
 !/cache/.keep
+
+.vscode/*
