@@ -14,6 +14,14 @@ class ItemFile
   end
 
   ##
+  # Return the files parent directory name, useful for logic to identify files
+  # for specific operations. For instance, only upload files in 'ORIGINAL' and 'SWORD'
+  # directories.
+  def parent_directory
+    File.dirname(@full_path).split('/').last
+  end
+
+  ##
   # Return a File object to the full path of this ItemFile
   # @returns [File] file object
   def file(at_path = nil)

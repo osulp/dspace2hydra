@@ -9,6 +9,10 @@ RSpec.describe ItemFile do
     expect(subject.file).to be_a_kind_of File
   end
 
+  it "has a parent directory" do
+    expect(subject.parent_directory).to eq("ORIGINAL")
+  end
+
   it "has a metadata_full_path" do
     expect(subject.metadata_full_path).to eq metadata_full_path
   end
