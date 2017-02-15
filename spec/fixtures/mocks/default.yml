@@ -1,5 +1,13 @@
 ---
 work_type: "default_work"
+upload_data:
+  - directory: ORIGINAL
+    ignore_files:
+      - ".zip"
+      - "bogus_file.pdf"
+  - directory: SWORD
+    ignore_files:
+      - ".zip"
 custom_nodes:
   visibility:
     form_field: "%{work_type}[%{form_field_name}]"
