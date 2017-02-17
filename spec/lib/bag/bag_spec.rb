@@ -1,7 +1,7 @@
 RSpec.describe Bag do
-  subject { Bag.new(path, type) }
+  subject { Bag.new(path, type_config) }
   let(:path) { File.join(File.dirname(__FILE__), "../../fixtures/ITEM@1957-57239") }
-  let(:type) { "test" }
+  let(:type_config) { File.open(File.join(File.dirname(__FILE__), "../../fixtures/mocks/default.yml")) { |f| YAML.load(f) } }
 
   context "#initialize" do
     it "has a path" do
@@ -36,6 +36,14 @@ RSpec.describe Bag do
 
   it "has #data_paths" do
     expect(subject.data_paths.length).to be_truthy
+  end
+
+  it "has a type_config" do
+    expect(subject.type_config).to eq type_config
+  end
+
+  it "has a files_for_upload" do
+    expect(subject.files_for_upload.length).to eq 1
   end
 
   context "without data_paths" do
