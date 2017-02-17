@@ -139,7 +139,7 @@ migration_nodes:
     method: Mapping::Rights.unprocessed
     qualifiers:
       default:
-        form_field_name: additional_information
+        form_field_name: rights
         method: Mapping::Rights.ignored
       uri:
         form_field_name: rights
