@@ -1,7 +1,7 @@
 module Metadata
   class Node
     include ClassMethodRunner
-    attr_reader :config, :field, :qualifier, :xml_node
+    attr_reader :config
 
     def initialize(xml_node, field, work_type, config = {})
       @config = config
@@ -11,34 +11,9 @@ module Metadata
       @qualifier = build_qualifier
     end
 
-    ##
-    # Process 'run_method' and add value(s) to data hash
-    # @param [Hash] data - the data hash to add processed values to
-    # @return [Hash] - the data hash with the new node/values injected
-    def process_node(data = {})
-      # run_method may return a String, Array<String>, or an Array<Hash>
-      result = run_method
-      field_name = form_field
-      if result.is_a?(String)
-        # ensure the form_field is set in the hash and add the processed value to it
-        data[field_name] ||= []
-        data[field_name] << result
-      else
-        # run_method returns an array of hashes or strings
-        # when the array returns hashes, it expects the shape to be { field_name: '', value: ''}
-        # when the array returns strings, add each to the array of the field_name configured for the node
-        result.each do |r|
-          if r.is_a?(Hash)
-            data[form_field(r[:field_name])] ||= []
-            data[form_field(r[:field_name])] << r[:value].to_s
-          else
-            data[field_name] ||= []
-            data[field_name] << r.to_s
-          end
-        end
-      end
-      data
-    end
+    # Override methods from ClassMethodRunner so that this class behaves properly with regard
+    # to its configuration or its Qualifier configuration.
+    private
 
     ##
     # Given the value from this, run the method configured for the qualifier if it exists otherwise the default
@@ -50,14 +25,6 @@ module Metadata
         raise StandardError.new("#{field} run_method is missing method configuration") unless has_method?
         send(method, content)
       end
-    end
-
-    def method
-      @config['method']
-    end
-
-    def has_method?
-      !method.nil?
     end
 
     def content
@@ -77,14 +44,8 @@ module Metadata
     #                   the provided form_field_name or the qualifiers configured "form_field_name"
     def form_field(form_field_name = nil)
       form_field_name ||= @qualifier.form_field_name
-      sprintf(@config['form_field'], { work_type: @work_type, form_field_name: form_field_name })
+      sprintf(@config['form_field'], work_type: @work_type, form_field_name: form_field_name)
     end
-
-    def xpath
-      @config['xpath']
-    end
-
-    private
 
     ##
     # Determine if the xml_node has a qualifier attribute, and grab its value otherwise fallback on 'default',
@@ -99,13 +60,13 @@ module Metadata
     #     default:
     #       ...
     def build_qualifier
-      @config["qualifiers"] ||= {}
+      @config['qualifiers'] ||= {}
       raise StandardError.new("#{@name} metadata configuration missing qualifiers.") if @config['qualifiers'].keys.empty?
 
-      type = @xml_node.attributes.has_key?("qualifier") ? @xml_node.attributes["qualifier"].value : "default"
-      config = @config["qualifiers"].select { |k, v| k == type }
+      type = @xml_node.attributes.key?('qualifier') ? @xml_node.attributes['qualifier'].value : 'default'
+      config = @config['qualifiers'].select { |k, _v| k == type }
       raise StandardError.new("#{@name} metadata configuration missing '#{type}' qualifier.") unless config[type]
-      Metadata::Qualifier.new(field, type, config)
+      Metadata::Qualifier.new(@field, type, config)
     end
   end
 end

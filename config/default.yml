@@ -140,6 +140,7 @@ migration_nodes:
     qualifiers:
       default:
         form_field_name: rights
+        method: Mapping::Rights.ignored
       uri:
         form_field_name: rights
   subject:
