@@ -13,7 +13,7 @@ class NodeSomeClass
 end
 
 RSpec.describe Metadata::Node do
-  subject { Metadata::Node.new xml_node, field, work_type, config }
+  subject { Metadata::Node.new(xml_node, field, work_type, config).process_node(data) }
 
   let(:xml_doc) { Nokogiri::XML('<metadata><value schema="dc" element="some_element">A value</value></metadata>') }
   let(:xml_node) { xml_doc.at_xpath(config['xpath']) }
@@ -37,16 +37,14 @@ RSpec.describe Metadata::Node do
   let(:data) { {} }
 
   it 'can process_node' do
-    result = subject.process_node(data)
-    expect(result.key?("generic_work['field_name'][]")).to be_truthy
+    expect(subject.key?("generic_work['field_name'][]")).to be_truthy
   end
 
   context 'with qualifier in the node' do
     let(:xml_doc) { Nokogiri::XML('<metadata><value schema="dc" element="some_element" qualifier="test_qualifier">Graduation: 2245</value></metadata>') }
 
     it 'can process_node' do
-      result = subject.process_node(data)
-      expect(result.values[0]).to eq ['executed test_method with value Graduation: 2245']
+      expect(subject.values[0]).to eq ['executed test_method with value Graduation: 2245']
     end
   end
 
@@ -68,15 +66,15 @@ RSpec.describe Metadata::Node do
           }
         }
       end
-      it 'can run_method' do
-        expect(subject.process_node(data).values[0]).to eq %w(one two)
+      it 'can process_node' do
+        expect(subject.values[0]).to eq %w(one two)
       end
 
       context 'and a specific qualifier' do
         let(:xml_doc) { Nokogiri::XML('<metadata><value schema="dc" element="some_element" qualifier="test_qualifier">Graduation: 2245</value></metadata>') }
-        it 'can run_method' do
-          expect(subject.process_node(data).values.length).to eq 2
-          expect(subject.process_node(data).keys.length).to eq 2
+        it 'can process_node' do
+          expect(subject.values.length).to eq 2
+          expect(subject.keys.length).to eq 2
         end
       end
     end

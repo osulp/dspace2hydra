@@ -50,7 +50,7 @@ module Metadata
     # @param [Hash] data - the data hash of the processed Metadata
     # @return [Hash] - the updated data hash
     def update_data(result, data)
-      if result.is_a?(String)
+      if result.is_a?(String) || result.is_a?(Fixnum)
         # ensure the form_field is set in the hash and add the processed value to it
         data[field_name] ||= []
         data[field_name] << result

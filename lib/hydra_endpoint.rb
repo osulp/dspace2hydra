@@ -17,14 +17,9 @@ class HydraEndpoint
   end
 
   ##
-  def submit_new_work(data, file_ids=[])
+  def submit_new_work(data)
     csrf_token = @csrf_token || get_csrf_token
-    #TODO: dynamically generate the field for keyword and determine visibility
-    data.merge!({
-                  "#{@config['new_work']['csrf_form_field']}": csrf_token,
-                  "agreement": 1,
-                  "uploaded_files[]": file_ids
-                })
+    data.merge!({ "#{@config['new_work']['csrf_form_field']}": csrf_token })
     post_data @config['new_work']['form_action'], data
   end
 

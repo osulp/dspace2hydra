@@ -68,5 +68,7 @@ bag.files_for_upload.each do |item_file|
 end
 file_ids.flatten!.uniq!
 
-submitted_page = he.submit_new_work data, file_ids
+data.merge!({ "uploaded_files[]": file_ids })
+
+submitted_page = he.submit_new_work data
 pp submitted_page
