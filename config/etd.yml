@@ -4,6 +4,11 @@ upload_data:
   - directory: ORIGINAL
     ignore_files:
 custom_nodes:
+  agreement:
+    form_field: "%{form_field_name}"
+    form_field_name: agreement
+    method: Mapping::Agreement.unprocessed
+    value: 1
   visibility:
     form_field: "%{work_type}[%{form_field_name}]"
     form_field_name: visibility

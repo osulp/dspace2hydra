@@ -14,7 +14,8 @@ module Mapping
       # @parameter [String] value - the value
       # @returns [String] - the value with leading and trailing whitespace stripped
       def unprocessed(value)
-        value.strip
+        value.strip! if value.is_a? String
+        value
       end
 
       ##

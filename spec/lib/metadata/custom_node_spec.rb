@@ -1,4 +1,5 @@
 class CustomNodeSomeClass
+  extend Mapping::Extensions::BasicValueHandler
   def self.test_method(value, *_args)
     "executed test_method with value #{value}"
   end
@@ -13,7 +14,7 @@ class CustomNodeSomeClass
 end
 
 RSpec.describe Metadata::CustomNode do
-  subject { Metadata::CustomNode.new work_type, config }
+  subject { Metadata::CustomNode.new(work_type, config).process_node(data) }
 
   let(:work_type) { 'default_work' }
   let(:config) do
@@ -27,8 +28,23 @@ RSpec.describe Metadata::CustomNode do
   let(:data) { {} }
 
   it 'can process_node' do
-    result = subject.process_node(data)
-    expect(result.key?("default_work['field_name'][]")).to be_truthy
+    expect(subject.key?("default_work['field_name'][]")).to be_truthy
+  end
+
+  context 'with a FixNum as the value' do
+    let(:config) do
+      {
+        'form_field' => '%{form_field_name}',
+        'method' => 'CustomNodeSomeClass.unprocessed',
+        'form_field_name' => 'agreement',
+        'value' => 1
+      }
+    end
+
+    it 'can process_node' do
+      expect(subject.key?('agreement')).to be_truthy
+      expect(subject.values.first).to eq [1]
+    end
   end
 
   context 'with a string array method configured' do
@@ -42,9 +58,8 @@ RSpec.describe Metadata::CustomNode do
     end
 
     it 'can process_node' do
-      result = subject.process_node(data)
-      expect(result.values.length).to eq 1
-      expect(result.values.first).to eq %w(one two)
+      expect(subject.values.length).to eq 1
+      expect(subject.values.first).to eq %w(one two)
     end
   end
   context 'with a hash array method configured' do
@@ -57,9 +72,9 @@ RSpec.describe Metadata::CustomNode do
       }
     end
 
-    it 'can run_method' do
-      expect(subject.process_node(data).values.length).to eq 2
-      expect(subject.process_node(data).keys.length).to eq 2
+    it 'can process_node' do
+      expect(subject.values.length).to eq 2
+      expect(subject.keys.length).to eq 2
     end
   end
 end
