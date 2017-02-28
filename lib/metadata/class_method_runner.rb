@@ -36,7 +36,7 @@ module Metadata
     # Given the value from this, run the method configured for the qualifier if it exists otherwise the default
     # @return [String] - the result of the configured method should be a string to store in hydra
     def run_method
-      raise StandardError.new("#{field} run_method is missing method configuration") unless has_method?
+      raise StandardError, "#{@config['form_field']} run_method is missing method configuration" unless has_method?
       send(method, content)
     end
 
@@ -50,7 +50,7 @@ module Metadata
     # @param [Hash] data - the data hash of the processed Metadata
     # @return [Hash] - the updated data hash
     def update_data(result, data)
-      if result.is_a?(String) || result.is_a?(Fixnum)
+      if result.is_a?(String) || result.is_a?(Integer)
         # ensure the form_field is set in the hash and add the processed value to it
         data[field_name] ||= []
         data[field_name] << result

@@ -119,6 +119,7 @@ migration_nodes:
         form_field_name: language
       iso:
         form_field_name: language
+        method: Mapping::Language.uri
   publisher:
     xpath: "//metadata/value[@element='publisher']"
     form_field: "%{work_type}[%{form_field_name}][]"

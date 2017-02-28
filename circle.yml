@@ -1,7 +1,7 @@
 version: 2
 executorType: docker
 containerInfo:
-  - image: ruby:latest
+  - image: ruby:2.3
 stages:
   build:
     workDir: /home/ubuntu/app
