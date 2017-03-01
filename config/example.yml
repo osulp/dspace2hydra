@@ -92,6 +92,7 @@ migration_nodes:
         form_field_name: language
       iso:
         form_field_name: language
+        method: Mapping::Language.uri
   publisher:
     xpath: //metadata/value[@element='publisher']
     method: Mapping::Description.unprocessed

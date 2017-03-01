@@ -1,9 +1,24 @@
+# frozen_string_literal: true
 source :rubygems
 
-gem 'nokogiri'
+gem 'iso-639'
 gem 'mechanize'
+gem 'nokogiri'
 gem 'rdf'
 gem 'rdf-vocab'
+
+group :development, :test do
+  gem 'rake'
+end
+
+group :development do
+  gem 'rcodetools'
+  gem 'fastri'
+  gem 'reek'
+  gem 'debride'
+  gem 'fasterer'
+  gem 'rubocop'
+end
 
 group :test do
   gem 'coveralls'
@@ -13,4 +28,3 @@ group :test do
   gem 'simplecov'
   gem 'webmock'
 end
-
