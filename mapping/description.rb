@@ -30,5 +30,18 @@ module Mapping
         { field_name: field_name_two, value: 'open access' },
       ]
     end
+
+    ##
+    # Set the date_graduated to the value from DSpace
+    # @param [String] value - the original Dspace value for the node
+    # @param [*String] args - field name as string argument
+    # @returns [Array[Hash]] - the field in hydra with the new value
+    def set_graduationdate(value, *args)
+      if value.include? "Graduation date"
+        [
+          { field_name: args, value: value.split(':')[1].strip}, 
+        ]              
+      end
+    end
   end
 end

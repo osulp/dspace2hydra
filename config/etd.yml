@@ -59,6 +59,9 @@ migration_nodes:
     qualifiers:
       default:
         form_field_name: description
+        method:
+          - Mapping::Description.set_graduationdate
+          - 'date_graduated'
       peerreview:
         form_field_name: additional_information
         method:
