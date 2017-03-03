@@ -29,7 +29,7 @@ Gemfile.lock
 .config.yml
 /.idea/*
 /cache/*
-!/cache/.keep
+!/cache/**/.keep
 /spec/cache/*
 !/spec/cache/.keep
 .vscode/*

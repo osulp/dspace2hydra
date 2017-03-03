@@ -3,6 +3,7 @@ work_type: "default_work"
 upload_data:
   - directory: ORIGINAL
     ignore_files:
+uploaded_files_form_field: "uploaded_files[]"
 custom_nodes:
   agreement:
     form_field: "%{form_field_name}"
