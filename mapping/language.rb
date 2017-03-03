@@ -21,7 +21,7 @@ module Mapping
       entry = find_language(value)
       raise StandardError, "Could not find #{value} in ISO 639-1." unless entry
 
-      item = Extensions::Cacheable::Item.new(value, value, entry.english_name, sprintf(LOC_ISO639_1_URI, alpha2_code: entry.alpha2))
+      item = Extensions::Cacheable::Item.new(value, value, entry.english_name, format(LOC_ISO639_1_URI, alpha2_code: entry.alpha2))
       add_to_cache(item, LOC_LANGUAGES_CACHE_FILE)
       item[:uri].to_s
     end

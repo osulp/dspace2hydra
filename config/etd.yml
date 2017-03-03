@@ -9,16 +9,26 @@ custom_nodes:
     form_field_name: agreement
     method: Mapping::Agreement.unprocessed
     value: 1
-  visibility:
-    form_field: "%{work_type}[%{form_field_name}]"
-    form_field_name: visibility
-    method: Mapping::Visibility.unprocessed
-    value: open
   keyword:
     form_field: "%{work_type}[%{form_field_name}][]"
     form_field_name: keyword
     method: Mapping::Keyword.unprocessed
     value: data-migration
+  rights:
+    form_field: "%{work_type}[%{form_field_name}][]"
+    form_field_name: rights
+    method: Mapping::Rights.unprocessed
+    value: "http://rightsstatements.org/vocab/CNE/1.0/"
+    # Add this value to the migration data
+    # (DEFAULT) 'always' : always add this value to the migration data
+    # 'if_field_value_missing' : only if the form_field doesn't already have migrated data
+    # 'never' : do not add this value to the migration data
+    add_to_migration: if_field_value_missing
+  visibility:
+    form_field: "%{work_type}[%{form_field_name}]"
+    form_field_name: visibility
+    method: Mapping::Visibility.unprocessed
+    value: open
 migration_nodes:
   creator:
     xpath: //metadata/value[@element='creator']
