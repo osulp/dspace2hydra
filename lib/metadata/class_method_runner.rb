@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Metadata
   module ClassMethodRunner
     ##
@@ -20,23 +21,23 @@ module Metadata
       @config['method']
     end
 
-    def has_method?
-      !method.nil?
-    end
-
     def content
       @config['value']
     end
 
     def field_name
-      form_field(@config['form_field_name'])
+      @config['form_field_name']
+    end
+
+    def add_to_migration
+      @config['add_to_migration'] ||= 'always'
     end
 
     ##
     # Given the value from this, run the method configured for the qualifier if it exists otherwise the default
     # @return [String] - the result of the configured method should be a string to store in hydra
     def run_method
-      raise StandardError, "#{@config['form_field']} run_method is missing method configuration" unless has_method?
+      raise StandardError, "#{@config['form_field']} run_method is missing method configuration" if method.nil?
       send(method, content)
     end
 
@@ -50,25 +51,34 @@ module Metadata
     # @param [Hash] data - the data hash of the processed Metadata
     # @return [Hash] - the updated data hash
     def update_data(result, data)
-      if result.is_a?(String) || result.is_a?(Integer)
-        # ensure the form_field is set in the hash and add the processed value to it
-        data[field_name] ||= []
-        data[field_name] << result
-      else
+      if result.is_a?(Array)
         # run_method returns an array of hashes or strings
         # when the array returns hashes, it expects the shape to be { field_name: '', value: ''}
         # when the array returns strings, add each to the array of the field_name configured for the node
         result.each do |r|
           if r.is_a?(Hash)
-            data[form_field(r[:field_name])] ||= []
-            data[form_field(r[:field_name])] << r[:value].to_s
+            add_result_to_data(r[:field_name], r[:value], data)
           else
-            data[field_name] ||= []
-            data[field_name] << r.to_s
+            add_result_to_data(field_name, r, data)
           end
         end
+      else
+        # ensure the form_field is set in the hash and add the processed value to it
+        add_result_to_data(field_name, result, data)
       end
       data
+    end
+
+    def add_result_to_data(field_name, value, data)
+      data[form_field(field_name)] ||= []
+      case add_to_migration.downcase
+      when 'always'
+        data[form_field(field_name)] << value
+      when 'if_field_value_missing'
+        data[form_field(field_name)] << value if data[form_field(field_name)].empty?
+      when 'never'
+        # noop
+      end
     end
 
     ##
@@ -101,7 +111,7 @@ module Metadata
     # @return String - the properly formatted form field name by this nodes configured "form_field" and
     #                   the provided form_field_name or the qualifiers configured "form_field_name"
     def form_field(form_field_name = nil)
-      sprintf(@config['form_field'], work_type: @work_type, form_field_name: form_field_name)
+      format(@config['form_field'], work_type: @work_type, form_field_name: form_field_name)
     end
   end
 end

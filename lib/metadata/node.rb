@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Metadata
   class Node
     include ClassMethodRunner
@@ -22,7 +23,7 @@ module Metadata
       if @qualifier.has_method?
         @qualifier.run_method(content)
       else
-        raise StandardError.new("#{field} run_method is missing method configuration") unless has_method?
+        raise StandardError, "#{field} run_method is missing method configuration" if method.nil?
         send(method, content)
       end
     end
@@ -44,7 +45,7 @@ module Metadata
     #                   the provided form_field_name or the qualifiers configured "form_field_name"
     def form_field(form_field_name = nil)
       form_field_name ||= @qualifier.form_field_name
-      sprintf(@config['form_field'], work_type: @work_type, form_field_name: form_field_name)
+      format(@config['form_field'], work_type: @work_type, form_field_name: form_field_name)
     end
 
     ##
@@ -61,12 +62,12 @@ module Metadata
     #       ...
     def build_qualifier
       @config['qualifiers'] ||= {}
-      raise StandardError.new("#{@name} metadata configuration missing qualifiers.") if @config['qualifiers'].keys.empty?
+      raise StandardError, "#{@name} metadata configuration missing qualifiers." if @config['qualifiers'].keys.empty?
 
       type = @xml_node.attributes.key?('qualifier') ? @xml_node.attributes['qualifier'].value : 'default'
-      config = @config['qualifiers'].select { |k, _v| k == type }
-      raise StandardError.new("#{@name} metadata configuration missing '#{type}' qualifier.") unless config[type]
-      Metadata::Qualifier.new(@field, type, config)
+      qualifier_config = @config['qualifiers'].select { |k, _v| k == type }
+      raise StandardError, "#{@name} metadata configuration missing '#{type}' qualifier." unless qualifier_config[type]
+      Metadata::Qualifier.new(@field, type, qualifier_config)
     end
   end
 end

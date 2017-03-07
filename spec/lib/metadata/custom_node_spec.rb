@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class CustomNodeSomeClass
   extend Mapping::Extensions::BasicValueHandler
   def self.test_method(value, *_args)
