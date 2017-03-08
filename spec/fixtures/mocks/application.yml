@@ -6,7 +6,7 @@
 #bags_directory: "/tmp/directory/to/many/bags"
 
 # Processed items metadata backup and logging base path
-cache_and_logging_path: "cache/processed_items"
+cache_and_logging_path: "spec/cache/processed_items"
 
 # Hydra server configurations for posting new works and files
 hydra_endpoint:

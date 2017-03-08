@@ -1,13 +1,17 @@
+# frozen_string_literal: true
 class Bag
-  attr_reader :path, :type_config
+  attr_reader :path, :type_config, :item_cache_path
 
-  def initialize(path, type_config)
+  def initialize(path, application_config, type_config)
     @path = path
+    @application_config = application_config
     @type_config = type_config
+    @item_cache_path = File.join(File.dirname(__FILE__), "../../#{@application_config['cache_and_logging_path']}/ITEM@#{item.item_id}")
+    Dir.mkdir @item_cache_path unless File.exist? @item_cache_path
   end
 
   def bagit
-    @bagit ||= File.readlines(File.join(@path, CONFIG['bag']['bagit_file']))
+    @bagit ||= File.readlines(File.join(@path, @application_config['bag']['bagit_file']))
   end
 
   def manifest
@@ -15,7 +19,7 @@ class Bag
   end
 
   def item
-    @item ||= Item.new File.join(@path, CONFIG['bag']['item']['directory']), @type_config
+    @item ||= Item.new File.join(@path, @application_config['bag']['item']['directory']), @type_config
   end
 
   def data_paths
@@ -24,6 +28,10 @@ class Bag
 
   def upload_configs
     @upload_configs ||= @type_config['upload_data']
+  end
+
+  def uploaded_files_form_field
+    @uploaded_files_form_field ||= @type_config['uploaded_files_form_field']
   end
 
   def files
@@ -40,7 +48,7 @@ class Bag
   # Load the manifest as a hash with the path to each file as the key, and the hash code as the value
   # @returns [Hash<String, String>] a hash of the path => hashcode for each file in the manifest
   def load_manifest
-    manifest_file = File.join(@path, CONFIG['bag']['manifest_file'])
+    manifest_file = File.join(@path, @application_config['bag']['manifest_file'])
     raise "Missing #{manifest_file}" unless File.exist? manifest_file
     h = {}
     File.readlines(manifest_file).each do |line|
@@ -54,14 +62,14 @@ class Bag
   # Load all of the paths to data files from the manifest
   # @returns [Array<String>] an array of string paths from the manifest
   def load_data_paths
-    manifest.keys.select { |key| !key.match(/#{CONFIG['bag']['item']['item_file']['directory_pattern']}/).nil? }
+    manifest.keys.select { |key| !key.match(/#{@application_config['bag']['item']['item_file']['directory_pattern']}/).nil? }
   end
 
   ##
   # Instantiate a list of ItemFile ordered by their sequence_id
   # @returns [Array<ItemFile>] an array of ItemFile objects
   def load_files
-    pattern = CONFIG['bag']['item']['item_file']['metadata_file_name_template'].gsub '{item_file_name}', ''
+    pattern = @application_config['bag']['item']['item_file']['metadata_file_name_template'].gsub '{item_file_name}', ''
     files = load_data_paths.reject { |key| key.match(/#{pattern}$/) }.map do |file_path|
       ItemFile.new File.join(@path, file_path)
     end
@@ -91,7 +99,7 @@ class Bag
   # @param [ItemFile] item_file - the item file to evalute
   # @returns [Boolean] - true if the item_file.name is a match for any of the ignore_files configuration
   def item_file_ignored?(item_file)
-    upload_config = upload_configs.first { |config| config['directory'].include?(item_file.parent_directory) }
+    upload_config = upload_configs.first { |c| c['directory'].include?(item_file.parent_directory) }
     upload_config['ignore_files'] ||= []
     upload_config['ignore_files'].any? { |regex| item_file.name.match(/#{regex}/i) }
   end

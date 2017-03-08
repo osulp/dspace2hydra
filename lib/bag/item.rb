@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 class Item
   attr_reader :path
 
@@ -16,6 +17,10 @@ class Item
 
   def object_properties
     @object_properties ||= object_properties_hash
+  end
+
+  def item_id
+    object_properties['objectId'].first.tr('/', '-')
   end
 
   def custom_metadata
@@ -63,8 +68,8 @@ class Item
     # Nokogiri::XML doesn't have a method to handle evaluating if a document has valid children,
     # so creating a new document from the mutated temp_xml is effective, albeit hackish
     remaining_xml = Nokogiri::XML.parse temp_xml.to_xml
-    # todo : consider making this error configurable by Item type
-    raise StandardError.new("#{work_type} : #{metadata_xml_path} unhandled nodes:\n#{remaining_xml.to_xml}") unless remaining_xml.root.children.empty?
+    # TODO: consider making this error configurable by Item type
+    raise StandardError, "#{work_type} : #{metadata_xml_path} unhandled nodes:\n#{remaining_xml.to_xml}" unless remaining_xml.root.children.empty?
     h
   end
 
@@ -75,7 +80,7 @@ class Item
   # This method *intentionally mutates* `xml_doc` so that it is left without invalid empty text nodes.
   # @param [Nokogiri::XML::Document] xml_doc - the xml document to clean
   def clear_empty_text_nodes(xml_doc)
-    xml_doc.root.children.each { |t| t.content = t.content.gsub(/^\n\s*\n*$/, "") }
+    xml_doc.root.children.each { |t| t.content = t.content.gsub(/^\n\s*\n*$/, '') }
   end
 
   ##
@@ -98,5 +103,4 @@ class Item
       end
     end
   end
-
 end
