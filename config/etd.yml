@@ -70,6 +70,10 @@ migration_nodes:
     qualifiers:
       default:
         form_field_name: description
+        method:
+          - Mapping::Description.process_if_grad_date
+          - 'graduation_year'
+          - 'description'
       peerreview:
         form_field_name: additional_information
         method:

@@ -30,5 +30,23 @@ module Mapping
         { field_name: field_name_two, value: 'open access' },
       ]
     end
+
+    ##
+    # Process the description from the original Dspace value to graduation_year if it matches 'Graduation date:'
+    # The first field is gradution_year if pattern matches and the second field is description by default
+    # @param [String] value - the original Dspace value for the node
+    # @param [Array] *args - the two field names to map value to
+    # @return [[Hash]] - the field in hydra with the new value
+    def process_if_grad_date(value, *args)
+      field_name_one, field_name_two = args.flatten
+      match_data = /^graduation date:/.match(value.downcase)
+      if match_data.nil?
+        # not found, unprocessed
+        return [ { field_name: field_name_two, value: value } ]
+      else 
+        # found "graduation date"
+        return [ { field_name: field_name_one, value: value.split(':')[1].strip } ]                     
+      end
+    end
   end
 end
