@@ -45,7 +45,7 @@ module Mapping
         return [ { field_name: field_name_two, value: value } ]
       else 
         # found "graduation date"
-        return [ { field_name: field_name_one, value: value.split(':')[1].split } ]                     
+        return [ { field_name: field_name_one, value: value.split(':')[1].strip } ]                     
       end
     end
   end
