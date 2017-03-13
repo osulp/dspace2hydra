@@ -29,8 +29,10 @@ module Metadata
       @config['form_field_name']
     end
 
-    def add_to_migration
-      @config['add_to_migration'] ||= 'always'
+    ##
+    # Default, will be overridden by Node, CustomNode, or Qualifier
+    def value_add_to_migration
+      'always'
     end
 
     ##
@@ -51,31 +53,30 @@ module Metadata
     # @param [Hash] data - the data hash of the processed Metadata
     # @return [Hash] - the updated data hash
     def update_data(result, data)
-      if result.is_a?(Array)
-        # run_method returns an array of hashes or strings
-        # when the array returns hashes, it expects the shape to be { field_name: '', value: ''}
-        # when the array returns strings, add each to the array of the field_name configured for the node
-        result.each do |r|
-          if r.is_a?(Hash)
-            add_result_to_data(r[:field_name], r[:value], data)
-          else
-            add_result_to_data(field_name, r, data)
-          end
+      result = [result] unless result.is_a? Array
+      # run_method returns an array of hashes or strings
+      # when the array returns hashes, it expects the shape to be { field_name: '', value: ''}
+      # when the array returns strings, add each to the array of the field_name configured for the node
+      result.each do |r|
+        if r.is_a?(Hash)
+          add_result_to_data(r[:field_name], r[:value], data)
+        else
+          add_result_to_data(field_name, r, data)
         end
-      else
-        # ensure the form_field is set in the hash and add the processed value to it
-        add_result_to_data(field_name, result, data)
       end
       data
     end
 
     def add_result_to_data(field_name, value, data)
-      data[form_field(field_name)] ||= []
-      case add_to_migration.downcase
+      key = form_field(field_name)
+      data[key] ||= []
+      case value_add_to_migration.downcase
       when 'always'
-        data[form_field(field_name)] << value
-      when 'if_field_value_missing'
-        data[form_field(field_name)] << value if data[form_field(field_name)].empty?
+        data[key] << value
+      when 'except_empty_value'
+        data[key] << value unless value.nil? || value.to_s.empty?
+      when 'if_form_field_value_missing'
+        data[key] << value if data[key].empty?
       when 'never'
         # noop
       end
@@ -87,7 +88,7 @@ module Metadata
     # could include some specific values to provide to the target method to aid in processing.
     # @param [String|Array] method - the full class method and optional arguments
     #                               (String: SomeClass.the_method_name)
-    #                               (Array: ['SomeClass.the_method_name', 'argument1', 'arg2')
+    #                               (Array: ['SomeClass.the_method_name', 'argument1', 'arg2'])
     # @param [String] value - the initial value to operate upon, with additional arguments appended to the list
     # @return [String] - the returned processed value
     def send(method, value)

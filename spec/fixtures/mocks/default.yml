@@ -8,6 +8,12 @@ upload_data:
   - directory: SWORD
     ignore_files:
       - ".zip"
+# Add this value to the migration data
+# (DEFAULT) 'always' : always add this value to the migration data
+# 'except_empty_value' : add this value except for empty/nil
+# 'if_form_field_value_missing' : add the value if the form_field doesn't have an existing value
+# 'never' : do not add this value to the migration data
+value_add_to_migration: except_empty_value
 custom_nodes:
   visibility:
     form_field: "%{work_type}[%{form_field_name}]"

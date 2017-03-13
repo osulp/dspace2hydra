@@ -2,14 +2,20 @@
 module Metadata
   class Node
     include ClassMethodRunner
+    include NestedConfiguration
     attr_reader :config
 
-    def initialize(xml_node, field, work_type, config = {})
+    def initialize(xml_node, field, work_type_config, config = {})
       @config = config
       @field = field
-      @work_type = work_type
+      @work_type_config = work_type_config
+      @work_type = work_type_config['work_type']
       @xml_node = xml_node
       @qualifier = build_qualifier
+    end
+
+    def value_add_to_migration
+      get_configuration 'value_add_to_migration', @config, @work_type_config
     end
 
     # Override methods from ClassMethodRunner so that this class behaves properly with regard
@@ -20,12 +26,7 @@ module Metadata
     # Given the value from this, run the method configured for the qualifier if it exists otherwise the default
     # @return [String] the result of the configured method should be a string to store in hydra
     def run_method
-      if @qualifier.has_method?
-        @qualifier.run_method(content)
-      else
-        raise StandardError, "#{field} run_method is missing method configuration" if method.nil?
-        send(method, content)
-      end
+      @qualifier.run_method(content)
     end
 
     def content
@@ -65,9 +66,7 @@ module Metadata
       raise StandardError, "#{@name} metadata configuration missing qualifiers." if @config['qualifiers'].keys.empty?
 
       type = @xml_node.attributes.key?('qualifier') ? @xml_node.attributes['qualifier'].value : 'default'
-      qualifier_config = @config['qualifiers'].select { |k, _v| k == type }
-      raise StandardError, "#{@name} metadata configuration missing '#{type}' qualifier." unless qualifier_config[type]
-      Metadata::Qualifier.new(@field, type, qualifier_config)
+      Metadata::Qualifier.new(@field, type, @work_type_config, @config)
     end
   end
 end

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Mapping
   module Extensions
     module BasicValueHandler
@@ -14,7 +15,7 @@ module Mapping
       # @parameter [String] value - the value
       # @returns [String] - the value with leading and trailing whitespace stripped
       def unprocessed(value)
-        value.strip! if value.is_a? String
+        return value.strip if value.respond_to? :strip
         value
       end
 

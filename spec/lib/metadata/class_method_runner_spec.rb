@@ -1,5 +1,5 @@
 # frozen_string_literal: true
-class ClassMethodRunnerClass
+class ClassMethodRunnerClassBase
   include Metadata::ClassMethodRunner
   def initialize(work_type, config = {})
     @config = config
@@ -8,6 +8,11 @@ class ClassMethodRunnerClass
 
   def self.test_string_method(value, *_args)
     value
+  end
+end
+class ClassMethodRunnerClass < ClassMethodRunnerClassBase
+  def value_add_to_migration
+    @config['value_add_to_migration'] ||= 'always'
   end
 end
 
@@ -28,6 +33,13 @@ RSpec.describe Metadata::ClassMethodRunner do
         'value' => 'blah'
       }
     end
+    context 'using the basic class without overridden properties' do
+      subject { ClassMethodRunnerClassBase.new(work_type, config) }
+      it 'defaults to "always" adding migration data' do
+        expect(subject.__send__(:value_add_to_migration)).to eq 'always'
+      end
+    end
+
     it 'will add data' do
       expect(subject.process_node(data)).to eq(form_field_name.to_s => ['blah'])
     end
@@ -46,7 +58,7 @@ RSpec.describe Metadata::ClassMethodRunner do
         'form_field' => form_field,
         'form_field_name' => field_name,
         'value' => 'blah',
-        'add_to_migration' => 'if_field_value_missing'
+        'value_add_to_migration' => 'if_form_field_value_missing'
       }
     end
     it 'will add custom node data' do
@@ -66,7 +78,7 @@ RSpec.describe Metadata::ClassMethodRunner do
         'form_field' => form_field,
         'form_field_name' => field_name,
         'value' => 'blah',
-        'add_to_migration' => 'never'
+        'value_add_to_migration' => 'never'
       }
     end
     it 'will not add custom node data' do

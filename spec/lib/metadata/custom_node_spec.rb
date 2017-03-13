@@ -1,81 +1,40 @@
 # frozen_string_literal: true
-class CustomNodeSomeClass
-  extend Mapping::Extensions::BasicValueHandler
-  def self.test_method(value, *_args)
-    "executed test_method with value #{value}"
-  end
-
-  def self.test_array_string_method(_value, *_args)
-    %w(one two)
-  end
-
-  def self.test_array_hash_method(_value, *_args)
-    [{ field_name: 'field', value: 'value1' }, { field_name: 'field2', value: 'value2' }]
-  end
-end
-
 RSpec.describe Metadata::CustomNode do
-  subject { Metadata::CustomNode.new(work_type, config).process_node(data) }
+  subject { Metadata::CustomNode.new(work_type_config, node_config).process_node(data) }
 
-  let(:work_type) { 'default_work' }
-  let(:config) do
-    {
-      'form_field' => "%{work_type}['%{form_field_name}'][]",
-      'method' => 'CustomNodeSomeClass.test_method',
-      'form_field_name' => 'field_name',
-      'value' => 'testeroni'
-    }
-  end
+  let(:mock_config) { File.open(File.join(File.dirname(__FILE__), '../../fixtures/mocks/default.yml')) { |f| YAML.safe_load(f) } }
+  let(:work_type_config) { mock_config.reject { |k, _v| %w(migration_nodes custom_nodes).include?(k) } }
+  let(:node_config) { mock_config['custom_nodes']['keyword'] }
   let(:data) { {} }
 
   it 'can process_node' do
-    expect(subject.key?("default_work['field_name'][]")).to be_truthy
+    expect(subject.key?('default_work[keyword][]')).to be_truthy
   end
 
   context 'with a FixNum as the value' do
-    let(:config) do
-      {
-        'form_field' => '%{form_field_name}',
-        'method' => 'CustomNodeSomeClass.unprocessed',
-        'form_field_name' => 'agreement',
-        'value' => 1
-      }
+    before :each do
+      node_config['value'] = 1
     end
 
     it 'can process_node' do
-      expect(subject.key?('agreement')).to be_truthy
+      expect(subject.key?('default_work[keyword][]')).to be_truthy
       expect(subject.values.first).to eq [1]
     end
   end
 
-  context 'with a string array method configured' do
-    let(:config) do
-      {
-        'method' => 'CustomNodeSomeClass.test_array_string_method',
-        'form_field' => "%{work_type}['%{form_field_name}'][]",
-        'form_field_name' => 'field_name',
-        'value' => 'blah'
-      }
-    end
-
+  context 'with a string array method' do
     it 'can process_node' do
+      allow(Mapping::Keyword).to receive(:unprocessed).and_return(%w(one two))
       expect(subject.values.length).to eq 1
       expect(subject.values.first).to eq %w(one two)
     end
   end
-  context 'with a hash array method configured' do
-    let(:config) do
-      {
-        'method' => 'CustomNodeSomeClass.test_array_hash_method',
-        'form_field' => "%{work_type}['%{form_field_name}'][]",
-        'form_field_name' => 'field_name',
-        'value' => 'blah'
-      }
-    end
 
+  context 'with a hash array method' do
     it 'can process_node' do
-      expect(subject.values.length).to eq 2
-      expect(subject.keys.length).to eq 2
+      allow(Mapping::Keyword).to receive(:unprocessed).and_return(field_name: 'blah', value: 'foo')
+      expect(subject.key?('default_work[blah][]')).to be_truthy
+      expect(subject.values.first).to eq ['foo']
     end
   end
 end
