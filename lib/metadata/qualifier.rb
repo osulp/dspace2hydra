@@ -1,28 +1,33 @@
+# frozen_string_literal: true
 module Metadata
   class Qualifier
     include ClassMethodRunner
+    include NestedConfiguration
     attr_reader :config, :type
 
-    def initialize(field, type, config)
+    def initialize(field, type, work_type_config, node_config)
       @field = field
       @type = type
-      @config = config
+      @work_type_config = work_type_config
+      @node_config = node_config
+      @config = node_config['qualifiers'][type]
+      raise StandardError, "#{field} metadata configuration missing '#{type}' qualifier." if @config.nil?
     end
 
     def default?
       @type == 'default'
     end
 
+    def value_add_to_migration
+      get_configuration 'value_add_to_migration', @config, @node_config, @work_type_config
+    end
+
     def form_field_name
-      @config[@type]['form_field_name']
+      get_configuration 'form_field_name', @config, @node_config
     end
 
     def method
-      @config[@type]['method']
-    end
-
-    def has_method?
-      !method.nil?
+      get_configuration 'method', @config, @node_config
     end
 
     ##
@@ -30,7 +35,7 @@ module Metadata
     # @param [String] value - the Metadata::Node value/content
     # @return [String] the result of the configured method should be a string to store in hydra
     def run_method(value)
-      raise StandardError.new("#{@field}.#{@type} run_method is missing method configuration.") unless has_method?
+      raise StandardError, "#{@field}.#{@type} run_method is missing method configuration." if method.nil?
       send(method, value)
     end
   end

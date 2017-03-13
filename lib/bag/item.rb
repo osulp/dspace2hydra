@@ -34,6 +34,25 @@ class Item
   end
 
   ##
+  # Get the configurations set for this work type, excluding the node migration specific configurations.
+  # This is intended to be used for setting default configurations which can eventually be overridden
+  # by any nested node or qualifier configuration.
+  # The following example shows 'my_configuration' with a default value at the work type configuration
+  # level, and the migration node 'keyword' having it overridden while 'visibility' would just inherit the
+  # default 'my_configuration' value.
+  #
+  # ex.
+  # my_configuration: 'some default value right here'
+  #     migration_nodes:
+  #         keyword:
+  #             my_configuration: 'overridden'
+  #         visibility:
+  #             ...
+  def work_type_config
+    @work_type_config ||= @config.reject { |k, _v| %w(custom_nodes migration_nodes).include?(k) }
+  end
+
+  ##
   # Load the object.properties as a hash with the key and an array of values
   # @returns [Hash<String,Array<String>>] a hash with key=>array of strings
   def object_properties_hash
@@ -46,11 +65,10 @@ class Item
   end
 
   def build_custom_metadata_hash(config)
-    work_type = config['work_type']
     h = {}
     config['custom_nodes'].each do |key, node_config|
       h[key] ||= []
-      h[key] << Metadata::CustomNode.new(work_type, node_config)
+      h[key] << Metadata::CustomNode.new(work_type_config, node_config)
     end
     h
   end
@@ -59,11 +77,10 @@ class Item
   # Build a hash of Metadata::Nodes transformed using the appropriate configuration for this type of Item.
   # @param [Hash] config - a configuration, such as "etd". @see config/etd.yml
   def build_metadata_hash(config)
-    work_type = config['work_type']
     h = {}
     # temp_xml will be the target of mutation during this process
     temp_xml = metadata_xml.clone
-    transform_configured_nodes temp_xml, h, work_type, config['migration_nodes']
+    transform_configured_nodes temp_xml, h, work_type_config, config['migration_nodes']
     clear_empty_text_nodes temp_xml
     # Nokogiri::XML doesn't have a method to handle evaluating if a document has valid children,
     # so creating a new document from the mutated temp_xml is effective, albeit hackish
@@ -92,13 +109,13 @@ class Item
   # or to raise an error and prevent operation.
   # @param [Nokogiri::XML::Document] xml_doc - The document to traverse
   # @param [Hash] h - the hash to fill with Metadata::Node objects
-  # @param [String] work_type - the configured work type
+  # @param [Hash] work_type_config - the configurations for this work_type
   # @param [Hash] node_configs - this items configuration, such as "etd". @see config/etd.yml
-  def transform_configured_nodes(xml_doc, h, work_type, node_configs)
+  def transform_configured_nodes(xml_doc, h, work_type_config, node_configs)
     node_configs.each do |key, node_config|
       h[key] ||= []
       xml_doc.xpath(node_config['xpath']).each do |node|
-        h[key] << Metadata::Node.new(node, key, work_type, node_config)
+        h[key] << Metadata::Node.new(node, key, work_type_config, node_config)
         node.remove
       end
     end

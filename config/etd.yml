@@ -4,6 +4,12 @@ upload_data:
   - directory: ORIGINAL
     ignore_files:
 uploaded_files_form_field: "uploaded_files[]"
+# Add this value to the migration data
+# (DEFAULT) 'always' : always add this value to the migration data
+# 'except_empty_value' : add this value except for empty/nil
+# 'if_form_field_value_missing' : add the value if the form_field doesn't have an existing value
+# 'never' : do not add this value to the migration data
+value_add_to_migration: except_empty_value
 custom_nodes:
   agreement:
     form_field: "%{form_field_name}"
@@ -20,11 +26,7 @@ custom_nodes:
     form_field_name: rights
     method: Mapping::Rights.unprocessed
     value: "http://rightsstatements.org/vocab/CNE/1.0/"
-    # Add this value to the migration data
-    # (DEFAULT) 'always' : always add this value to the migration data
-    # 'if_field_value_missing' : only if the form_field doesn't already have migrated data
-    # 'never' : do not add this value to the migration data
-    add_to_migration: if_field_value_missing
+    value_add_to_migration: if_form_field_value_missing
   visibility:
     form_field: "%{work_type}[%{form_field_name}]"
     form_field_name: visibility
