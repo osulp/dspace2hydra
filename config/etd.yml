@@ -40,6 +40,17 @@ migration_nodes:
     qualifiers:
       default:
         form_field_name: creator
+  contributor:
+    xpath: //metadata/value[@element='contributor']
+    method: Mapping::Contributor.unprocessed
+    form_field: "%{work_type}[%{form_field_name}][]"
+    qualifiers:
+      default:
+        form_field_name: contributor_advisor
+      advisor:
+        form_field_name: contributor_advisor
+      committeemember:
+        form_field_name: contributor_committeemember
   date:
     xpath: //metadata/value[@element='date']
     method: Mapping::Date.unprocessed
@@ -48,23 +59,34 @@ migration_nodes:
       default:
         form_field_name: date_created
       accessioned:
-        form_field_name: date_created
+        form_field_name: date_issued
       available:
         form_field_name: date_available
       issued:
         form_field_name: date_issued
+      updated:
+        form_field_name: date_updated
+      copyright:
+        form_field_name: date_copyright
   degree:
     xpath: //metadata/value[@element='degree']
-    method:
-      - Mapping::Degree.remapped_field_split
-      - degree_name
-      - degree_field
+    method: Mapping::Degree.unprocessed
     form_field: "%{work_type}[%{form_field_name}][]"
     qualifiers:
       default:
         form_field_name: degree_name
       name:
         form_field_name: degree_name
+        method:
+          - Mapping::Degree.remapped_field_split
+          - degree_name
+          - degree_field
+      level:
+        form_field_name: degree_level
+      discipline:
+        form_field_name: degree_discipline
+      grantor:
+        form_field_name: degree_grantor
   description:
     xpath: //metadata/value[@element='description']
     method: Mapping::Description.unprocessed
@@ -74,32 +96,57 @@ migration_nodes:
         form_field_name: description
         method:
           - Mapping::Description.process_if_grad_date
-          - 'graduation_year'
-          - 'description'
+          - graduation_year
+          - description
+      abstract:
+        form_field_name: description
+      digitization:
+        form_field_name: digitization_spec
+      embargo:
+        form_field_name: visibility
+        method:
+          # set visibility to 'embargo' and embargo_release_date to the value from the node
+          - Mapping::Description.set_embargo
+          - visibility
+          - embargo_release_date
+      embargopolicy:
+        form_field_name: visibility_during_embargo
+        method:
+          # set embargo policy during and after embargo
+          - Mapping::Description.lookup_embargo_policy
+          - visibility_during_embargo
+          - visibility_after_embargo        
       peerreview:
+        form_field_name: peerreviewed
+      peerreviewnotes:
         form_field_name: additional_information
         method:
           - Mapping::Description.prepend
-          - 'description.peerreview : '
-      peerreviewnotes:
-        form_field_name: description
+          - 'description.peerreviewnotes : '
       provenance:
-        form_field_name: description
+        form_field_name: additional_information
+        method:
+          - Mapping::Description.prepend
+          - 'description.provenance : '
+      sponsorship:
+        form_field_name: funding_statement
       tableofcontents:
-        form_field_name: description
+        form_field_name: tableofcontents
   identifier:
     xpath: //metadata/value[@element='identifier']
     method: Mapping::Identifier.unprocessed
     form_field: "%{work_type}[%{form_field_name}][]"
     qualifiers:
       default:
-        form_field_name: identifier
+        form_field_name: identifier_uri
       citation:
-        form_field_name: citation
+        form_field_name: bibliographic_citation
       isbn:
         form_field_name: isbn
       uri:
-        form_field_name: uri
+        form_field_name: identifier_uri
+      doi:
+        form_field_name: doi        
   language:
     xpath: //metadata/value[@element='language']
     method: Mapping::Language.unprocessed
@@ -144,6 +191,19 @@ migration_nodes:
     qualifiers:
       default:
         form_field_name: title
+      alternative:
+        form_field_name: alt_title
+  format:
+    xpath: "//metadata/value[@element='format']"
+    form_field: "%{work_type}[%{form_field_name}][]"
+    method: Mapping::format.unprocessed
+    qualifiers:
+      default:
+        form_field_name: file_format
+      extent:
+        form_field_name: file_extent
+      mimetype:
+        form_field_name: file_format 
   type:
     xpath: //metadata/value[@element='type']
     method: Mapping::Type.unprocessed
