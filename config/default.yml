@@ -48,13 +48,15 @@ migration_nodes:
       default:
         form_field_name: date_created
       accessioned:
-        form_field_name: date_created
+        form_field_name: date_issued
       available:
         form_field_name: date_available
       issued:
         form_field_name: date_issued
       updated:
         form_field_name: date_updated
+      copyright:
+        form_field_name: date_copyright
   description:
     xpath: "//metadata/value[@element='description']"
     form_field: "%{work_type}[%{form_field_name}][]"
@@ -63,12 +65,9 @@ migration_nodes:
       default:
         form_field_name: description
       abstract:
-        form_field_name: abstract
+        form_field_name: description
       digitization:
-        form_field_name: additional_information
-        method:
-          - Mapping::Description.prepend
-          - 'description.digitization : '
+        form_field_name: digitization_spec
       embargo:
         form_field_name: visibility
         method:
@@ -84,10 +83,7 @@ migration_nodes:
           - visibility_during_embargo
           - visibility_after_embargo
       peerreview:
-        form_field_name: additional_information
-        method:
-          - Mapping::Description.prepend
-          - 'description.peerreview : '
+        form_field_name: peerreviewed
       peerreviewnotes:
         form_field_name: additional_information
         method:
@@ -99,24 +95,18 @@ migration_nodes:
           - Mapping::Description.prepend
           - 'description.provenance : '
       sponsorship:
-        form_field_name: additional_information
-        method:
-          - Mapping::Description.prepend
-          - 'description.sponsorship : '
+        form_field_name: funding_statement
       tableofcontents:
-        form_field_name: additional_information
-        method:
-          - Mapping::Description.prepend
-          - 'description.tableofcontents : '
+        form_field_name: tableofcontents
   identifier:
     xpath: "//metadata/value[@element='identifier']"
     form_field: "%{work_type}[%{form_field_name}][]"
     method: Mapping::Identifier.unprocessed
     qualifiers:
       default:
-        form_field_name: identifier
+        form_field_name: identifier_uri
       citation:
-        form_field_name: citation
+        form_field_name: bibliographic_citation
       isbn:
         form_field_name: isbn
       uri:
@@ -148,10 +138,7 @@ migration_nodes:
       default:
         form_field_name: relation
       ispartofseries:
-        form_field_name: additional_information
-        method:
-          - Mapping::Description.prepend
-          - 'description.ispartofseries : '
+        form_field_name: in_series
   rights:
     xpath: "//metadata/value[@element='rights']"
     form_field: "%{work_type}[%{form_field_name}][]"
@@ -180,10 +167,18 @@ migration_nodes:
       default:
         form_field_name: title
       alternative:
-        form_field_name: additional_information
-        method:
-          - Mapping::Description.prepend
-          - 'description.title_alternative : '
+        form_field_name: alt_title
+  format:
+    xpath: "//metadata/value[@element='format']"
+    form_field: "%{work_type}[%{form_field_name}][]"
+    method: Mapping::format.unprocessed
+    qualifiers:
+      default:
+        form_field_name: file_format
+      extent:
+        form_field_name: file_extent
+      mimetype:
+        form_field_name: file_format 
   type:
     xpath: "//metadata/value[@element='type']"
     form_field: "%{work_type}[%{form_field_name}][]"
