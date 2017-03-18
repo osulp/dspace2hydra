@@ -14,10 +14,6 @@ module Metadata
       @qualifier = build_qualifier
     end
 
-    # def value_add_to_migration
-    #  get_configuration 'value_add_to_migration', @config, @work_type_config
-    # end
-
     # Override methods from ClassMethodRunner so that this class behaves properly with regard
     # to its configuration or its Qualifier configuration.
     private
