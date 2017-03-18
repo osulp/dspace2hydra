@@ -14,9 +14,9 @@ module Metadata
       @qualifier = build_qualifier
     end
 
-    def value_add_to_migration
-      get_configuration 'value_add_to_migration', @config, @work_type_config
-    end
+    # def value_add_to_migration
+    #  get_configuration 'value_add_to_migration', @config, @work_type_config
+    # end
 
     # Override methods from ClassMethodRunner so that this class behaves properly with regard
     # to its configuration or its Qualifier configuration.
@@ -26,10 +26,10 @@ module Metadata
     # Given the value from this, run the method configured for the qualifier if it exists otherwise the default
     # @return [String] the result of the configured method should be a string to store in hydra
     def run_method
-      @qualifier.run_method(content)
+      @qualifier.run_method(value)
     end
 
-    def content
+    def value
       @xml_node.content
     end
 

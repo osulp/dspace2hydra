@@ -1,11 +1,24 @@
 # frozen_string_literal: true
 RSpec.describe Metadata::CustomNode do
-  subject { Metadata::CustomNode.new(work_type_config, node_config).process_node(data) }
+  subject { custom_node.process_node(data) }
 
+  let(:custom_node) { Metadata::CustomNode.new(work_type_config, node_config) }
   let(:mock_config) { File.open(File.join(File.dirname(__FILE__), '../../fixtures/mocks/default.yml')) { |f| YAML.safe_load(f) } }
   let(:work_type_config) { mock_config.reject { |k, _v| %w(migration_nodes custom_nodes).include?(k) } }
   let(:node_config) { mock_config['custom_nodes']['keyword'] }
   let(:data) { {} }
+
+  it 'has an admin_set_id property' do
+    expect(custom_node.admin_set_id).to be_truthy
+  end
+
+  it 'has an value_add_to_migration property' do
+    expect(custom_node.value_add_to_migration).to be_truthy
+  end
+
+  it 'has an value_from_node_property property' do
+    expect(custom_node.value_from_node_property).to be_truthy
+  end
 
   it 'can process_node' do
     expect(subject.key?('default_work[keyword][]')).to be_truthy

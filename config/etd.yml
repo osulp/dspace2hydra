@@ -1,16 +1,36 @@
 ---
+# ETD Hyrax work type
 work_type: "default_work"
+
+# ETD AdminSet.id, or "" to use Hyrax "Default Admin Set"
+admin_set_id: "k0698748f"
+
 upload_data:
   - directory: ORIGINAL
     ignore_files:
 uploaded_files_form_field: "uploaded_files[]"
+
 # Add this value to the migration data
 # (DEFAULT) 'always' : always add this value to the migration data
 # 'except_empty_value' : add this value except for empty/nil
 # 'if_form_field_value_missing' : add the value if the form_field doesn't have an existing value
 # 'never' : do not add this value to the migration data
+# 'except_empty_value' : add the value unless it is empty or nil, in which case ignore it
 value_add_to_migration: except_empty_value
+
+# When operating on a node, grab the value from its property. The property would likely
+# be pulling from the configuration and/or value passed to a commandline arg.
+# (DEFAULT) : Don't use a node property, use the standard value from CustomNode or Qualifier behavior
+# (EXAMPLE) admin_set_id : A CustomNode may get the AdminSet ID provided in configuration or overridden on the commandline
+value_from_node_property: ''
+
+# Custom metadata nodes to add to the data payload posted to the server
 custom_nodes:
+  admin_set:
+    form_field: "%{work_type}[%{form_field_name}]"
+    form_field_name: admin_set_id
+    method: Mapping::AdminSet.unprocessed
+    value_from_node_property: admin_set_id
   agreement:
     form_field: "%{form_field_name}"
     form_field_name: agreement
@@ -32,6 +52,9 @@ custom_nodes:
     form_field_name: visibility
     method: Mapping::Visibility.unprocessed
     value: open
+
+# Migration metadata nodes extract data from the DSpace Item metadata.xml and do some
+# lookup/cleanup/mapping before posting to the server.
 migration_nodes:
   creator:
     xpath: //metadata/value[@element='creator']
@@ -115,7 +138,7 @@ migration_nodes:
           # set embargo policy during and after embargo
           - Mapping::Description.lookup_embargo_policy
           - visibility_during_embargo
-          - visibility_after_embargo        
+          - visibility_after_embargo
       peerreview:
         form_field_name: peerreviewed
       peerreviewnotes:
@@ -146,7 +169,7 @@ migration_nodes:
       uri:
         form_field_name: identifier_uri
       doi:
-        form_field_name: doi        
+        form_field_name: doi
   language:
     xpath: //metadata/value[@element='language']
     method: Mapping::Language.unprocessed
@@ -203,7 +226,7 @@ migration_nodes:
       extent:
         form_field_name: file_extent
       mimetype:
-        form_field_name: file_format 
+        form_field_name: file_format
   type:
     xpath: //metadata/value[@element='type']
     method: Mapping::Type.unprocessed

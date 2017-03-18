@@ -13,6 +13,7 @@ ARGV << '-h' if ARGV.empty?
 OptionParser.new do |opts|
   opts.banner = 'Usage: dspace2hydra.rb [options]'
 
+  opts.on('-a', '--admin_set_id ID', 'The Hyrax AdminSet ID to associate this work to.') { |v| options['admin_set_id'] = v }
   opts.on('-b', '--bag PATH', 'The Dspace bag path to process.') { |v| options['bag_path'] = v }
   opts.on('-c', '--config PATH', 'The Item type config path for each bag.') { |v| options['type_config'] = v }
   opts.on('-d', '--directory PATH', 'The directory path containing bags to bulk process.') { |v| options['bags_directory'] = v }
@@ -79,6 +80,8 @@ started_at = DateTime.now
 
 bags = []
 type_config = File.open(File.join(File.dirname(__FILE__), CONFIG['type_config'])) { |f| YAML.safe_load(f) }
+# Overwrite the [TYPE_CONFIG].admin_set_id configuration if there was one passed on the commandline
+type_config['admin_set_id'] = CONFIG['admin_set_id'] unless CONFIG['admin_set_id'].nil?
 
 if CONFIG['bags_directory']
   # process each bag sub-directory

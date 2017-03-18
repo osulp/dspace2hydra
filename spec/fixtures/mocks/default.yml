@@ -1,5 +1,6 @@
 ---
 work_type: "default_work"
+admin_set_id: '1234'
 upload_data:
   - directory: ORIGINAL
     ignore_files:
@@ -14,7 +15,17 @@ upload_data:
 # 'if_form_field_value_missing' : add the value if the form_field doesn't have an existing value
 # 'never' : do not add this value to the migration data
 value_add_to_migration: except_empty_value
+# When operating on a node, grab the value from its property. The property would likely
+# be pulling from the configuration and/or value passed to a commandline arg.
+# (DEFAULT) : Don't use a node property, use the standard value from CustomNode or Qualifier behavior
+# (EXAMPLE) admin_set_id : A CustomNode may get the AdminSet ID provided in configuration or overridden on the commandline
+value_from_node_property: ''
 custom_nodes:
+  admin_set:
+    form_field: "%{work_type}[%{form_field_name}]"
+    form_field_name: admin_set_id
+    method: Mapping::AdminSet.unprocessed
+    value_from_node_property: admin_set_id
   visibility:
     form_field: "%{work_type}[%{form_field_name}]"
     form_field_name: visibility
