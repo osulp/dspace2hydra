@@ -21,12 +21,18 @@ module Metadata
       @config['method']
     end
 
-    def content
-      @config['value']
+    def value
+      value_from_node_property.empty? ? @config['value'] : send(value_from_node_property.to_sym)
     end
 
     def field_name
       @config['form_field_name']
+    end
+
+    ##
+    # Default, will be overridden by Node, CustomNode, or Qualifier
+    def value_from_node_property
+      ''
     end
 
     ##
@@ -40,7 +46,7 @@ module Metadata
     # @return [String] - the result of the configured method should be a string to store in hydra
     def run_method
       raise StandardError, "#{@config['form_field']} run_method is missing method configuration" if method.nil?
-      send(method, content)
+      send_method(method, value)
     end
 
     ##
@@ -91,7 +97,7 @@ module Metadata
     #                               (Array: ['SomeClass.the_method_name', 'argument1', 'arg2'])
     # @param [String] value - the initial value to operate upon, with additional arguments appended to the list
     # @return [String] - the returned processed value
-    def send(method, value)
+    def send_method(method, value)
       values = [value]
       class_method = method.first.split('.') if method.is_a?(Array)
       class_method = method.split('.') if method.is_a?(String)

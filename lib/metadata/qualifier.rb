@@ -36,7 +36,7 @@ module Metadata
     # @return [String] the result of the configured method should be a string to store in hydra
     def run_method(value)
       raise StandardError, "#{@field}.#{@type} run_method is missing method configuration." if method.nil?
-      send(method, value)
+      send_method(method, value)
     end
   end
 end
