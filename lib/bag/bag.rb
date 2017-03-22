@@ -30,8 +30,13 @@ class Bag
     @upload_configs ||= @type_config['upload_data']
   end
 
-  def uploaded_files_form_field
-    @uploaded_files_form_field ||= @type_config['uploaded_files_form_field']
+  def uploaded_files_field_name
+    @uploaded_files_field_name ||= format(@type_config['uploaded_files']['field']['property'], field_name: @type_config['uploaded_files']['field']['name'])
+  end
+
+  def uploaded_files_field(ids)
+    raise 'Cannot configure uploaded_files.field.type as anything other than an array.' unless @type_config['uploaded_files']['field']['type'].casecmp('array').zero?
+    [ids].flatten
   end
 
   def files

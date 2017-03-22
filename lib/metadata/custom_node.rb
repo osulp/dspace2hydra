@@ -22,5 +22,17 @@ module Metadata
     def value_from_node_property
       get_configuration 'value_from_node_property', @config, @work_type_config
     end
+
+    def field_name
+      get_configuration 'name', @config['field']
+    end
+
+    def field_property
+      get_configuration 'property', @config['field']
+    end
+
+    def field_type
+      get_configuration 'type', @config['field']
+    end
   end
 end

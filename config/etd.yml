@@ -1,6 +1,6 @@
 ---
 # ETD Hyrax work type
-work_type: "default_work"
+work_type: "etd"
 
 # ETD AdminSet.id, or "" to use Hyrax "Default Admin Set"
 admin_set_id: "k0698748f"
@@ -8,7 +8,25 @@ admin_set_id: "k0698748f"
 upload_data:
   - directory: ORIGINAL
     ignore_files:
-uploaded_files_form_field: "uploaded_files[]"
+
+uploaded_files:
+  field:
+    name: "uploaded_files"
+    property: "%{field_name}"
+    type: Array
+
+hydra_endpoint:
+  # Configuration for a "generic_work" on Hydra.. this configuration needs modification when operating with different
+  # work types, such as "Book", "ETD", "Article", etc.
+  new_work:
+    # The url to the page to generate a new work
+    url: "http://joshgum.library.oregonstate.edu:3000/concern/etds/new?locale=en"
+    # The form action used on the new work page for posting a new work. This is used as a selector to properly identify
+    # which form on the page will be used for manipulation and submission.. as well as grabbing the CSRF token from it.
+    form_action: "/concern/etds?locale=en"
+    # The CSRF hidden from field name to grab and use for actions such as posting file uploads. The web UI has an AJAX
+    # file upload capability that makes use of this token with posting new files to the "uploads" url.
+    csrf_form_field: "authenticity_token"
 
 # Add this value to the migration data
 # (DEFAULT) 'always' : always add this value to the migration data
@@ -27,29 +45,39 @@ value_from_node_property: ''
 # Custom metadata nodes to add to the data payload posted to the server
 custom_nodes:
   admin_set:
-    form_field: "%{work_type}[%{form_field_name}]"
-    form_field_name: admin_set_id
+    field:
+      name: admin_set_id
+      property: "%{work_type}.%{field_name}"
+      type: String
     method: Mapping::AdminSet.unprocessed
     value_from_node_property: admin_set_id
   agreement:
-    form_field: "%{form_field_name}"
-    form_field_name: agreement
+    field:
+      name: agreement
+      property: "%{field_name}"
+      type: Integer
     method: Mapping::Agreement.unprocessed
     value: 1
   keyword:
-    form_field: "%{work_type}[%{form_field_name}][]"
-    form_field_name: keyword
+    field:
+      name: keyword
+      property: "%{work_type}.%{field_name}"
+      type: Array
     method: Mapping::Keyword.unprocessed
     value: data-migration
   rights:
-    form_field: "%{work_type}[%{form_field_name}][]"
-    form_field_name: rights
+    field:
+      name: rights
+      property: "%{work_type}.%{field_name}"
+      type: Array
     method: Mapping::Rights.unprocessed
     value: "http://rightsstatements.org/vocab/CNE/1.0/"
     value_add_to_migration: if_form_field_value_missing
   visibility:
-    form_field: "%{work_type}[%{form_field_name}]"
-    form_field_name: visibility
+    field:
+      name: visibility
+      property: "%{work_type}.%{field_name}"
+      type: Array
     method: Mapping::Visibility.unprocessed
     value: open
 
@@ -57,180 +85,245 @@ custom_nodes:
 # lookup/cleanup/mapping before posting to the server.
 migration_nodes:
   creator:
-    xpath: //metadata/value[@element='creator']
+    field:
+      name: creator
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    xpath: "//metadata/value[@element='creator']"
     method: Mapping::Creator.unprocessed
-    form_field: "%{work_type}[%{form_field_name}][]"
     qualifiers:
       default:
-        form_field_name: creator
+        field:
+          name: creator
   contributor:
+    field:
+      name: contributor
+      property: "%{work_type}.%{field_name}"
+      type: Array
     xpath: //metadata/value[@element='contributor']
     method: Mapping::Contributor.unprocessed
-    form_field: "%{work_type}[%{form_field_name}][]"
     qualifiers:
       default:
-        form_field_name: contributor_advisor
+        field:
+          name: contributor_advisor
       advisor:
-        form_field_name: contributor_advisor
+        field:
+          name: contributor_advisor
       committeemember:
-        form_field_name: contributor_committeemember
+        field:
+          name: contributor_committeemember
   date:
-    xpath: //metadata/value[@element='date']
+    field:
+      name: date_created
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    xpath: "//metadata/value[@element='date']"
     method: Mapping::Date.unprocessed
-    form_field: "%{work_type}[%{form_field_name}][]"
     qualifiers:
       default:
-        form_field_name: date_created
+        field:
+          name: date_created
       accessioned:
-        form_field_name: date_issued
+        field:
+          name: date_issued
       available:
-        form_field_name: date_available
+        field:
+          name: date_available
       issued:
-        form_field_name: date_issued
+        field:
+          name: date_issued
       updated:
-        form_field_name: date_updated
+        field:
+          name: date_updated
       copyright:
-        form_field_name: date_copyright
+        field:
+          name: date_copyright
   degree:
+    field:
+      name: degree_name
+      property: "%{work_type}.%{field_name}"
+      type: Array
     xpath: //metadata/value[@element='degree']
     method: Mapping::Degree.unprocessed
-    form_field: "%{work_type}[%{form_field_name}][]"
     qualifiers:
       default:
-        form_field_name: degree_name
+        field:
+          name: degree_name
       name:
-        form_field_name: degree_name
+        field:
+          name: degree_name
         method:
           - Mapping::Degree.remapped_field_split
           - degree_name
           - degree_field
       level:
-        form_field_name: degree_level
+        field:
+          name: degree_level
       discipline:
-        form_field_name: degree_discipline
+        field:
+          name: degree_discipline
       grantor:
-        form_field_name: degree_grantor
+        field:
+          name: degree_grantor
   description:
+    field:
+      name: description
+      property: "%{work_type}.%{field_name}"
+      type: Array
     xpath: //metadata/value[@element='description']
     method: Mapping::Description.unprocessed
-    form_field: "%{work_type}[%{form_field_name}][]"
     qualifiers:
       default:
-        form_field_name: description
+        field:
+          name: description
         method:
           - Mapping::Description.process_if_grad_date
           - graduation_year
           - description
       abstract:
-        form_field_name: description
+        field:
+          name: description
       digitization:
-        form_field_name: digitization_spec
+        field:
+          name: digitization_spec
       embargo:
-        form_field_name: visibility
+        field:
+          name: visibility
         method:
           # set visibility to 'embargo' and embargo_release_date to the value from the node
           - Mapping::Description.set_embargo
           - visibility
           - embargo_release_date
       embargopolicy:
-        form_field_name: visibility_during_embargo
+        field:
+          name: visibility_during_embargo
         method:
           # set embargo policy during and after embargo
           - Mapping::Description.lookup_embargo_policy
           - visibility_during_embargo
           - visibility_after_embargo
       peerreview:
-        form_field_name: peerreviewed
+        field:
+          name: peerreviewed
       peerreviewnotes:
-        form_field_name: additional_information
+        field:
+          name: additional_information
         method:
           - Mapping::Description.prepend
           - 'description.peerreviewnotes : '
       provenance:
-        form_field_name: additional_information
+        field:
+          name: additional_information
         method:
           - Mapping::Description.prepend
           - 'description.provenance : '
       sponsorship:
-        form_field_name: funding_statement
+        field:
+          name: funding_statement
       tableofcontents:
-        form_field_name: tableofcontents
+        field:
+          name: tableofcontents
   identifier:
-    xpath: //metadata/value[@element='identifier']
+    field:
+      name: identifier_uri
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    xpath: "//metadata/value[@element='identifier']"
     method: Mapping::Identifier.unprocessed
-    form_field: "%{work_type}[%{form_field_name}][]"
     qualifiers:
       default:
-        form_field_name: identifier_uri
+        field:
+          name: identifier_uri
       citation:
-        form_field_name: bibliographic_citation
+        field:
+          name: bibliographic_citation
       isbn:
-        form_field_name: isbn
+        field:
+          name: isbn
       uri:
-        form_field_name: identifier_uri
+        field:
+          name: identifier_uri
       doi:
-        form_field_name: doi
+        field:
+          name: doi
   language:
-    xpath: //metadata/value[@element='language']
+    field:
+      name: language
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    xpath: "//metadata/value[@element='language']"
     method: Mapping::Language.unprocessed
-    form_field: "%{work_type}[%{form_field_name}][]"
     qualifiers:
       default:
-        form_field_name: language
+        field:
+          name: language
       iso:
-        form_field_name: language
+        field:
+          name: language
         method: Mapping::Language.uri
   publisher:
-    xpath: //metadata/value[@element='publisher']
-    method: Mapping::Description.unprocessed
-    form_field: "%{work_type}[%{form_field_name}][]"
+    field:
+      name: publisher
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    xpath: "//metadata/value[@element='publisher']"
+    method: Mapping::Publisher.unprocessed
     qualifiers:
       default:
-        form_field_name: publisher
+        field:
+          name: publisher
   rights:
-    xpath: //metadata/value[@element='rights']
+    field:
+      name: rights
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    xpath: "//metadata/value[@element='rights']"
     method: Mapping::Rights.unprocessed
-    form_field: "%{work_type}[%{form_field_name}][]"
     qualifiers:
       default:
-        form_field_name: rights
+        field:
+          name: rights
         method: Mapping::Rights.ignored
       uri:
-        form_field_name: rights
+        field:
+          name: rights
   subject:
-    xpath: //metadata/value[@element='subject']
+    field:
+      name: keyword
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    xpath: "//metadata/value[@element='subject']"
     method: Mapping::Subject.unprocessed
-    form_field: "%{work_type}[%{form_field_name}][]"
     qualifiers:
       default:
-        form_field_name: keyword
+        field:
+          name: keyword
       lcsh:
-        form_field_name: subject
+        field:
+          name: subject
         method: Mapping::Subject.uri
   title:
-    xpath: //metadata/value[@element='title']
+    field:
+      name: title
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    xpath: "//metadata/value[@element='title']"
     method: Mapping::Title.unprocessed
-    form_field: "%{work_type}[%{form_field_name}][]"
     qualifiers:
       default:
-        form_field_name: title
+        field:
+          name: title
       alternative:
-        form_field_name: alt_title
-  format:
-    xpath: "//metadata/value[@element='format']"
-    form_field: "%{work_type}[%{form_field_name}][]"
-    method: Mapping::format.unprocessed
-    qualifiers:
-      default:
-        form_field_name: file_format
-      extent:
-        form_field_name: file_extent
-      mimetype:
-        form_field_name: file_format
+        field:
+          name: alt_title
   type:
-    xpath: //metadata/value[@element='type']
+    field:
+      name: resource_type
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    xpath: "//metadata/value[@element='type']"
     method: Mapping::Type.unprocessed
-    form_field: "%{work_type}[%{form_field_name}][]"
     qualifiers:
       default:
-         form_field_name: resource_type
+        field:
+          name: resource_type
