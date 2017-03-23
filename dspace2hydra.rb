@@ -32,9 +32,8 @@ raise 'Missing BAG type config.' if CONFIG['type_config'].nil?
 def process_bag(bag, server)
   data = process_bag_metadata(bag)
   file_ids = upload_files(bag, server)
-  data[bag.uploaded_files_form_field] = file_ids
-  page = server.submit_new_work(bag, data)
-  pp page
+  data[bag.uploaded_files_field_name] = bag.uploaded_files_field(file_ids)
+  page = server.submit_new_work(bag, data, 'Content-Type' => 'application/json', 'Accept' => 'application/json')
 end
 
 ##
@@ -45,7 +44,7 @@ def process_bag_metadata(bag)
   data = {}
   bag.item.metadata.each do |_k, nodes|
     nodes.each do |metadata_node|
-      data = metadata_node.process_node(data)
+      data = metadata_node.qualifier.process_node(data)
     end
   end
   bag.item.custom_metadata.each do |_k, nodes|
@@ -92,7 +91,7 @@ else
   bags << Bag.new(CONFIG['bag_path'], CONFIG, type_config)
 end
 
-server = HydraEndpoint.new(CONFIG['hydra_endpoint'], started_at)
+server = HydraEndpoint.new(CONFIG['hydra_endpoint'], type_config, started_at)
 
 ## Testing processing and loading one bag
 bag = bags.first

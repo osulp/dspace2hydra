@@ -19,34 +19,53 @@ end
 RSpec.describe Metadata::ClassMethodRunner do
   subject { ClassMethodRunnerClass.new(work_type, config) }
   let(:work_type) { 'blah_work' }
-  let(:form_field) { "%{work_type}['%{form_field_name}'][]" }
+  let(:field_property) { '%{work_type}.%{field_name}' }
   let(:field_name) { 'some_field_name' }
-  let(:form_field_name) { format(form_field, work_type: work_type, form_field_name: field_name) }
+  let(:field_property_name) { format(field_property, work_type: work_type, field_name: field_name) }
   let(:data) { {} }
+  let(:existing_data) { { work_type => { field_name => ['already_migrated_data'] } } }
 
   context 'with most typical configuration; adds a value to migrated data by default' do
     let(:config) do
       {
         'method' => 'ClassMethodRunnerClass.test_string_method',
-        'form_field' => form_field,
-        'form_field_name' => field_name,
+        'field' => {
+          'name' => field_name,
+          'property' => field_property,
+          'type' => 'Array'
+        },
         'value' => 'blah'
       }
     end
     context 'using the basic class without overridden properties' do
       subject { ClassMethodRunnerClassBase.new(work_type, config) }
       it 'defaults to "always" adding migration data' do
-        expect(subject.__send__(:value_add_to_migration)).to eq 'always'
+        expect(subject.send(:value_add_to_migration)).to eq 'always'
       end
     end
 
     it 'will add data' do
-      expect(subject.process_node(data)).to eq(form_field_name.to_s => ['blah'])
+      expect(subject.process_node(data)).to eq(work_type => { field_name => ['blah'] })
     end
     context 'with existing migration data for this field' do
-      let(:data) { { form_field_name.to_s => ['already_migrated_data'] } }
       it 'will add data' do
-        expect(subject.process_node(data)).to eq(form_field_name.to_s => %w(already_migrated_data blah))
+        expect(subject.process_node(existing_data)).to eq(work_type => { field_name => %w(already_migrated_data blah) })
+      end
+    end
+    context 'with field type String' do
+      let(:config) do
+        {
+          'method' => 'ClassMethodRunnerClass.test_string_method',
+          'field' => {
+            'name' => field_name,
+            'property' => field_property,
+            'type' => 'String'
+          },
+          'value' => 'blah'
+        }
+      end
+      it 'will set a string data' do
+        expect(subject.process_node(data)).to eq(work_type => { field_name => 'blah' })
       end
     end
   end
@@ -55,19 +74,21 @@ RSpec.describe Metadata::ClassMethodRunner do
     let(:config) do
       {
         'method' => 'ClassMethodRunnerClass.test_string_method',
-        'form_field' => form_field,
-        'form_field_name' => field_name,
+        'field' => {
+          'name' => field_name,
+          'property' => field_property,
+          'type' => 'Array'
+        },
         'value' => 'blah',
         'value_add_to_migration' => 'if_form_field_value_missing'
       }
     end
     it 'will add custom node data' do
-      expect(subject.process_node(data)).to eq(form_field_name.to_s => ['blah'])
+      expect(subject.process_node(data)).to eq(work_type => { field_name => ['blah'] })
     end
     context 'with existing migration data for this field' do
-      let(:data) { { form_field_name.to_s => ['already_migrated_data'] } }
       it 'will not add custom node data' do
-        expect(subject.process_node(data)).to eq(form_field_name.to_s => ['already_migrated_data'])
+        expect(subject.process_node(existing_data)).to eq(work_type => { field_name => ['already_migrated_data'] })
       end
     end
   end
@@ -75,19 +96,21 @@ RSpec.describe Metadata::ClassMethodRunner do
     let(:config) do
       {
         'method' => 'ClassMethodRunnerClass.test_string_method',
-        'form_field' => form_field,
-        'form_field_name' => field_name,
+        'field' => {
+          'name' => field_name,
+          'property' => field_property,
+          'type' => 'Array'
+        },
         'value' => 'blah',
         'value_add_to_migration' => 'never'
       }
     end
     it 'will not add custom node data' do
-      expect(subject.process_node(data)).to eq(form_field_name.to_s => [])
+      expect(subject.process_node(data)).to eq(work_type => { field_name => [] })
     end
     context 'with existing migration data for this field' do
-      let(:data) { { form_field_name.to_s => ['already_migrated_data'] } }
       it 'will not add custom node data' do
-        expect(subject.process_node(data)).to eq(form_field_name.to_s => ['already_migrated_data'])
+        expect(subject.process_node(existing_data)).to eq(work_type => { field_name => ['already_migrated_data'] })
       end
     end
   end

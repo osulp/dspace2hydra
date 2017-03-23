@@ -3,27 +3,46 @@ require 'mechanize'
 require 'json'
 
 class HydraEndpoint
-  def initialize(config, started_at = DateTime.now)
+  def initialize(config, work_type_config, started_at = DateTime.now)
     @agent = Mechanize.new
     @config = config
+    @work_type_config = work_type_config
     login
     @csrf_token = get_csrf_token
     @started_at = started_at
+  end
+
+  def new_work_url
+    url = @work_type_config.dig('hydra_endpoint', 'new_work', 'url')
+    url = @config.dig('new_work', 'url') unless url
+    url.to_s
+  end
+
+  def new_work_action
+    action = @work_type_config.dig('hydra_endpoint', 'new_work', 'form_action')
+    action = @config.dig('new_work', 'form_action') unless action
+    action.to_s
+  end
+
+  def csrf_form_field
+    field = @work_type_config.dig('hydra_endpoint', 'new_work', 'csrf_form_field')
+    field = @config.dig('new_work', 'csrf_form_field') unless field
+    field.to_s
   end
 
   ##
   # Upload a `File` to the application using the CSRF token in the form provided
   # @return [Mechanize::Page] the page result after uploading file, this is typically a json payload in the page.body
   def upload(file)
-    post_data @config['uploads']['url'], "#{@config['new_work']['csrf_form_field']}": @csrf_token, "#{@config['uploads']['files_form_field']}": file
+    post_data @config['uploads']['url'], "#{csrf_form_field}": @csrf_token, "#{@config['uploads']['files_form_field']}": file
   end
 
   ##
-  def submit_new_work(bag, data)
+  def submit_new_work(bag, data, headers)
     cache_data data, bag.item_cache_path
     csrf_token = @csrf_token || get_csrf_token
-    data[(@config['new_work']['csrf_form_field']).to_s] = csrf_token
-    post_data @config['new_work']['form_action'], data
+    data[csrf_form_field] = csrf_token
+    post_data new_work_action, JSON.generate(data), headers
   end
 
   private
@@ -51,9 +70,9 @@ class HydraEndpoint
   end
 
   def get_csrf_token
-    new_work_page = get_page(@config['new_work']['url'])
-    new_work_form = new_work_page.form_with(action: @config['new_work']['form_action'])
-    new_work_form.field_with(name: @config['new_work']['csrf_form_field']).value
+    new_work_page = get_page(new_work_url)
+    new_work_form = new_work_page.form_with(action: new_work_action)
+    new_work_form.field_with(name: csrf_form_field).value
   end
 
   ##
