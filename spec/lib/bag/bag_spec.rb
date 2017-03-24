@@ -1,8 +1,8 @@
 RSpec.describe Bag do
-  subject { Bag.new(path, application_config, type_config) }
+  subject { Bag.new(path, config, type_config) }
   let(:path) { File.join(File.dirname(__FILE__), "../../fixtures/ITEM@1957-57239") }
   let(:type_config) { File.open(File.join(File.dirname(__FILE__), "../../fixtures/mocks/default.yml")) { |f| YAML.load(f) } }
-  let(:application_config) { File.open(File.join(File.dirname(__FILE__), "../../fixtures/mocks/application.yml")) { |f| YAML.load(f) } }
+  let(:config) { File.open(File.join(File.dirname(__FILE__), "../../fixtures/mocks/.config.yml")) { |f| YAML.load(f) } }
 
   context "#initialize" do
     it "has a path" do

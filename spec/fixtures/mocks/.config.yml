@@ -10,10 +10,11 @@ cache_and_logging_path: "spec/cache/processed_items"
 
 # Hydra server configurations for posting new works and files
 hydra_endpoint:
+  server_domain: "http://hydra.server/"
   login:
     # The url to the login page for the Hydra app. Some authentications systems, such as CAS, will redirect
     # from this url to the authentication hosts page.
-    url: "http://hydra.server/users/sign_in"
+    url: "/users/sign_in"
     username: "admin_user"
     password: "admin_user_password"
 
@@ -31,7 +32,7 @@ hydra_endpoint:
   # work types, such as "Book", "ETD", "Article", etc.
   new_work:
     # The url to the page to generate a new work
-    url: "http://hydra.server/concern/generic_works/new"
+    url: "/concern/generic_works/new"
     # The form action used on the new work page for posting a new work. This is used as a selector to properly identify
     # which form on the page will be used for manipulation and submission.. as well as grabbing the CSRF token from it.
     form_action: "/concern/generic_works?locale=en"
@@ -41,7 +42,7 @@ hydra_endpoint:
 
   # Standard Hydra file upload url.
   uploads:
-    url: "http://hydra.server/uploads"
+    url: "/uploads"
     files_form_field: "uploaded_files[]"
 
 # dspace bag file default configurations

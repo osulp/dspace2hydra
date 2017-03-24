@@ -16,11 +16,12 @@ uploaded_files:
     type: Array
 
 hydra_endpoint:
+  server_domain: "http://localhost:3000"
   # Configuration for a "generic_work" on Hydra.. this configuration needs modification when operating with different
   # work types, such as "Book", "ETD", "Article", etc.
   new_work:
     # The url to the page to generate a new work
-    url: "http://joshgum.library.oregonstate.edu:3000/concern/etds/new?locale=en"
+    url: "/concern/etds/new?locale=en"
     # The form action used on the new work page for posting a new work. This is used as a selector to properly identify
     # which form on the page will be used for manipulation and submission.. as well as grabbing the CSRF token from it.
     form_action: "/concern/etds?locale=en"

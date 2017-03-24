@@ -3,6 +3,8 @@ require 'mechanize'
 require 'json'
 
 class HydraEndpoint
+  Response = Struct.new(:work, :uri)
+
   def initialize(config, work_type_config, started_at = DateTime.now)
     @agent = Mechanize.new
     @config = config
@@ -12,16 +14,32 @@ class HydraEndpoint
     @started_at = started_at
   end
 
+  def server_domain
+    url = @work_type_config.dig('hydra_endpoint', 'server_domain')
+    url = @config.dig('server_domain') unless url
+    URI.parse(url.gsub(/\/$/, ''))
+  end
+
   def new_work_url
     url = @work_type_config.dig('hydra_endpoint', 'new_work', 'url')
     url = @config.dig('new_work', 'url') unless url
-    url.to_s
+    URI.join(server_domain, url)
   end
 
   def new_work_action
-    action = @work_type_config.dig('hydra_endpoint', 'new_work', 'form_action')
-    action = @config.dig('new_work', 'form_action') unless action
-    action.to_s
+    form_action = @work_type_config.dig('hydra_endpoint', 'new_work', 'form_action')
+    form_action = @config.dig('new_work', 'form_action') unless form_action
+    form_action
+  end
+
+  def uploads_url
+    url = @config.dig('uploads', 'url')
+    URI.join(server_domain, url)
+  end
+
+  def login_url
+    url = @config.dig('login', 'url')
+    URI.join(server_domain, url)
   end
 
   def csrf_form_field
@@ -34,7 +52,7 @@ class HydraEndpoint
   # Upload a `File` to the application using the CSRF token in the form provided
   # @return [Mechanize::Page] the page result after uploading file, this is typically a json payload in the page.body
   def upload(file)
-    post_data @config['uploads']['url'], "#{csrf_form_field}": @csrf_token, "#{@config['uploads']['files_form_field']}": file
+    post_data uploads_url, "#{csrf_form_field}": @csrf_token, "#{@config['uploads']['files_form_field']}": file
   end
 
   ##
@@ -49,7 +67,8 @@ class HydraEndpoint
     data[csrf_form_field] = csrf_token
     headers['Content-Type'] = 'application/json'
     headers['Accept'] = 'application/json'
-    post_data new_work_action, JSON.generate(data), headers
+    response = post_data(new_work_action, JSON.generate(data), headers)
+    Response.new JSON.parse(response.body), URI.join(server_domain, response['location'])
   end
 
   # :nocov:
@@ -65,7 +84,7 @@ class HydraEndpoint
   # Login to the Hydra application
   # @return [Mechanize::Page] the page result, after redirects, after logging in. (ie. Hydra dashboard)
   def login
-    page = @agent.get(@config['login']['url'])
+    page = @agent.get(login_url)
     # use the first form on the login page unless the forms id is set in the configuration
     form = @config['login']['form_id'] ? page.form_with(id: @config['login']['form_id']) : page.forms.first
     form.field_with(name: @config['login']['username_form_field']).value = @config['login']['username']
