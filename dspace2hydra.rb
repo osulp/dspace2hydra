@@ -100,7 +100,8 @@ if CONFIG['cached_json']
   file = File.open(File.join(File.dirname(__FILE__), CONFIG['cached_json']))
   json = file.read
   data = JSON.parse(json)
-  response = publish_work(data, server)
+  work = publish_work(data, server)
+  pp work
 else
   bags = []
   if CONFIG['bags_directory']
