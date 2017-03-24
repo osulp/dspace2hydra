@@ -38,18 +38,22 @@ class HydraEndpoint
   end
 
   ##
-  def submit_new_work(bag, data, headers)
+  def submit_new_work(bag, data, headers = {})
     cache_data data, bag.item_cache_path
+    publish_work(data, headers)
+  end
+
+  def publish_work(data, headers = {})
+    # TODO: Add logging for this method
     csrf_token = @csrf_token || get_csrf_token
     data[csrf_form_field] = csrf_token
+    headers['Content-Type'] = 'application/json'
+    headers['Accept'] = 'application/json'
     post_data new_work_action, JSON.generate(data), headers
   end
 
+  # :nocov:
   private
-
-  def get_page(url)
-    @agent.get(url)
-  end
 
   def post_data(url, data = {}, headers = {})
     @agent.post(url, data, headers)
@@ -61,7 +65,7 @@ class HydraEndpoint
   # Login to the Hydra application
   # @return [Mechanize::Page] the page result, after redirects, after logging in. (ie. Hydra dashboard)
   def login
-    page = get_page(@config['login']['url'])
+    page = @agent.get(@config['login']['url'])
     # use the first form on the login page unless the forms id is set in the configuration
     form = @config['login']['form_id'] ? page.form_with(id: @config['login']['form_id']) : page.forms.first
     form.field_with(name: @config['login']['username_form_field']).value = @config['login']['username']
@@ -70,7 +74,7 @@ class HydraEndpoint
   end
 
   def get_csrf_token
-    new_work_page = get_page(new_work_url)
+    new_work_page = @agent.get(new_work_url)
     new_work_form = new_work_page.form_with(action: new_work_action)
     new_work_form.field_with(name: csrf_form_field).value
   end

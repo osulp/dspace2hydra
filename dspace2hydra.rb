@@ -17,14 +17,21 @@ OptionParser.new do |opts|
   opts.on('-b', '--bag PATH', 'The Dspace bag path to process.') { |v| options['bag_path'] = v }
   opts.on('-c', '--config PATH', 'The Item type config path for each bag.') { |v| options['type_config'] = v }
   opts.on('-d', '--directory PATH', 'The directory path containing bags to bulk process.') { |v| options['bags_directory'] = v }
+  opts.on('-j', '--cached_json PATH', 'Post the json file directly to the server.') { |v| options['cached_json'] = v }
   opts.on('-h', '--help', 'Display this screen') do
     puts opts
     exit
   end
 end.parse!
 CONFIG.merge!(options)
-raise 'Missing BAG path or BAGS directory.' if CONFIG['bag_path'].nil? && CONFIG['bags_directory'].nil?
-raise 'Missing BAG type config.' if CONFIG['type_config'].nil?
+
+def validate_arguments(config)
+  if config['cached_json'].nil?
+    raise 'Missing BAG path or BAGS directory.' if CONFIG['bag_path'].nil? && CONFIG['bags_directory'].nil?
+  end
+  raise 'Missing BAG type config.' if CONFIG['type_config'].nil?
+  true
+end
 
 # Process the metadata, and upload the files for a bag
 # @param [Bag] bag - the bag to process
@@ -33,7 +40,11 @@ def process_bag(bag, server)
   data = process_bag_metadata(bag)
   file_ids = upload_files(bag, server)
   data[bag.uploaded_files_field_name] = bag.uploaded_files_field(file_ids)
-  page = server.submit_new_work(bag, data, 'Content-Type' => 'application/json', 'Accept' => 'application/json')
+  page = server.submit_new_work(bag, data)
+end
+
+def publish_work(data, server)
+  page = server.publish_work(data)
 end
 
 ##
@@ -75,25 +86,33 @@ def upload_files(bag, server)
   file_ids.flatten.uniq
 end
 
-started_at = DateTime.now
+validate_arguments(CONFIG)
 
-bags = []
 type_config = File.open(File.join(File.dirname(__FILE__), CONFIG['type_config'])) { |f| YAML.safe_load(f) }
 # Overwrite the [TYPE_CONFIG].admin_set_id configuration if there was one passed on the commandline
 type_config['admin_set_id'] = CONFIG['admin_set_id'] unless CONFIG['admin_set_id'].nil?
 
-if CONFIG['bags_directory']
-  # process each bag sub-directory
-  Pathname.new(CONFIG['bags_directory']).children.select do |bag_path|
-    bags << Bag.new(bag_path, CONFIG, type_config) if bag_path.directory?
-  end
-else
-  bags << Bag.new(CONFIG['bag_path'], CONFIG, type_config)
-end
-
+started_at = DateTime.now
 server = HydraEndpoint.new(CONFIG['hydra_endpoint'], type_config, started_at)
 
 ## Testing processing and loading one bag
-bag = bags.first
-data = process_bag(bag, server)
+if CONFIG['cached_json']
+  file = File.open(File.join(File.dirname(__FILE__), CONFIG['cached_json']))
+  json = file.read
+  data = JSON.parse(json)
+  response = publish_work(data, server)
+else
+  bags = []
+  if CONFIG['bags_directory']
+    # process each bag sub-directory
+    Pathname.new(CONFIG['bags_directory']).children.select do |bag_path|
+      bags << Bag.new(bag_path, CONFIG, type_config) if bag_path.directory?
+    end
+  else
+    bags << Bag.new(CONFIG['bag_path'], CONFIG, type_config)
+  end
+
+  bag = bags.first
+  response = process_bag(bag, server)
+end
 #########################################

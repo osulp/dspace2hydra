@@ -7,6 +7,7 @@ require 'bag'
 require 'mapping'
 require_relative '../mapping/mapping'
 require 'metadata'
+require 'hydra_endpoint'
 
 require 'webmock/rspec'
 
