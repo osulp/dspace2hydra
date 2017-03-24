@@ -30,6 +30,14 @@ RSpec.describe HydraEndpoint do
     expect(subject.login_url).to eq URI.join(server_domain, config.dig('login', 'url'))
   end
 
+  it 'has a workflow_actions_url' do
+    expect(subject.workflow_actions_url(1)).to eq URI.join(server_domain, '/concern/workflow_actions/1?local=en')
+  end
+
+  it 'has a workflow_actions_field' do
+    expect(subject.workflow_actions_field('name')).to eq('workflow_action' => { 'name' => 'approve' })
+  end
+
   it 'has a new_work_action' do
     expect(subject.new_work_action).to eq work_type_config.dig('hydra_endpoint', 'new_work', 'form_action')
   end
@@ -38,8 +46,21 @@ RSpec.describe HydraEndpoint do
     expect(subject.csrf_form_field).to eq work_type_config.dig('hydra_endpoint', 'new_work', 'csrf_form_field')
   end
 
+  it 'has should_advance_work? returning true by default' do
+    expect(subject.should_advance_work?).to be_truthy
+  end
+
   it 'can upload a file' do
     expect(subject.upload(file)).to be_truthy
+  end
+
+  context 'when auto_advance_work is set to false' do
+    before :each do
+      work_type_config.merge!('hydra_endpoint' => { 'workflow_actions' => { 'auto_advance_work' => false } })
+    end
+    it 'has should_advance_work? set to false' do
+      expect(subject.should_advance_work?).to be_falsey
+    end
   end
 
   context 'with a mocked csrf_token' do
@@ -47,15 +68,34 @@ RSpec.describe HydraEndpoint do
       data[subject.csrf_form_field] = subject.get_csrf_token
     end
 
-    it 'can publish_work' do
-      expect(subject).to receive(:post_data).with(subject.new_work_action, JSON.generate(data), headers).and_return(mock_return)
-      expect(subject.publish_work(data)).to eq mock_hydra_endpoint_response
+    context 'when publishing an existing work JSON file' do
+      let(:work_response) { subject.publish_work(data) }
+      it 'can publish_work' do
+        expect(subject).to receive(:post_data).with(subject.new_work_action, JSON.generate(data), headers).and_return(mock_return)
+        expect(work_response).to eq mock_hydra_endpoint_response
+      end
     end
 
-    it 'can submit_new_work' do
-      expect(subject).to receive(:cache_data).with(data, bag.item_cache_path)
-      expect(subject).to receive(:publish_work).with(data, {}).and_return(true)
-      expect(subject.submit_new_work(bag, data)).to be_truthy
+    context 'when submitting a new work' do
+      let(:work_response) { subject.submit_new_work(bag, data) }
+      it 'can submit_new_work' do
+        expect(subject).to receive(:cache_data).with(data, bag.item_cache_path)
+        expect(subject).to receive(:publish_work).with(data, {}).and_return(mock_hydra_endpoint_response)
+        expect(work_response).to eq mock_hydra_endpoint_response
+      end
+    end
+
+    context 'when advancing a work through a workflow' do
+      let(:work_response) { subject.advance_workflow(mock_hydra_endpoint_response, headers) }
+      it 'can advance_workflow' do
+        expect(subject).to receive(:csrf_token).and_return({})
+        expect(subject).to receive(:json_headers).and_return({})
+        expect(subject).to receive(:workflow_actions_field).with('name').and_return('workflow_action' => { 'name' => 'approve' })
+        expect(subject).to receive(:workflow_actions_field).with('comment').and_return('workflow_action' => { 'comment' => 'a comment' })
+        expect(subject).to receive(:workflow_actions_url).and_return('')
+        expect(subject).to receive(:put_data).and_return(mock_return)
+        expect(work_response).to eq mock_hydra_endpoint_response
+      end
     end
   end
 end
