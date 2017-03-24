@@ -1,0 +1,67 @@
+---
+-
+  from: Article
+  to: Article
+-
+  from: Book Chapter
+  to: Part of Book
+-
+  from: Dataset
+  to: Dataset
+-
+  from: Learning Object
+  to: Learning Object
+-
+  from: Image
+  to: Image
+-
+  from: Image, 3-D
+  to: Image
+-
+  from: Map
+  to: Map or Cartographic Material
+-
+  from: Musical Score
+  to: Musical Score
+-
+  from: Plan or Blueprint
+  to: Plan or Blueprint
+-
+  from: Poster
+  to: Poster
+-
+  from: Preprint
+  to: Preprint
+-
+  from: Presentation
+  to: Presentation
+-
+  from: Recording, acoustical
+  to: Audio
+-
+  from: Recording, musical
+  to: Audio
+-
+  from: Recording, oral
+  to: Audio
+-
+  from: Research Paper
+  to: Research Paper
+-
+  from: Software
+  to: Software or Program Code
+-
+  from: Technical Report
+  to: Technical Report
+-
+  from: Thesis
+  to: Thesis
+-
+  from: Video
+  to: Video
+-
+  from: Working Paper
+  to: Working Paper
+-
+  from: Other
+  to: Other
