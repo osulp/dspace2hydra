@@ -47,6 +47,10 @@ def publish_work(data, server)
   page = server.publish_work(data)
 end
 
+def advance_workflow(response, server)
+  page = server.advance_workflow(response)
+end
+
 ##
 # Process the mapped as well as the custom metadata configured for this bag.
 # @param [Bag] bag - the bag to process
@@ -101,6 +105,7 @@ if CONFIG['cached_json']
   json = file.read
   data = JSON.parse(json)
   work = publish_work(data, server)
+  work = advance_workflow(work, server) if server.should_advance_work?
   pp work
 else
   bags = []
@@ -114,6 +119,7 @@ else
   end
 
   bag = bags.first
-  response = process_bag(bag, server)
+  work = process_bag(bag, server)
+  work = advance_workflow(work, server) if server.should_advance_work?
 end
 #########################################

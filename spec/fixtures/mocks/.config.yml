@@ -40,6 +40,22 @@ hydra_endpoint:
     # file upload capability that makes use of this token with posting new files to the "uploads" url.
     csrf_form_field: "authenticity_token"
 
+  workflow_actions:
+    auto_advance_work: true
+    url: "/concern/workflow_actions/%{id}?local=en"
+    name:
+      field:
+        name: name
+        property: "workflow_action.%{field_name}"
+        type: String
+      value: "approve"
+    comment:
+      field:
+        name: comment
+        property: "workflow_action.%{field_name}"
+        type: String
+      value: "Approved by data migration user."
+
   # Standard Hydra file upload url.
   uploads:
     url: "/uploads"
