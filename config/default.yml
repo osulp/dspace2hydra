@@ -25,9 +25,6 @@ hydra_endpoint:
     # The form action used on the new work page for posting a new work. This is used as a selector to properly identify
     # which form on the page will be used for manipulation and submission.. as well as grabbing the CSRF token from it.
     form_action: "/concern/default_works?locale=en"
-    # The CSRF hidden from field name to grab and use for actions such as posting file uploads. The web UI has an AJAX
-    # file upload capability that makes use of this token with posting new files to the "uploads" url.
-    #csrf_form_field: "authenticity_token"
 
   # Override .config.yml configuration for handling Workflow advancement for this Work type.
   #workflow_actions:
