@@ -329,3 +329,6 @@ migration_nodes:
       default:
         field:
           name: resource_type
+        method: 
+          - Mapping::Type.lookup_hyrax_type
+          - resource_type
