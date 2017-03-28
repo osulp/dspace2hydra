@@ -9,8 +9,8 @@ class HydraEndpoint
     @agent = Mechanize.new
     @config = config
     @work_type_config = work_type_config
-    login
     @csrf_token = get_csrf_token
+    login
     @started_at = started_at
   end
 
@@ -51,6 +51,10 @@ class HydraEndpoint
     URI.join(server_domain, url)
   end
 
+  def login_csrf_form_field
+    @config.dig('login', 'csrf_form_field')
+  end
+
   def workflow_actions_url(id)
     url = @work_type_config.dig('hydra_endpoint', 'workflow_actions', 'url')
     url = @config.dig('workflow_actions', 'url') unless url
@@ -61,7 +65,7 @@ class HydraEndpoint
   # Generate the workflow_action field with value from configuration
   # @param [String] property_name - the field.name from configuration with preference to setting found in the work_type specific file
   # @return [Hash] - the workflow_action property and value, like {workflow_action: { comment: "Some comment"}}
-  def workflow_actions_field(property_name)
+  def workflow_actions_data(property_name)
     name = @work_type_config.dig('hydra_endpoint', 'workflow_actions', property_name, 'field', 'name')
     name = @config.dig('workflow_actions', property_name, 'field', 'name') unless name
     property = @work_type_config.dig('hydra_endpoint', 'workflow_actions', property_name, 'field', 'property')
@@ -78,20 +82,13 @@ class HydraEndpoint
   end
 
   ##
-  # Get the csrf form field from configuration with preference given to an override set in the
-  # work_type specific configuration file.
-  def csrf_form_field
-    field = @work_type_config.dig('hydra_endpoint', 'new_work', 'csrf_form_field')
-    field = @config.dig('new_work', 'csrf_form_field') unless field
-    field.to_s
-  end
-
-  ##
   # Upload a `File` to the application using the CSRF token in the form provided
   # @param [File] file - the file stream to upload to the server
   # @return [Mechanize::Page] the page result after uploading file, this is typically a json payload in the page.body
   def upload(file)
-    post_data uploads_url, "#{csrf_form_field}": @csrf_token, "#{@config['uploads']['files_form_field']}": file
+    data = csrf_token_data
+    data.merge!("#{@config.dig('uploads','files_form_field')}": file) { |k, a, b| a.merge b }
+    post_data uploads_url, data
   end
 
   ##
@@ -112,7 +109,7 @@ class HydraEndpoint
   # @return [HydraEndpoint::Response] - the work and location struct containing the result of publishing
   def publish_work(data, headers = {})
     # TODO: Add logging for this method
-    data.merge! csrf_token
+    data.merge! csrf_token_data
     headers = json_headers(headers)
     response = post_data(new_work_action, JSON.generate(data), headers)
     Response.new JSON.parse(response.body), URI.join(server_domain, response['location'])
@@ -126,9 +123,9 @@ class HydraEndpoint
   # @return [HydraEndpoint::Response] - the work and location struct containing the result of publishing
   def advance_workflow(response, headers = {})
     # TODO: Add logging for this method
-    data = csrf_token
-    data.merge!(workflow_actions_field('name')) { |k, a, b| a.merge b }
-    data.merge!(workflow_actions_field('comment')) { |k, a, b| a.merge b }
+    data = csrf_token_data
+    data.merge!(workflow_actions_data('name')) { |_k, a, b| a.merge b }
+    data.merge!(workflow_actions_data('comment')) { |_k, a, b| a.merge b }
     headers = json_headers(headers)
     url = workflow_actions_url(response.dig('work', 'id'))
     response = put_data(url, JSON.generate(data), headers)
@@ -155,17 +152,10 @@ class HydraEndpoint
   # @return [Mechanize::Page] the page result, after redirects, after logging in. (ie. Hydra dashboard)
   def login
     page = @agent.get(login_url)
-    # use the first form on the login page unless the forms id is set in the configuration
-    form = @config['login']['form_id'] ? page.form_with(id: @config['login']['form_id']) : page.forms.first
-    form.field_with(name: @config['login']['username_form_field']).value = @config['login']['username']
-    form.field_with(name: @config['login']['password_form_field']).value = @config['login']['password']
+    form = page.form_with(id: login_form_id)
+    form.field_with(name: @config.dig('login', 'username_form_field')).value = @config.dig('login', 'username')
+    form.field_with(name: @config.dig('login', 'password_form_field')).value = @config.dig('login', 'password')
     @agent.submit form
-  end
-
-  def get_csrf_token
-    new_work_page = @agent.get(new_work_url)
-    new_work_form = new_work_page.form_with(action: new_work_action)
-    new_work_form.field_with(name: csrf_form_field).value
   end
 
   ##
@@ -183,16 +173,21 @@ class HydraEndpoint
   # Merge the json specific keys into the headers hash supplied.
   # @param [Hash] headers - any HTTP headers that need to be included in the server typically
   # @return [Hash] - a new Hash with the json HTTP headers included
-  def json_headers(headers)
+  def json_headers(headers = {})
     json_headers = { 'Content-Type' => 'application/json',
                      'Accept' => 'application/json' }
-    headers.merge(json_headers) { |k, a, b| a.merge b }
+    headers.merge(json_headers) { |_k, a, b| a.merge b }
   end
 
   ##
   # Get the CSRF token and its proper field name
-  def csrf_token
-    csrf_token = @csrf_token || get_csrf_token
-    { "#{csrf_form_field}" => csrf_token }
+  def csrf_token_data
+    { "#{login_csrf_form_field}" => @csrf_token }
+  end
+
+  def get_csrf_token
+    page = @agent.get(login_url)
+    form = page.form_with(id: @config.dig('login', 'form_id'))
+    form.field_with(name: login_csrf_form_field).value
   end
 end

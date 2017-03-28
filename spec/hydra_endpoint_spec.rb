@@ -35,15 +35,15 @@ RSpec.describe HydraEndpoint do
   end
 
   it 'has a workflow_actions_field' do
-    expect(subject.workflow_actions_field('name')).to eq('workflow_action' => { 'name' => 'approve' })
+    expect(subject.workflow_actions_data('name')).to eq('workflow_action' => { 'name' => 'approve' })
   end
 
   it 'has a new_work_action' do
     expect(subject.new_work_action).to eq work_type_config.dig('hydra_endpoint', 'new_work', 'form_action')
   end
 
-  it 'has a csrf_form_field' do
-    expect(subject.csrf_form_field).to eq work_type_config.dig('hydra_endpoint', 'new_work', 'csrf_form_field')
+  it 'has a login_csrf_form_field' do
+    expect(subject.login_csrf_form_field).to eq config.dig('login', 'csrf_form_field')
   end
 
   it 'has should_advance_work? returning true by default' do
@@ -65,7 +65,7 @@ RSpec.describe HydraEndpoint do
 
   context 'with a mocked csrf_token' do
     before :each do
-      data[subject.csrf_form_field] = subject.get_csrf_token
+      data[subject.login_csrf_form_field] = subject.get_csrf_token
     end
 
     context 'when publishing an existing work JSON file' do
@@ -88,10 +88,9 @@ RSpec.describe HydraEndpoint do
     context 'when advancing a work through a workflow' do
       let(:work_response) { subject.advance_workflow(mock_hydra_endpoint_response, headers) }
       it 'can advance_workflow' do
-        expect(subject).to receive(:csrf_token).and_return({})
         expect(subject).to receive(:json_headers).and_return({})
-        expect(subject).to receive(:workflow_actions_field).with('name').and_return('workflow_action' => { 'name' => 'approve' })
-        expect(subject).to receive(:workflow_actions_field).with('comment').and_return('workflow_action' => { 'comment' => 'a comment' })
+        expect(subject).to receive(:workflow_actions_data).with('name').and_return('workflow_action' => { 'name' => 'approve' })
+        expect(subject).to receive(:workflow_actions_data).with('comment').and_return('workflow_action' => { 'comment' => 'a comment' })
         expect(subject).to receive(:workflow_actions_url).and_return('')
         expect(subject).to receive(:put_data).and_return(mock_return)
         expect(work_response).to eq mock_hydra_endpoint_response

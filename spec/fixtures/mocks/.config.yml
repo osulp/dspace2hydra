@@ -27,6 +27,9 @@ hydra_endpoint:
     username_form_field: "user[name]"
     # The name of the password field on the form.
     password_form_field: "user[password]"
+    # The CSRF hidden from field name to grab and use for actions such as posting file uploads. The web UI has an AJAX
+    # file upload capability that makes use of this token with posting new files to the "uploads" url.
+    csrf_form_field: "authenticity_token"
 
   # Configuration for a "generic_work" on Hydra.. this configuration needs modification when operating with different
   # work types, such as "Book", "ETD", "Article", etc.
@@ -36,9 +39,6 @@ hydra_endpoint:
     # The form action used on the new work page for posting a new work. This is used as a selector to properly identify
     # which form on the page will be used for manipulation and submission.. as well as grabbing the CSRF token from it.
     form_action: "/concern/generic_works?locale=en"
-    # The CSRF hidden from field name to grab and use for actions such as posting file uploads. The web UI has an AJAX
-    # file upload capability that makes use of this token with posting new files to the "uploads" url.
-    csrf_form_field: "authenticity_token"
 
   workflow_actions:
     auto_advance_work: true
