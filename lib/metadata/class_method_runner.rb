@@ -1,6 +1,10 @@
 # frozen_string_literal: true
 module Metadata
   module ClassMethodRunner
+    @logger = Logging.logger[self]
+    @config = {}
+    @field = ''
+
     ##
     # From an API perspective, this is the only public method intended to be called.
     # Process 'run_method' and add value(s) to data hash
@@ -11,6 +15,7 @@ module Metadata
       result = run_method
 
       # a nil result from a method indicates that the value should not be mapped/migrated
+      @logger.warn("#{method} returned nil, unable to map metadata.") if result.nil?
       return data if result.nil?
       update_data(result, field_name, data)
     end
@@ -18,10 +23,12 @@ module Metadata
     private
 
     def method
+      log_and_raise "#{@field} : missing 'method' configuration" if @config['method'].to_s.empty?
       @config['method']
     end
 
     def field_name
+      log_and_raise "#{@field} : missing 'field.name' configuration" if field['name'].to_s.empty?
       field['name']
     end
 
@@ -36,6 +43,7 @@ module Metadata
     end
 
     def field
+      log_and_raise "#{@field} : missing 'field' configuration" if @config['field'].to_s.empty?
       @config['field']
     end
 
@@ -44,10 +52,12 @@ module Metadata
     end
 
     def field_type
+      log_and_raise "#{@field} : missing 'field.type' configuration" if field['type'].to_s.empty?
       field['type']
     end
 
     def field_property
+      log_and_raise "#{@field} : missing 'field.property' configuration" if field['property'].to_s.empty?
       field['property']
     end
 
@@ -65,7 +75,6 @@ module Metadata
     # Given the value from this, run the method configured for the qualifier if it exists otherwise the default
     # @return [String] - the result of the configured method should be a string to store in hydra
     def run_method
-      raise StandardError, "#{field_property_name} run_method is missing method configuration" if method.nil?
       send_method(method, value)
     end
 
@@ -99,11 +108,13 @@ module Metadata
 
     ##
     # Set the value of a data_field after initializing it as an array if appropriate
-    # @param [Array|String] data_field - the data_field containing migration value(s)
+    # @param [String] field_name - the data field name
+    # @param [Hash] data - the data hash
     # @param [String|Integer] value - the value being considered for migration
     # @return [Array|String] - the data_field containing the value if appropriate
-    def set_value(data_field, value)
-      value = get_value(data_field, value)
+    def set_value(field_name, data, value)
+      data_field = data[field_name]
+      value = get_value(field_name, data, value)
       if field_array?
         data_field ||= []
         data_field << value unless value.nil?
@@ -116,18 +127,27 @@ module Metadata
     ##
     # Evaluate the value_add_to_migration configuration to determine if the
     # value provided should be included in migration.
-    # @param [Array|String] data_field - the data_field containing migration value(s)
+    # @param [String] field_name - the data field name
+    # @param [Hash] data - the data hash
     # @param [String|Integer] value - the value being considered for migration
     # @return [String|Integer|nil] - the value, or nil, depending on the evaluation expressed by the configuration and existing migrated data
-    def get_value(data_field, value)
+    def get_value(field_name, data, value)
       case value_add_to_migration.downcase
       when 'always'
         # noop
       when 'except_empty_value'
-        value = nil if value.to_s.empty?
+        if value.to_s.empty?
+          @logger.warn("Configuration ('except_empty_value') set for '#{field_name}', will not map an empty value")
+          value = nil
+        end
       when 'if_form_field_value_missing'
-        value = nil unless data_field.nil? || data_field.empty?
+        if data[field_name].nil? || data[field_name].empty?
+          @logger.warn("Configuration ('if_form_field_value_missing') set for '#{field_name}' found empty value, applying '#{value}' from configuration")
+        else
+          value = nil
+        end
       when 'never'
+        @logger.warn("Configuration ('never') explicitly set for '#{field_name}', ignore metadata mapping")
         value = nil
       end
       value
@@ -147,7 +167,7 @@ module Metadata
     # @return [Hash] - the data with appropriate nested hashes and value injected
     def set_deep_field_property(data, value, *fields)
       if fields.count == 1
-        data[fields[0]] = set_value(data[fields[0]], value)
+        data[fields[0]] = set_value(fields[0], data, value)
       else
         field = fields.shift
         data[field] = {} unless data[field]

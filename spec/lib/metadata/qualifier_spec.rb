@@ -75,4 +75,35 @@ RSpec.describe Metadata::Qualifier do
       end
     end
   end
+
+  context 'when get_configuration fails' do
+    before :each do
+      allow(subject).to receive(:get_configuration) { raise }
+    end
+    context '#value_add_to_migration' do
+      it 'raises error' do
+        expect { subject.value_add_to_migration }.to raise_error(StandardError)
+      end
+    end
+    context '#field_name' do
+      it 'raises error' do
+        expect { subject.field_name }.to raise_error(StandardError)
+      end
+    end
+    context '#field_property' do
+      it 'raises error' do
+        expect { subject.field_property }.to raise_error(StandardError)
+      end
+    end
+    context '#field_type' do
+      it 'raises error' do
+        expect { subject.field_type }.to raise_error(StandardError)
+      end
+    end
+    context '#method' do
+      it 'raises error' do
+        expect { subject.method }.to raise_error(StandardError)
+      end
+    end
+  end
 end

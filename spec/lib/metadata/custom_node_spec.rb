@@ -2,7 +2,7 @@
 RSpec.describe Metadata::CustomNode do
   subject { custom_node.process_node(data) }
 
-  let(:custom_node) { Metadata::CustomNode.new(work_type_config, node_config, item) }
+  let(:custom_node) { Metadata::CustomNode.new(item, 'keyword', work_type_config, node_config) }
   let(:mock_config) { File.open(File.join(File.dirname(__FILE__), '../../fixtures/mocks/default.yml')) { |f| YAML.safe_load(f) } }
   let(:work_type_config) { mock_config.reject { |k, _v| %w(migration_nodes custom_nodes).include?(k) } }
   let(:node_config) { mock_config['custom_nodes']['keyword'] }
@@ -69,7 +69,43 @@ RSpec.describe Metadata::CustomNode do
     end
 
     it 'can return collection_handles' do
-      expect(custom_node.collection_handles).to match_array( ['1957/43909', '1957/4'] )
+      expect(custom_node.collection_handles).to match_array(['1957/43909', '1957/4'])
+    end
+  end
+  context 'when get_configuration fails' do
+    subject { custom_node }
+    before :each do
+      allow(subject).to receive(:get_configuration) { raise }
+    end
+    context '#admin_set_id' do
+      it 'raises error' do
+        expect { subject.admin_set_id }.to raise_error(StandardError)
+      end
+    end
+    context '#value_add_to_migration' do
+      it 'raises error' do
+        expect { subject.value_add_to_migration }.to raise_error(StandardError)
+      end
+    end
+    context '#field_name' do
+      it 'raises error' do
+        expect { subject.field_name }.to raise_error(StandardError)
+      end
+    end
+    context '#field_property' do
+      it 'raises error' do
+        expect { subject.field_property }.to raise_error(StandardError)
+      end
+    end
+    context '#field_type' do
+      it 'raises error' do
+        expect { subject.field_type }.to raise_error(StandardError)
+      end
+    end
+    context '#value_from_node_property' do
+      it 'raises error' do
+        expect { subject.value_from_node_property }.to raise_error(StandardError)
+      end
     end
   end
 end

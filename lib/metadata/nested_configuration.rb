@@ -11,7 +11,7 @@ module Metadata
     # @return [Object] - the value of the first configuration found with key
     def get_configuration(key, *hashes)
       config = hashes.find { |h| !h[key].nil? }
-      raise StandardError, "default configuration for '#{key}' not found in any supplied configurations" if config.nil?
+      raise StandardError, "#{key} nested configuration not found in the #{hashes.count} configurations inspected" if config.nil?
       config[key]
     end
   end
