@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Mapping
   class Type
     extend Extensions::BasicValueHandler
@@ -8,10 +9,10 @@ module Mapping
     # @param [*String] args - the field name to map values to
     # @return [[Hash]] - the field in hydra with the new value
 
-    def lookup_hyrax_type(value, *args)
-      lookup = File.open(File.join(File.dirname(__FILE__), '../lookup/resource.types.yml')) { |f| YAML.load(f) }
-      resource_type_map = lookup.select { |l| l[:from] == value }
-      return [ {  field_name: args, value: resource_type_map[:to]} ]
+    def self.lookup_hyrax_type(value, *args)
+      lookup = File.open(File.join(File.dirname(__FILE__), '../lookup/resource.types.yml')) { |f| YAML.safe_load(f) }
+      resource_type_map = lookup.find { |l| l['from'].casecmp(value).zero? }
+      { field_name: args, value: resource_type_map['to'] }
     end
   end
 end

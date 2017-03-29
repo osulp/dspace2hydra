@@ -11,6 +11,9 @@ cache_and_logging_path: "cache/processed_items"
 # Hydra server configurations for posting new works and files
 hydra_endpoint:
   server_domain: "http://hydra.server"
+  # The CSRF hidden from field name to grab and use for actions such as posting file uploads. The web UI has an AJAX
+  # file upload capability that makes use of this token with posting new files to the "uploads" url.
+  csrf_form_field: "authenticity_token"
   login:
     # The url to the login page for the Hydra app. Some authentications systems, such as CAS, will redirect
     # from this url to the authentication hosts page.
@@ -36,9 +39,6 @@ hydra_endpoint:
     # The form action used on the new work page for posting a new work. This is used as a selector to properly identify
     # which form on the page will be used for manipulation and submission.. as well as grabbing the CSRF token from it.
     form_action: "/concern/generic_works?locale=en"
-    # The CSRF hidden from field name to grab and use for actions such as posting file uploads. The web UI has an AJAX
-    # file upload capability that makes use of this token with posting new files to the "uploads" url.
-    csrf_form_field: "authenticity_token"
 
   # Workflow advancement url, fields, and control
   workflow_actions:

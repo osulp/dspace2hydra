@@ -42,8 +42,8 @@ RSpec.describe HydraEndpoint do
     expect(subject.new_work_action).to eq work_type_config.dig('hydra_endpoint', 'new_work', 'form_action')
   end
 
-  it 'has a login_csrf_form_field' do
-    expect(subject.login_csrf_form_field).to eq config.dig('login', 'csrf_form_field')
+  it 'has a csrf_form_field' do
+    expect(subject.csrf_form_field).to eq config.dig('csrf_form_field')
   end
 
   it 'has should_advance_work? returning true by default' do
@@ -52,6 +52,12 @@ RSpec.describe HydraEndpoint do
 
   it 'can upload a file' do
     expect(subject.upload(file)).to be_truthy
+  end
+
+  it 'can clear the csrf token' do
+    subject.instance_variable_set(:@csrf_token, '8675309')
+    subject.clear_csrf_token
+    expect(subject.instance_variable_get(:@csrf_token)).to be_nil
   end
 
   context 'when auto_advance_work is set to false' do
@@ -65,7 +71,7 @@ RSpec.describe HydraEndpoint do
 
   context 'with a mocked csrf_token' do
     before :each do
-      data[subject.login_csrf_form_field] = subject.get_csrf_token
+      data[subject.csrf_form_field] = subject.get_csrf_token(config['server_domain'])
     end
 
     context 'when publishing an existing work JSON file' do
