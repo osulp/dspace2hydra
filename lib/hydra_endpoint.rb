@@ -9,7 +9,7 @@ class HydraEndpoint
     @agent = Mechanize.new
     @config = config
     @work_type_config = work_type_config
-    @csrf_token = get_csrf_token
+    @csrf_token = get_csrf_token(login_url)
     login
     @started_at = started_at
   end
@@ -51,8 +51,8 @@ class HydraEndpoint
     URI.join(server_domain, url)
   end
 
-  def login_csrf_form_field
-    @config.dig('login', 'csrf_form_field')
+  def csrf_form_field
+    @config.dig('csrf_form_field')
   end
 
   def workflow_actions_url(id)
@@ -132,6 +132,10 @@ class HydraEndpoint
     Response.new JSON.parse(response.body), URI.join(server_domain, response['location'])
   end
 
+  def clear_csrf_token
+    @csrf_token = nil
+  end
+
   # :nocov:
   private
 
@@ -152,10 +156,11 @@ class HydraEndpoint
   # @return [Mechanize::Page] the page result, after redirects, after logging in. (ie. Hydra dashboard)
   def login
     page = @agent.get(login_url)
-    form = page.form_with(id: login_form_id)
+    form = page.form_with(id: @config.dig('login', 'form_id'))
     form.field_with(name: @config.dig('login', 'username_form_field')).value = @config.dig('login', 'username')
     form.field_with(name: @config.dig('login', 'password_form_field')).value = @config.dig('login', 'password')
     @agent.submit form
+    clear_csrf_token
   end
 
   ##
@@ -182,12 +187,12 @@ class HydraEndpoint
   ##
   # Get the CSRF token and its proper field name
   def csrf_token_data
-    { "#{login_csrf_form_field}" => @csrf_token }
+    @csrf_token = get_csrf_token(new_work_url) if @csrf_token.nil?
+    { "#{csrf_form_field}" => @csrf_token }
   end
 
-  def get_csrf_token
-    page = @agent.get(login_url)
-    form = page.form_with(id: @config.dig('login', 'form_id'))
-    form.field_with(name: login_csrf_form_field).value
+  def get_csrf_token(url)
+    page = @agent.get(url)
+    page.at("[name='#{csrf_form_field}']").attr('value')
   end
 end

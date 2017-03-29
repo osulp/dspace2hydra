@@ -121,5 +121,6 @@ else
   bag = bags.first
   work = process_bag(bag, server)
   work = advance_workflow(work, server) if server.should_advance_work?
+  server.clear_csrf_token
 end
 #########################################
