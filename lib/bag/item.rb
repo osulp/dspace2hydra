@@ -23,6 +23,18 @@ class Item
     object_properties['objectId'].first.tr('/', '-')
   end
 
+  def owner_id
+    object_properties['ownerId'].first
+  end
+
+  def other_ids
+    object_properties['otherIds']
+  end
+
+  def collection_handles
+    [owner_id] + other_ids
+  end
+
   def custom_metadata
     @custom_metadata ||= build_custom_metadata_hash @config
   end
@@ -68,7 +80,7 @@ class Item
     h = {}
     config['custom_nodes'].each do |key, node_config|
       h[key] ||= []
-      h[key] << Metadata::CustomNode.new(work_type_config, node_config)
+      h[key] << Metadata::CustomNode.new(work_type_config, node_config, self)
     end
     h
   end
