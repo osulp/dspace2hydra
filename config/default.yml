@@ -65,8 +65,17 @@ custom_nodes:
       name: admin_set_id
       property: "%{work_type}.%{field_name}"
       type: String
-    method: Mapping::AdminSet.unprocessed
-    value_from_node_property: admin_set_id
+    method: 
+      - Mapping::Admin_Set.lookup_admin_set
+      - ownerId
+  collection:
+    field:
+      name: dspace_collection
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    method:
+      - Mapping::Collection.lookup_collection_names
+      - collection_handles
   agreement:
     field:
       name: agreement

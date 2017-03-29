@@ -5,10 +5,11 @@ module Metadata
     include NestedConfiguration
     attr_reader :config
 
-    def initialize(work_type_config, config = {})
+    def initialize(work_type_config, config = {}, item)
       @config = config
       @work_type_config = work_type_config
       @work_type = work_type_config['work_type']
+      @item = item
     end
 
     def admin_set_id
@@ -33,6 +34,14 @@ module Metadata
 
     def field_type
       get_configuration 'type', @config['field']
+    end
+
+    def ownerId
+      @item.ownerId
+    end
+
+    def collection_handles
+      @item.collection_handles
     end
   end
 end
