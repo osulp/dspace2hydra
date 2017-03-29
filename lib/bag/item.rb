@@ -23,6 +23,20 @@ class Item
     object_properties['objectId'].first.tr('/', '-')
   end
 
+  def owner_id
+    object_properties['ownerId']
+  end
+
+  def other_ids
+    object_properties['otherIds'].split(',')
+  end
+
+  def collection_handles
+    arr = Array.new
+    arr << object_properties['ownerId']
+    arr.concat(object_properties['otherIds'].split(','))
+  end
+
   def custom_metadata
     @custom_metadata ||= build_custom_metadata_hash @config
   end
