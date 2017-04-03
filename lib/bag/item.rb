@@ -10,7 +10,7 @@ class Item
   end
 
   def metadata
-    @metadata ||= build_metadata_hash @config
+    @metadata ||= build_metadata_hash
   end
 
   def metadata_xml
@@ -38,7 +38,7 @@ class Item
   end
 
   def custom_metadata
-    @custom_metadata ||= build_custom_metadata_hash @config
+    @custom_metadata ||= build_custom_metadata_hash
   end
 
   private
@@ -88,7 +88,7 @@ class Item
     h
   end
 
-  def build_custom_metadata_hash(_config)
+  def build_custom_metadata_hash
     h = {}
     custom_nodes.each do |key, node_config|
       h[key] ||= []
@@ -99,8 +99,7 @@ class Item
 
   ##
   # Build a hash of Metadata::Nodes transformed using the appropriate configuration for this type of Item.
-  # @param [Hash] config - a configuration, such as "etd". @see config/etd.yml
-  def build_metadata_hash(_config)
+  def build_metadata_hash
     h = {}
     # temp_xml will be the target of mutation during this process
     temp_xml = metadata_xml.clone
