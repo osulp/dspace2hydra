@@ -2,11 +2,12 @@
 RSpec.describe Metadata::CustomNode do
   subject { custom_node.process_node(data) }
 
-  let(:custom_node) { Metadata::CustomNode.new(work_type_config, node_config) }
+  let(:custom_node) { Metadata::CustomNode.new(work_type_config, node_config, item) }
   let(:mock_config) { File.open(File.join(File.dirname(__FILE__), '../../fixtures/mocks/default.yml')) { |f| YAML.safe_load(f) } }
   let(:work_type_config) { mock_config.reject { |k, _v| %w(migration_nodes custom_nodes).include?(k) } }
   let(:node_config) { mock_config['custom_nodes']['keyword'] }
   let(:data) { {} }
+  let(:item) { Item.new File.join(File.dirname(__FILE__), '../../fixtures/ITEM@1957-57239/data'), File.open(File.join(File.dirname(__FILE__), '../../fixtures/mocks/default.yml')) { |f| YAML.safe_load(f) } }
 
   it 'has an admin_set_id property' do
     expect(custom_node.admin_set_id).to be_truthy
@@ -59,6 +60,16 @@ RSpec.describe Metadata::CustomNode do
         expect(subject.dig('default_work', 'blah')).to be_truthy
         expect(subject).to eq 'default_work' => { 'blah' => 'foo' }
       end
+    end
+  end
+
+  context 'when initialize with item' do
+    it 'can return owner_id' do
+      expect(custom_node.owner_id).to eq '1957/43909'
+    end
+
+    it 'can return collection_handles' do
+      expect(custom_node.collection_handles).to match_array( ['1957/43909', '1957/4'] )
     end
   end
 end

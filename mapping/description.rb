@@ -7,7 +7,7 @@ module Mapping
     # @param [String] value - the original Dspace value for the node
     # @param [Array] *args - the two field names to map values to
     # @return [Array[Hash]] - the two fields in hydra with the new values
-    def set_embargo(value, *args)
+    def self.set_embargo(value, *args)
       field_name_one, field_name_two = args.flatten
       [
         { field_name: field_name_one, value: 'embargo' },
@@ -21,12 +21,12 @@ module Mapping
     # @param [String] value - the original Dspace value for the node
     # @param [Array] *args - the two field names to map values to
     # @return [Array[Hash]] - the two fields in hydra with the new values
-    def lookup_embargo_policy(value, *args)
+    def self.lookup_embargo_policy(value, *args)
       field_name_one, field_name_two = args.flatten
-      lookup = File.open(File.join(File.dirname(__FILE__), '../lookup/description.embargopolicy.yml')) { |f| YAML.load(f) }
-      embargo_map = lookup.select { |l| l[:from] == value }
+      lookup = File.open(File.join(File.dirname(__FILE__), '../lookup/description.embargopolicy.yml')) { |f| YAML.safe_load(f) }
+      embargo_map = lookup.find { |l| l['from'].casecmp(value).zero? }
       [
-        { field_name: field_name_one, value: embargo_map[:to] },
+        { field_name: field_name_one, value: embargo_map['to'] },
         { field_name: field_name_two, value: 'open access' },
       ]
     end
@@ -37,7 +37,7 @@ module Mapping
     # @param [String] value - the original Dspace value for the node
     # @param [Array] *args - the two field names to map value to
     # @return [[Hash]] - the field in hydra with the new value
-    def process_if_grad_date(value, *args)
+    def self.process_if_grad_date(value, *args)
       field_name_one, field_name_two = args.flatten
       match_data = /^graduation date:/.match(value.downcase)
       if match_data.nil?

@@ -45,6 +45,24 @@ RSpec.describe Item do
     end
   end
 
+  context '#owner_id' do
+    it 'has an owner_id' do
+      expect(subject.owner_id).to eq '1957/43909'
+    end
+  end
+
+  context '#other_ids' do
+    it 'has an array of handles' do
+      expect(subject.other_ids).to match_array( ['1957/4'] )
+    end
+  end
+
+  context '#collection_handles' do
+    it 'has an array of handles' do
+      expect(subject.collection_handles).to match_array( ['1957/43909', '1957/4'] )
+    end
+  end
+
   context '#object_properties' do
     it 'has an object_properties hash' do
       expect(subject.object_properties).to be_a_kind_of Hash
