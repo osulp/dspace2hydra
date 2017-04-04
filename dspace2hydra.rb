@@ -3,9 +3,24 @@ require 'optparse'
 require 'pathname'
 require 'json'
 require 'yaml'
+require 'logging'
+require_relative 'lib/loggable'
+require_relative 'lib/timeable'
 require_relative 'lib/bag'
 require_relative 'lib/hydra_endpoint'
 require_relative 'mapping/mapping'
+
+include Loggable
+include Timeable
+
+Logging.logger.root.level = :debug
+
+@logger = Logging.logger[self]
+Logging.logger.root.add_appenders(Logging.appenders.stdout(
+  'stdout_brief_bright',
+  layout: Loggable.stdout_brief_bright,
+  level: :info
+))
 
 options = {}
 ARGV << '-h' if ARGV.empty?
@@ -37,6 +52,7 @@ end
 # @param [Bag] bag - the bag to process
 # @param [HydraEndpoint] server - the server to submit a work and upload files to
 def process_bag(bag, server)
+  @logger.info("Processing bag")
   data = process_bag_metadata(bag)
   file_ids = upload_files(bag, server)
   data[bag.uploaded_files_field_name] = bag.uploaded_files_field(file_ids)
@@ -44,10 +60,12 @@ def process_bag(bag, server)
 end
 
 def publish_work(data, server)
+  @logger.info("Publishing work to server")
   page = server.publish_work(data)
 end
 
 def advance_workflow(response, server)
+  @logger.info("Advancing work through workflow")
   page = server.advance_workflow(response)
 end
 
@@ -57,11 +75,13 @@ end
 # @return [Hash] - the processed metadata hash
 def process_bag_metadata(bag)
   data = {}
+  @logger.info("Mapping item metadata")
   bag.item.metadata.each do |_k, nodes|
     nodes.each do |metadata_node|
       data = metadata_node.qualifier.process_node(data)
     end
   end
+  @logger.info("Mapping configured custom metadata")
   bag.item.custom_metadata.each do |_k, nodes|
     nodes.each do |custom_metadata_node|
       data = custom_metadata_node.process_node(data)
@@ -82,6 +102,7 @@ def upload_files(bag, server)
     # Make a temporary copy of the file with the proper filename, upload it, grab the file_id from the servers response
     # and remove the temporary file
     item_file.copy_to_metadata_full_path
+    @logger.info("Uploading filename from metadata to server: #{item_file.metadata_full_path}")
     upload_response = server.upload(item_file.file(item_file.metadata_full_path))
     json = JSON.parse(upload_response.body)
     file_ids << json['files'].map { |f| f['id'] }
@@ -90,17 +111,24 @@ def upload_files(bag, server)
   file_ids.flatten.uniq
 end
 
+def item_log_path(bag, started_at)
+  item_cache_path = File.join(File.dirname(__FILE__), "#{CONFIG['cache_and_logging_path']}/ITEM@#{bag.item.item_id}")
+  timestamp = started_at.strftime('%Y%m%d%H%M%S')
+  File.join(item_cache_path, "#{timestamp}.log")
+end
+
 validate_arguments(CONFIG)
 
+started_at = DateTime.now
 type_config = File.open(File.join(File.dirname(__FILE__), CONFIG['type_config'])) { |f| YAML.safe_load(f) }
 # Overwrite the [TYPE_CONFIG].admin_set_id configuration if there was one passed on the commandline
 type_config['admin_set_id'] = CONFIG['admin_set_id'] unless CONFIG['admin_set_id'].nil?
 
-started_at = DateTime.now
-server = HydraEndpoint.new(CONFIG['hydra_endpoint'], type_config, started_at)
+@logger = Logging.logger[self]
 
 ## Testing processing and loading one bag
 if CONFIG['cached_json']
+  server = HydraEndpoint.new(CONFIG['hydra_endpoint'], type_config, started_at)
   file = File.open(File.join(File.dirname(__FILE__), CONFIG['cached_json']))
   json = file.read
   data = JSON.parse(json)
@@ -119,8 +147,14 @@ else
   end
 
   bag = bags.first
+  start_logging_to(item_log_path(bag, started_at))
+  @logger.info("Processing ITEM@#{bag.item.item_id} started at #{started_at.to_s}")
+  server = HydraEndpoint.new(CONFIG['hydra_endpoint'], type_config, started_at)
   work = process_bag(bag, server)
+  @logger.warn("Not configured to advance work through workflow") unless server.should_advance_work?
   work = advance_workflow(work, server) if server.should_advance_work?
   server.clear_csrf_token
+  @logger.info("Processing ITEM@#{bag.item.item_id} finished in #{time_since(started_at)}")
+  stop_logging_to(item_log_path(bag, started_at))
 end
 #########################################

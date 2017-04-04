@@ -6,6 +6,7 @@ gem 'mechanize'
 gem 'nokogiri'
 gem 'rdf'
 gem 'rdf-vocab'
+gem 'logging'
 
 group :development, :test do
   gem 'rake'

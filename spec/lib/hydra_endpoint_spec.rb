@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 RSpec.describe HydraEndpoint do
   subject { HydraEndpoint.new(config, work_type_config) }
-  let(:file) { double(File) }
+  let(:file) { double(File, path: '/tmp/bogus_file') }
   let(:data) { { 'default_work' => { 'id' => 123, 'title' => 'test' } } }
-  let(:config_file) { File.open(File.join(File.dirname(__FILE__), 'fixtures/mocks/.config.yml')) { |f| YAML.safe_load(f) } }
+  let(:config_file) { File.open(File.join(File.dirname(__FILE__), '../fixtures/mocks/.config.yml')) { |f| YAML.safe_load(f) } }
   let(:config) { config_file['hydra_endpoint'] }
-  let(:work_type_config) { File.open(File.join(File.dirname(__FILE__), 'fixtures/mocks/default.yml')) { |f| YAML.safe_load(f) } }
+  let(:work_type_config) { File.open(File.join(File.dirname(__FILE__), '../fixtures/mocks/default.yml')) { |f| YAML.safe_load(f) } }
   let(:headers) { { 'Content-Type' => 'application/json', 'Accept' => 'application/json' } }
   let(:bag) { double('bag', item_cache_path: config_file['item_cache_path']) }
   let(:server_domain) { config_file.dig('hydra_endpoint', 'server_domain') }
@@ -28,6 +28,10 @@ RSpec.describe HydraEndpoint do
 
   it 'has a login_url' do
     expect(subject.login_url).to eq URI.join(server_domain, config.dig('login', 'url'))
+  end
+
+  it 'has a login_form_id' do
+    expect(subject.login_form_id).to eq config.dig('login', 'form_id')
   end
 
   it 'has a workflow_actions_url' do

@@ -1,7 +1,11 @@
+# frozen_string_literal: true
 class ItemFile
+  include Loggable
+
   attr_accessor :full_path, :metadata_full_path
 
   def initialize(full_path)
+    @logger = Logging.logger[self]
     @full_path = full_path
   end
 
@@ -10,7 +14,7 @@ class ItemFile
   # @returns [String] the filename without the extension
   def file_name(at_path = nil)
     at_path ||= @full_path
-    File.basename at_path, ".*"
+    File.basename at_path, '.*'
   end
 
   ##
@@ -66,7 +70,7 @@ class ItemFile
   end
 
   def metadata_xml
-    metadata_filename = CONFIG['bag']['item']['item_file']['metadata_file_name_template'].gsub "{item_file_name}", file_name
+    metadata_filename = CONFIG['bag']['item']['item_file']['metadata_file_name_template'].gsub '{item_file_name}', file_name
     @metadata_xml ||= File.open(File.join(File.dirname(@full_path), metadata_filename)) { |f| Nokogiri::XML(f) }
   end
 end

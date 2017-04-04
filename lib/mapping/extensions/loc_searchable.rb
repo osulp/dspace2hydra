@@ -15,18 +15,23 @@ module Mapping
       # @return [Hash] - an item shaped as {id,label,uri}
       def search_loc(content_source, str)
         url = "#{LCSH_SEARCH_BASE_URL}?q=#{Mechanize::Util.uri_escape(str)}&q=#{content_source}&format=json"
+        @logger.info("Searching LCSH #{url}")
         response = Mechanize.new.get(url)
 
         items = parse_items(response.body)
 
         unless items.empty?
-          found = items.find { |i| i[:label].downcase.strip == str.downcase.strip }
+          found = items.find { |i| i[:label].casecmp(str.downcase.strip).zero? }
           unless found.nil?
             uri = RDF::URI(found[:id].gsub('info:lc', 'http://id.loc.gov'))
+            @logger.info("Found #{uri}")
             return found.merge(uri: uri)
           end
+          @logger.warn("#{items.count} returned, but none matching '#{str}'")
         end
-        nil
+        @logger.warn('No items parsed in return from LCSH search query')
+        # TODO : see issue #79 for how this should be handled
+        { id: str, label: str, uri: str }
       end
 
       ##

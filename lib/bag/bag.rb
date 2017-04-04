@@ -1,8 +1,11 @@
 # frozen_string_literal: true
 class Bag
+  include Loggable
+
   attr_reader :path, :type_config, :item_cache_path
 
   def initialize(path, application_config, type_config)
+    @logger = Logging.logger[self]
     @path = path
     @application_config = application_config
     @type_config = type_config
@@ -89,12 +92,13 @@ class Bag
     upload_directories = upload_configs.map { |config| config['directory'] }
     upload_files = files.select do |item_file|
       in_upload_directory = upload_directories.include?(item_file.parent_directory)
-      # TODO: Add logging that this file is being ignored for upload
+      @logger.warn("File configuration does not include the directory, will not upload: #{item_file.full_path}") unless in_upload_directory
       next unless in_upload_directory
       ignored = item_file_ignored?(item_file)
-      # TODO: Add logging if this file is being ignored for upload
+      @logger.warn("File configuration found to explicitly ignore uploading: #{item_file.full_path}") if ignored
       next(!ignored)
     end
+    upload_files.each { |item_file| @logger.info("Identified file to be uploaded: #{item_file.full_path}") }
     upload_files
   end
 

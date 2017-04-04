@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 class ClassMethodRunnerClassBase
   include Metadata::ClassMethodRunner
+  include Loggable
   def initialize(work_type, config = {})
+    @logger = Logging.logger[self]
     @config = config
     @work_type = work_type
   end
@@ -24,6 +26,20 @@ RSpec.describe Metadata::ClassMethodRunner do
   let(:field_property_name) { format(field_property, work_type: work_type, field_name: field_name) }
   let(:data) { {} }
   let(:existing_data) { { work_type => { field_name => ['already_migrated_data'] } } }
+  let(:config) do
+    {
+      'method' => '',
+      'field' => {
+        'name' => field_name,
+        'property' => field_property,
+        'type' => 'Array'
+      },
+      'value' => ''
+    }
+  end
+  it 'will log and raise a fatal exception' do
+    expect { subject.process_node }.to raise_error(StandardError)
+  end
 
   context 'with most typical configuration; adds a value to migrated data by default' do
     let(:config) do
@@ -112,6 +128,23 @@ RSpec.describe Metadata::ClassMethodRunner do
       it 'will not add custom node data' do
         expect(subject.process_node(existing_data)).to eq(work_type => { field_name => ['already_migrated_data'] })
       end
+    end
+  end
+  context 'configured to add value to migration except for empty values' do
+    let(:config) do
+      {
+        'method' => 'ClassMethodRunnerClass.test_string_method',
+        'field' => {
+          'name' => field_name,
+          'property' => field_property,
+          'type' => 'Array'
+        },
+        'value' => '',
+        'value_add_to_migration' => 'except_empty_value'
+      }
+    end
+    it 'will not add custom node data' do
+      expect(subject.process_node(data)).not_to eq(work_type => { field_name => ['blah'] })
     end
   end
 end

@@ -1,14 +1,16 @@
 # frozen_string_literal: true
 class Item
+  include Loggable
   attr_reader :path
 
   def initialize(path, config)
+    @logger = Logging.logger[self]
     @path = path
     @config = config
   end
 
   def metadata
-    @metadata ||= build_metadata_hash @config
+    @metadata ||= build_metadata_hash
   end
 
   def metadata_xml
@@ -36,13 +38,23 @@ class Item
   end
 
   def custom_metadata
-    @custom_metadata ||= build_custom_metadata_hash @config
+    @custom_metadata ||= build_custom_metadata_hash
   end
 
   private
 
+  def migration_nodes
+    log_and_raise "missing 'migration_nodes' configuration" if @config['migration_nodes'].nil?
+    @config['migration_nodes']
+  end
+
+  def custom_nodes
+    log_and_raise "missing 'custom_nodes' configuration" if @config['custom_nodes'].nil?
+    @config['custom_nodes']
+  end
+
   def metadata_xml_path
-    File.join(@path, CONFIG['bag']['item']['metadata_file'])
+    File.join(@path, CONFIG.dig('bag', 'item', 'metadata_file'))
   end
 
   ##
@@ -69,30 +81,29 @@ class Item
   # @returns [Hash<String,Array<String>>] a hash with key=>array of strings
   def object_properties_hash
     h = {}
-    File.readlines(File.join(@path, CONFIG['bag']['item']['object_properties_file'])).each do |line|
+    File.readlines(File.join(@path, CONFIG.dig('bag', 'item', 'object_properties_file'))).each do |line|
       key, *rest = line.split(' ')
       h[key] = rest.map { |e| e.split(',') }.flatten
     end
     h
   end
 
-  def build_custom_metadata_hash(config)
+  def build_custom_metadata_hash
     h = {}
-    config['custom_nodes'].each do |key, node_config|
+    custom_nodes.each do |key, node_config|
       h[key] ||= []
-      h[key] << Metadata::CustomNode.new(work_type_config, node_config, self)
+      h[key] << Metadata::CustomNode.new(self, key, work_type_config, node_config)
     end
     h
   end
 
   ##
   # Build a hash of Metadata::Nodes transformed using the appropriate configuration for this type of Item.
-  # @param [Hash] config - a configuration, such as "etd". @see config/etd.yml
-  def build_metadata_hash(config)
+  def build_metadata_hash
     h = {}
     # temp_xml will be the target of mutation during this process
     temp_xml = metadata_xml.clone
-    transform_configured_nodes temp_xml, h, work_type_config, config['migration_nodes']
+    transform_configured_nodes temp_xml, h, work_type_config, migration_nodes
     clear_empty_text_nodes temp_xml
     # Nokogiri::XML doesn't have a method to handle evaluating if a document has valid children,
     # so creating a new document from the mutated temp_xml is effective, albeit hackish
@@ -125,6 +136,7 @@ class Item
   # @param [Hash] node_configs - this items configuration, such as "etd". @see config/etd.yml
   def transform_configured_nodes(xml_doc, h, work_type_config, node_configs)
     node_configs.each do |key, node_config|
+      log_and_raise "missing migration_nodes.#{key}.xpath configuration" if node_config['xpath'].nil? || node_config['xpath'].empty?
       h[key] ||= []
       xml_doc.xpath(node_config['xpath']).each do |node|
         h[key] << Metadata::Node.new(node, key, work_type_config, node_config)

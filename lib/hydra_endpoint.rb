@@ -1,11 +1,15 @@
 # frozen_string_literal: true
 require 'mechanize'
 require 'json'
+require_relative 'loggable'
 
 class HydraEndpoint
+  include Loggable
   Response = Struct.new(:work, :uri)
 
   def initialize(config, work_type_config, started_at = DateTime.now)
+    @logger = Logging.logger[self]
+    @logger.debug("initializing hydra endpoint connection")
     @agent = Mechanize.new
     @config = config
     @work_type_config = work_type_config
@@ -55,6 +59,10 @@ class HydraEndpoint
     @config.dig('csrf_form_field')
   end
 
+  def login_form_id
+    @config.dig('login', 'form_id')
+  end
+
   def workflow_actions_url(id)
     url = @work_type_config.dig('hydra_endpoint', 'workflow_actions', 'url')
     url = @config.dig('workflow_actions', 'url') unless url
@@ -88,6 +96,7 @@ class HydraEndpoint
   def upload(file)
     data = csrf_token_data
     data.merge!("#{@config.dig('uploads','files_form_field')}": file) { |k, a, b| a.merge b }
+    @logger.debug("uploading file : #{file.path}")
     post_data uploads_url, data
   end
 
@@ -108,11 +117,13 @@ class HydraEndpoint
   # @param [Hash] headers - any HTTP headers necessary for POST to the server
   # @return [HydraEndpoint::Response] - the work and location struct containing the result of publishing
   def publish_work(data, headers = {})
-    # TODO: Add logging for this method
     data.merge! csrf_token_data
     headers = json_headers(headers)
-    response = post_data(new_work_action, JSON.generate(data), headers)
-    Response.new JSON.parse(response.body), URI.join(server_domain, response['location'])
+    @logger.debug("publishing work to #{new_work_action}")
+    server_response = post_data(new_work_action, JSON.generate(data), headers)
+    response = Response.new JSON.parse(server_response.body), URI.join(server_domain, server_response['location'])
+    @logger.info("Work #{response.dig('work','id')} published at #{response.dig('uri')}")
+    response
   end
 
   ##
@@ -122,17 +133,20 @@ class HydraEndpoint
   # @param [Hash] headers - any HTTP headers necessary for POST to the server
   # @return [HydraEndpoint::Response] - the work and location struct containing the result of publishing
   def advance_workflow(response, headers = {})
-    # TODO: Add logging for this method
     data = csrf_token_data
-    data.merge!(workflow_actions_data('name')) { |_k, a, b| a.merge b }
-    data.merge!(workflow_actions_data('comment')) { |_k, a, b| a.merge b }
+    workflow_name = workflow_actions_data('name')
+    workflow_comment = workflow_actions_data('comment')
+    data.merge!(workflow_name) { |_k, a, b| a.merge b }
+    data.merge!(workflow_comment) { |_k, a, b| a.merge b }
     headers = json_headers(headers)
     url = workflow_actions_url(response.dig('work', 'id'))
+    @logger.info("Advancing workflow to: #{workflow_name.to_s}")
     response = put_data(url, JSON.generate(data), headers)
     Response.new JSON.parse(response.body), URI.join(server_domain, response['location'])
   end
 
   def clear_csrf_token
+    @logger.debug("clearing csrf_token")
     @csrf_token = nil
   end
 
@@ -140,27 +154,44 @@ class HydraEndpoint
   private
 
   def post_data(url, data = {}, headers = {})
+    @logger.debug("POST data to: #{url}")
     @agent.post(url, data, headers)
   rescue Mechanize::ResponseCodeError => e
-    pp e
+    @logger.fatal("POST data to #{url} handled HTTP Error : #{e.to_s}")
+    raise e
+  rescue StandardError => e
+    @logger.fatal("POST data to #{url} caught an unhandled exception : #{e.to_s}")
+    raise e
   end
 
   def put_data(url, data = {}, headers = {})
+    @logger.debug("PUT data to: #{url}")
     @agent.put(url, data, headers)
   rescue Mechanize::ResponseCodeError => e
-    pp e
+    @logger.fatal("PUT data to #{url} handled HTTP Error : #{e.to_s}")
+    raise e
+  rescue StandardError => e
+    @logger.fatal("PUT data to #{url} caught an unhandled exception : #{e.to_s}")
+    raise e
   end
 
   ##
   # Login to the Hydra application
   # @return [Mechanize::Page] the page result, after redirects, after logging in. (ie. Hydra dashboard)
   def login
+    @logger.debug("logging into server at : #{login_url}")
     page = @agent.get(login_url)
     form = page.form_with(id: @config.dig('login', 'form_id'))
     form.field_with(name: @config.dig('login', 'username_form_field')).value = @config.dig('login', 'username')
     form.field_with(name: @config.dig('login', 'password_form_field')).value = @config.dig('login', 'password')
     @agent.submit form
     clear_csrf_token
+  rescue Mechanize::ResponseCodeError => e
+    @logger.fatal("Login to #{login_url} handled HTTP Error : #{e.to_s}")
+    raise e
+  rescue StandardError => e
+    @logger.fatal("Login to #{login_url} caught an unhandled exception : #{e.to_s}")
+    raise e
   end
 
   ##
@@ -169,7 +200,9 @@ class HydraEndpoint
   # @param [String] item_cache_directory - the full path to the directory for cached data
   def cache_data(data, item_cache_directory)
     timestamp = @started_at.strftime('%Y%m%d%H%M%S')
-    File.open(File.join(item_cache_directory, "#{timestamp}_data.json"), 'w+') do |file|
+    cache_file = File.join(item_cache_directory, "#{timestamp}_data.json")
+    @logger.debug("caching json before publishing work: #{cache_file}")
+    File.open(cache_file, 'w+') do |file|
       file.write(JSON.pretty_generate(data))
     end
   end
@@ -187,12 +220,20 @@ class HydraEndpoint
   ##
   # Get the CSRF token and its proper field name
   def csrf_token_data
+    @logger.debug("csrf_token is empty") if @csrf_token.nil?
     @csrf_token = get_csrf_token(new_work_url) if @csrf_token.nil?
     { "#{csrf_form_field}" => @csrf_token }
   end
 
   def get_csrf_token(url)
+    @logger.debug("fetching csrf_token from input[name='#{csrf_form_field}'] on the page at : #{url}")
     page = @agent.get(url)
     page.at("[name='#{csrf_form_field}']").attr('value')
+  rescue Mechanize::ResponseCodeError => e
+    @logger.fatal("Get CSRF Token to #{url} handled HTTP Error : #{e.to_s}")
+    raise e
+  rescue StandardError => e
+    @logger.fatal("Get CSRF token to #{url} caught an unhandled exception : #{e.to_s}")
+    raise e
   end
 end
