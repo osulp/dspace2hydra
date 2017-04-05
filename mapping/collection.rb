@@ -13,10 +13,19 @@ module Mapping
     # @param[Array] *args -
     # return -
     def self.lookup_collection_name(value, *_args)
+      names = Array.new
       csv_file = File.join(File.dirname(__FILE__), '../lookup/collectionlist.csv')
       # array of hash
       lines = CSV.read(csv_file, headers: true).map(&:to_hash)
-      lines.select { |l| value.to_s.downcase.include? l['collection_handle'].downcase }.map { |l| l['collection_name'] }
+      lines.each do |line|
+        value.each do |handle|
+          if line['collection_handle'].casecmp(handle) == 0
+            puts line['collection_name']
+            names << line['collection_name']
+          end
+        end
+      end
+      return names
     end
   end
 end
