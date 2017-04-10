@@ -16,7 +16,7 @@ module Mapping
       csv_file = File.join(File.dirname(__FILE__), '../lookup/collectionlist.csv')
       lines = CSV.read(csv_file, headers: true, encoding: 'UTF-8').map(&:to_hash)
       line = lines.find { |l| l['collection_handle'].casecmp(value).zero? }
-      raise StandardError, "did not find collection_handle '#{value}' in collectionlist.csv" if line.nil? || line['Admin_Set_ID'].to_s.empty?
+      raise StandardError, "did not find admin_set_id for collection_handle '#{value}' in collectionlist.csv" if line.nil? || line['Admin_Set_ID'].to_s.empty?
       line['Admin_Set_ID']
     end
   end
