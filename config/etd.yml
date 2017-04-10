@@ -295,6 +295,20 @@ migration_nodes:
       default:
         field:
           name: publisher
+  relation:
+    field:
+      name: relation
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    xpath: "//metadata/value[@element='relation']"
+    method: Mapping::Relation.unprocessed
+    qualifiers:
+      default:
+        field:
+          name: relation
+      ispartofseries:
+        field:
+          name: in_series
   rights:
     field:
       name: rights

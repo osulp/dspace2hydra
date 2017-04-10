@@ -65,3 +65,6 @@
 -
   from: Other
   to: Other
+-
+  from: Thesis/Dissertation
+  to: Thesis
