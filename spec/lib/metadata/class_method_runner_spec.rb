@@ -68,6 +68,12 @@ RSpec.describe Metadata::ClassMethodRunner do
         expect(subject.process_node(existing_data)).to eq(work_type => { field_name => %w(already_migrated_data blah) })
       end
     end
+    context 'with existing duplicate migration data for this field' do
+      let(:existing_data) { { work_type => { field_name => ['blah'] } } }
+      it 'will not add duplicate data' do
+        expect(subject.process_node(existing_data)).to eq(work_type => { field_name => %w(blah) })
+      end
+    end
     context 'with field type String' do
       let(:config) do
         {
