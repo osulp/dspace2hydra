@@ -19,10 +19,7 @@ module Mapping
       lines = CSV.read(csv_file, headers: true).map(&:to_hash)
       lines.each do |line|
         value.each do |handle|
-          if line['collection_handle'].casecmp(handle) == 0
-            puts line['collection_name']
-            names << line['collection_name']
-          end
+          names << line['collection_name'] if line['collection_handle'].casecmp(handle).zero?
         end
       end
       return names
