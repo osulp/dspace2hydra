@@ -67,13 +67,6 @@ custom_nodes:
       type: String
     method: Mapping::AdminSet.lookup_admin_set
     value_from_node_property: owner_id
-  collection:
-    field:
-      name: dspace_collection
-      property: "%{work_type}.%{field_name}"
-      type: Array
-    method: Mapping::Collection.lookup_collection_name
-    value_from_node_property: collection_handles
   agreement:
     field:
       name: agreement
@@ -81,6 +74,20 @@ custom_nodes:
       type: Integer
     method: Mapping::Agreement.unprocessed
     value: 1
+  dspace_collection:
+    field:
+      name: dspace_collection
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    method: Mapping::Collection.lookup_collection_names
+    value_from_node_property: collection_handles
+  dspace_community:
+    field:
+      name: dspace_community
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    method: Mapping::Community.lookup_community_names
+    value_from_node_property: collection_handles
   keyword:
     field:
       name: keyword
