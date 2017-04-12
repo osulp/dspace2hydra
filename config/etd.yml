@@ -155,7 +155,7 @@ migration_nodes:
           name: date_created
       accessioned:
         field:
-          name: date_issued
+          name: date_uploaded
       available:
         field:
           name: date_available
