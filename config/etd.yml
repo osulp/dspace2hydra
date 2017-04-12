@@ -3,7 +3,7 @@
 work_type: "etd"
 
 # ETD AdminSet.id, or "" to use Hyrax "Default Admin Set"
-admin_set_id: "k0698748f"
+admin_set_id: ""
 
 upload_data:
   - directory: ORIGINAL
@@ -303,6 +303,20 @@ migration_nodes:
         field:
           name: publisher
   relation:
+    field:
+      name: relation
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    xpath: "//metadata/value[@element='relation']"
+    method: Mapping::Relation.unprocessed
+    qualifiers:
+      default:
+        field:
+          name: relation
+      ispartofseries:
+        field:
+          name: in_series
+  rights:
     field:
       name: relation
       property: "%{work_type}.%{field_name}"
