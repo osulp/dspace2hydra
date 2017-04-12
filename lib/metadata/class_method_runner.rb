@@ -117,7 +117,7 @@ module Metadata
       value = get_value(field_name, data, value)
       if field_array?
         data_field ||= []
-        data_field << value unless value.nil?
+        data_field << value unless value.nil? || data_field.any? { |v| v == value }
       else
         data_field = value unless value.nil?
       end
