@@ -1,0 +1,14 @@
+a371def48daab76f7406f124223b8c62 data/object.properties
+dc9f47845e13ef548e3dd689ed20feba data/metadata.xml
+2066d11d5f40a05a6381bd3b0272c3db data/LICENSE/6-metadata.xml
+4fd325d1fb4abff182c04260632d999a data/LICENSE/6
+b544453ea7dd04385e92770d31cd3cbf data/CC-LICENSE/5-metadata.xml
+0a703d871bf062c5fdc7850b1496693b data/CC-LICENSE/5
+d1659c9aadd302dcb0a8c2a5688e1fc9 data/ORIGINAL/1-metadata.xml
+3ecdefd4ff77ac2f2078fe8046c02d3d data/ORIGINAL/1
+0288a9d511a8038004db2af8ae3dea8b data/ORIGINAL/2-metadata.xml
+0b5a317858ec3916cf78acfbed7b444b data/ORIGINAL/2
+032ab10f7bac31b3e31c46a57cd6ebee data/ORIGINAL/3-metadata.xml
+d712aa161fefd09bfc013ac296958939 data/ORIGINAL/3
+9476cff8bb8782618183a055ea513f67 data/ORIGINAL/4-metadata.xml
+7a1cf8f467674a072b9e0f3522f356cf data/ORIGINAL/4

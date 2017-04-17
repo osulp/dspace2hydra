@@ -1,0 +1,29 @@
+NPRB Project #629 data and code for the publication "The role of maternal age and context-dependent maternal effects in the offspring provisioning of a long-lived marine teleost"
+
+Linsey M. Arnold1, Wade D. Smith2, Paul D. Spencer3, Allison N. Evans1, Scott A. Heppell1, Selina S. Heppell1
+1Department of Fisheries and Wildlife, Oregon State University, Corvallis, OR, USA
+2University of British Columbia, Vancouver, British Columbia, Canada
+3NOAA Alaska Fisheries Science Center, Seattle, WA, USA
+
+Corresponding author: Linsey Arnold, linsey.arnold@oregonstate.edu
+
+Files: Arnoldetal_NPRB629a.csv; Arnoldetal_NPRB629b.csv; Arnoldetal_NPRB629code.R
+
+Data Attributes: Collected in northern Gulf of Alaska, south of Kodiak Island in years 2006, 2007, 2008 over months April - May. 
+ 
+Arnoldetal_NPRB629a.csv contains the following four columns:
+1. FemaleID: the unique identifier for each female Pacific ocean perch
+2. OilGlobuleVolume: the larval oil globule volume measured in mm^3
+3. MaternalAge: the age of each female
+4. ParturitionWeek: the julian week that the female was sampled/collected 
+
+Arnoldetal_NPRB629b.csv contains the following seven columns:
+1. ID: the unique identifier for each female Pacific ocean perch
+2. Year: the year each female was collected
+3. Week: the julian week that the female was sampled/collected
+4. Timing: a character field with two levels, "Early" and "Late" signifying if the female was collected  early or late in the sampling period
+5. Age: Female age
+6. Histo_stage: The reproductive developmental stage of each female as measured with histological techniques
+7. Mod_4Stg: A modified developmental staging scheme to define four reproductive stages of development 
+  
+Arnoldetal_NPRB629code.R is r code for the analysis presented in the manuscript.   

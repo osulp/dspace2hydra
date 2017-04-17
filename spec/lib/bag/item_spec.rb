@@ -57,6 +57,16 @@ RSpec.describe Item do
     end
   end
 
+  context '#empty_other_ids' do
+    subject { Item.new new_path, new_config }
+    let(:new_path) { File.join(File.dirname(__FILE__), '../../fixtures/ITEM@1957-60170/data') }
+    let(:new_config) { File.open(File.join(File.dirname(__FILE__), '../../fixtures/mocks/default.yml')) { |f| YAML.safe_load(f) } }
+    it 'return empty array' do
+      expect(subject.other_ids).to be_empty
+    end
+  end
+
+
   context '#collection_handles' do
     it 'has an array of handles' do
       expect(subject.collection_handles).to match_array( ['1957/43909', '1957/4'] )
