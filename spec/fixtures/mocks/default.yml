@@ -17,6 +17,7 @@ uploaded_files:
 
 hydra_endpoint:
   server_domain: "http://hydra.server/"
+  server_timeout: 120
   # Configuration for a "generic_work" on Hydra.. this configuration needs modification when operating with different
   # work types, such as "Book", "ETD", "Article", etc.
   new_work:
