@@ -30,7 +30,7 @@ class Item
   end
 
   def other_ids
-    object_properties['otherIds']
+    object_properties['otherIds'] || []
   end
 
   def collection_handles

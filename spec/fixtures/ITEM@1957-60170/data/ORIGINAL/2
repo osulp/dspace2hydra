@@ -1,0 +1,275 @@
+#-----------------------------------------------------------------
+# Analysis in support of the manuscript:
+# The role of maternal age and context-dependent maternal effects in the offspring provisioning of a long-lived marine teleost
+# Code authors: Linsey M. Arnold and Allison N. Evans
+#-----------------------------------------------------------------
+
+# Analsysis: Spawn Timing
+# Requires Arnoldetal_NPRB629b.csv
+
+library(lattice)
+dir<-"C:/Users/arnoldli/Google Drive/Work/CH1 POP/POPMS_FinalEdits/POP_ManuscriptData/"
+file.b<-"Arnoldetal_NPRB629b.csv"
+Spawn<-read.csv(paste(dir,file.b,sep=""),header=T)
+head(Spawn)
+
+#Spawn$Timing = ifelse(Spawn$Week<19,"Early","Late")
+Spawn$Age_Class<-ifelse(Spawn$Age<15,"Young","Old")
+
+#remove week 19, blanks, and "U" from the data set
+Spawn<-Spawn[(Spawn$Histo_stage != "" & Spawn$Histo_stage != "U" & Spawn$Week != "19"),]
+Spawn<-droplevels(Spawn)
+
+#make the proportion tables for early females
+early<-table(Spawn$Mod_4Stg[Spawn$Timing=="Early"], Spawn$Age_Class[Spawn$Timing=="Early"])
+prop.early<-prop.table(early, 2)
+
+#make the proportion tables for late females
+late<-table(factor(Spawn$Mod_4Stg[Spawn$Timing=="Late"], levels = 1:4), Spawn$Age_Class[Spawn$Timing=="Late"])
+prop.late<-prop.table(late, 2)
+
+#Create the new components for the bar.chart
+#Create the timing variable
+bar.timing<-c(rep("Early", 8), rep("Late", 8))
+
+#Create the eggs/larvae variable
+bar.EL<-c(rep(c("1", "2","3","4"), 4))
+
+#Create the old/young variable
+bar.Young_Old<-rep(c(rep("Young", 4), rep("Old", 4)), 2) 
+
+#Pull the porportions from the two proportion tables
+bar.prop<-c(
+  prop.early["1", "Young"],
+  prop.early["2", "Young"],
+  prop.early["3", "Young"],
+  prop.early["4", "Young"],
+  prop.early["1", "Old"],
+  prop.early["2", "Old"],
+  prop.early["3", "Old"],
+  prop.early["4", "Old"],
+  prop.late["1", "Young"],
+  prop.late["2", "Young"],
+  prop.late["3", "Young"],
+  prop.late["4", "Young"],
+  prop.late["1", "Old"],
+  prop.late["2", "Old"],
+  prop.late["3", "Old"],
+  prop.late["4", "Old"])
+
+#Make the new data frame
+Bar.cont.table<-data.frame(bar.timing, bar.EL, bar.Young_Old, bar.prop)
+
+str(Bar.cont.table)
+levels(Bar.cont.table$bar.Young_Old)
+Bar.cont.table$bar.Young_Old <- factor(Bar.cont.table$bar.Young_Old, ## this is your.variable <- factor(your.variable,
+                                       levels = c("Young", "Old"))  ##and this now puts the categories you already had (old, young...in your case) in order.  
+
+levels(Bar.cont.table$bar.Young_Old)
+
+#Make the graph
+myColors <- c("black", "grey40", "grey60", "grey87")
+my.settings <- list(
+  superpose.polygon=list(col=myColors[1:4], border="black"),
+  strip.background=list(col="white"),
+  strip.border=list(col="black")
+)
+
+#Draw the graph
+barchart(bar.prop ~  bar.Young_Old| bar.timing, 
+         data=Bar.cont.table,
+         groups=bar.EL,
+         par.strip.text=list(cex=1.5),
+         scales=list(tck=c(1,0), x=list(cex=1.5), y=list(cex=1)),
+         stack=TRUE,                        ##change to FALSE for side-by-side
+         horizontal=FALSE,                  ##Makes vertical instead of horizontal plots
+         ylab = list(label="Percent within reproductive stage", fontsize=17),
+         auto.key=list(space="right",           #Choose where to put the key
+                       columns=1,                     	#Choose number of columns for the key
+                       points=FALSE, 	                #Choose whether you want points
+                       rectangles=TRUE,	              #or rectangles
+                       cex.title=7),
+         box.ratio=2,			                  #sets the ratio of bar width to inter-bar space...adjust as you like 
+         par.settings = my.settings)       	#require your settings
+
+#__________________________________________________________________________________________________________________
+
+# Oil globule volume mixed effects model
+# Requires Arnoldetal_NPRB629a.csv
+
+library(MuMIn)
+library(nlme)
+library(lattice)
+library(mgcv)
+
+dir<-"C:/Users/arnoldli/Google Drive/Work/CH1 POP/POPMS_FinalEdits/POP_ManuscriptData/" 
+file.a<-"Arnoldetal_NPRB629a.csv"
+POP.dat<-read.csv(paste(dir,file.a,sep=""),header=T)
+head(POP.dat)
+
+Age<-POP.dat$MaternalAge; Week = POP.dat$ParturitionWeek; OGV = POP.dat$OilGlobuleVolume; Female = POP.dat$FemaleID
+
+# Support for mixed effects model
+Mod1.lm<-lm(OGV ~ Age*Week, data=POP.dat)
+Mod1.lm_resid<-rstandard(Mod1.lm) # Plot residuals by female
+boxplot(Mod1.lm_resid ~ Female, data = POP.dat, axes = FALSE)
+abline(0,0); axis(2); text(1:58, -2.5, levels(POP.dat$Female), cex = 0.75, srt = 65) 
+
+#----------------------------------------------------------
+# Following protocal by Zuur et al. (2009)
+#----------------------------------------------------------
+
+# Step 1: The Top-down Strategy, start with as many explanatory variables as possible
+
+# No random term except for the ordinary residuals
+Mod1.gls<-gls(OGV ~ 1 + Age*Week, method = "ML", data = POP.dat) 
+# Random intercept
+Mod1.lme<-lme(OGV ~ 1 + Age*Week, random = ~1|Female, method = "ML", data = POP.dat)
+
+summary(Mod1.gls); summary(Mod1.lme)
+
+# Step 2: Model Selection
+Results.lme<-model.sel(Mod1.gls,Mod1.lme)
+Results.lme
+
+# Step 3: Evaluate fixed effects of preferred model (Mod1.lme)
+summary(Mod1.lme) # None of the fixed effects are significant
+
+Mod2.lme<-lme(OGV ~ 1 + Age+Week, random = ~1|Female, method = "ML", data = POP.dat)
+summary(Mod2.lme)
+
+Results.lme<-model.sel(Mod1.lme,Mod2.lme)
+Results.lme # Mod2.lme
+
+#-------------------------------------------------------
+# Testing variance structures
+#-------------------------------------------------------
+Mod2.lm<-lm(OGV ~ Age + Week, data = POP.dat)
+Mod2.gls<-gls(OGV ~ Age + Week, data = POP.dat)
+
+op<-par(mfrow = c(2,2), mar = c(4,4,2,2))
+plot(Mod2.lm, which = c(1), col = 1, add.smooth = FALSE, caption = "")
+plot(Age, resid(Mod2.lm), xlab="Age", ylab="Residuals")
+plot(Week, resid(Mod2.lm), xlab="Week", ylab="Residuals")
+par(op)
+
+plot(Mod2.gls,which=c(1), col = POP.dat$Week, add.smooth=FALSE, caption = "")
+Mod2.glsresid<-resid(Mod2.gls, type = "normalized")
+coplot(Mod2.glsresid ~ Age | Week, data = POP.dat)
+
+vf1Fixed<-varFixed(~Age)
+vf2<-varIdent(form = ~ 1 | Week)
+vf3<-varIdent(form = ~ 1 | Female)
+
+Mod2a<-gls(OGV ~ 1 + Age + Week, data = POP.dat, weights = vf1Fixed)
+Mod2b<-gls(OGV ~ 1 + Age + Week, data = POP.dat, weights = vf2)
+Mod2c<-gls(OGV ~ 1 + Age + Week, data = POP.dat, weights = vf3)
+Mod2d<-lme(OGV ~ 1 + Age + Week, random = ~1|Female, method = "ML", data = POP.dat, weights = vf1Fixed)
+Mod2e<-lme(OGV ~ 1 + Age + Week, random = ~1|Female, method = "ML", data = POP.dat, weights = vf2)
+
+Results.var<-model.sel(Mod2a,Mod2b,Mod2c,Mod2d,Mod2e); Results.var
+summary(Mod2e)
+
+#-------------------------------------------------------
+# Mod2e Validation
+#-------------------------------------------------------
+Mod2e.resid<-resid(Mod2e, type = "normalized")
+Mod2e.fitted<-fitted(Mod2e)
+
+op<-par(mfrow = c(2,2), mar = c(4,4,3,2))
+Ylab<-"Residuals"
+plot(x = Mod2e.fitted, y = Mod2e.resid, xlab = "Fitted Values", ylab=Ylab)
+plot(x = Age, y = Mod2e.resid, ylab = Ylab, main = "Female Age", xlab = "Age" )
+boxplot(Mod2e.resid ~ Week, data = POP.dat, main = "Week", ylab = Ylab)
+plot(Mod2e,which=c(1), col = POP.dat$Week, add.smooth=FALSE, caption = "")
+Mod2e.resid<-resid(Mod2e, type = "normalized")
+coplot(Mod2e.resid ~ Age | Week, data = POP.dat)
+
+op<-par(mfrow = c(2,2), mar = c(4,4,2,2))
+plot(Mod2e, which = c(1), col = 1, add.smooth = FALSE, caption = "")
+plot(Age, resid(Mod2e), xlab="Age", ylab="Residuals")
+plot(Week, resid(Mod2e), xlab="Week", ylab="Residuals")
+par(op)
+
+#Boxplot of residuals by female
+par(mfrow = c(1,1))
+Mod2e.resid<-resid(Mod2e, type = "normalized")
+boxplot(Mod2e.resid ~ Female, data=POP.dat, axes = FALSE)
+abline(0,0)
+axis(2)
+text(1:58, -2.5, levels(POP.dat$Female), cex = 0.75, srt = 65) 
+
+#-------------------------------------------------------------
+# Re-evaluate model comparison and final model summary
+#-------------------------------------------------------------
+Results.fin<-model.sel(Mod2.gls,Mod2e); Results.fin
+summary(Mod2e)
+
+#-------------------------------------------------------------
+# MODEL INTERPRETATION
+#-------------------------------------------------------------
+Age.seq<-seq(min(Age),max(Age),1)
+ogv<-0.017+0.0007*Age.seq
+diff<-max(ogv)-min(ogv)
+inc<-(diff/min(ogv))*100
+inc # 71% increase
+
+Wk.seq<-seq(min(Week),max(Week),1)
+ogv_wk<-0.017-0.002*Wk.seq
+diff_wk<-max(ogv_wk)-min(ogv_wk)
+dec_wk<-(diff_wk/min(ogv_wk))*100
+dec_wk # 37% decrease
+
+#__________________________________________________________________________________________________________________
+#A general and simple method for obtaining R2 from generalized linear mixed-effects models
+#Shinichi Nakagawa1,2 and Holger Schielzeth3
+#1 National Centre of Growth and Development, Department of Zoology, University of Otago, Dunedin, New Zealand
+#2 Department of Behavioral Ecology and Evolutionary Genetics, Max Planck Institute for Ornithology, Seewiesen, Germany
+#3 Department of Evolutionary Biology, Bielefeld University, Bielefeld, Germany
+#Running head: Variance explained by GLMMs
+#Correspondence:
+#S. Nakagawa; Department of Zoology, University of Otago, 340 Great King Street, Dunedin, 9054, New Zealand
+#Tel:  +64 (0)3 479 5046
+#Fax:  +64 (0)3 479 7584
+#e-mail: shinichi.nakagawa@otago.ac.nz 
+
+library(arm)
+library(lme4)
+
+dir<-"C:/Users/arnoldli/Google Drive/Work/CH1 POP/POPMS_FinalEdits/POP_ManuscriptData/" 
+file.a<-"Arnoldetal_NPRB629a.csv"
+POP.dat<-read.csv(paste(dir,file.a,sep=""),header=T)
+
+# Fit null model without fixed effects (but including all random effects)
+rand.mod = lmer(OGV ~ 1 + (1|Female), data = POP.dat)
+# Fit alternative model including fixed and all random effects
+full.mod = lmer(OGV ~ 1 + Age + Week + (1|Female), data = POP.dat)
+
+# Extraction of fitted value for the alternative model
+# fixef() extracts coefficents for fixed effects
+# mF@X returns fixed effect design matrix
+# mF@X does not work, use model.matrix(mF)[, 2]
+Fixed <- fixef(full.mod)[2] * model.matrix(full.mod)[, 2] + fixef(full.mod)[3] * model.matrix(full.mod)[, 3]
+
+# Calculation of the variance in fitted values
+VarF <- var(Fixed)
+
+# R2GLMM(m) - marginal R2GLMM
+# VarCorr() extracts variance components
+# attr(VarCorr(lmer.model),'sc')^2 extracts the residual variance
+VarF/(VarF + VarCorr(full.mod)$Female[1] + attr(VarCorr(full.mod), "sc")^2)
+
+# R2GLMM(c) - conditional R2GLMM for full model
+(VarF + VarCorr(full.mod)$Female[1])/(VarF + VarCorr(full.mod)$Female[1] + (attr(VarCorr(full.mod), "sc")^2))
+
+
+
+
+
+
+
+
+
+
+
+

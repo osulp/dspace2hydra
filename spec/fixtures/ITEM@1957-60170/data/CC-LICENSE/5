@@ -1,0 +1,20 @@
+<result>
+<rdf>
+    <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://creativecommons.org/ns#">
+  <Work xmlns:dc="http://purl.org/dc/elements/1.1/" rdf:about=""><license rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/" /></Work><License rdf:about="http://creativecommons.org/publicdomain/zero/1.0/">
+    <permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+    <permits rdf:resource="http://creativecommons.org/ns#Distribution" />
+    <permits rdf:resource="http://creativecommons.org/ns#Reproduction" />
+  </License>
+</rdf:RDF>
+  </rdf>
+<licenserdf>
+    <rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://creativecommons.org/ns#">
+  <License rdf:about="http://creativecommons.org/publicdomain/zero/1.0/">
+    <permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+    <permits rdf:resource="http://creativecommons.org/ns#Distribution" />
+    <permits rdf:resource="http://creativecommons.org/ns#Reproduction" />
+  </License>
+</rdf:RDF>
+  </licenserdf>
+</result>
