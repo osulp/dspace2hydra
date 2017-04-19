@@ -9,9 +9,9 @@ module Timeable
     if days > 0
       "#{days} days and #{hours % 24} hours"
     elsif hours > 0
-      "#{hours} and #{mins % 60} minutes"
+      "#{hours} hours and #{mins % 60} minutes"
     elsif mins > 0
-      "#{mins} and #{secs % 60} seconds"
+      "#{mins} minutes and #{secs % 60} seconds"
     elsif secs >= 0
       "#{secs} seconds"
     end
