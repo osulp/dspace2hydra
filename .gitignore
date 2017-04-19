@@ -34,3 +34,5 @@ Gemfile.lock
 !/spec/cache/.keep
 .vscode/*
 lookup/collectionlist.csv
+/log/*
+!/log/.keep

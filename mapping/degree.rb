@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Mapping
   class Degree
     extend Extensions::BasicValueHandler
@@ -13,6 +14,7 @@ module Mapping
       field_name_one, field_name_two = args.flatten
       # matches when zero or more spaces around the spliter
       matches = value.match(/(.*\))\s*in\s*(.*)/)
+      raise StandardError, "remapped_field_split did not find the regex '(.*\\))\\s*in\\s*(.*)' to split the degree name, unable to continue processing with this configuration. Check the metadata and reprocess." unless matches
       [
         { field_name: field_name_one,  value: matches[1] },
         { field_name: field_name_two,  value: matches[2] }

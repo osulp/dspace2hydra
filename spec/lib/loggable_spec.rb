@@ -10,12 +10,12 @@ RSpec.describe Loggable do
   end
   subject { klass.new }
   it '#start_logging_to' do
-    logger = subject.start_logging_to('/tmp/test')
+    logger = subject.start_logging_to('/tmp/test', {})
     expect(logger.appenders.count).to eq 1
     expect(logger.appenders.first.filename).to eq('/tmp/test')
   end
   it '#stop_logging_to' do
-    logger = subject.stop_logging_to('/tmp/test')
+    logger = subject.stop_logging_to('/tmp/test', {})
     expect(logger.appenders.count).to eq 0
   end
   it '#log_and_raise' do
