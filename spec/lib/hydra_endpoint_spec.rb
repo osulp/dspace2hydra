@@ -22,6 +22,19 @@ RSpec.describe HydraEndpoint do
     expect { subject }.to_not raise_exception
   end
 
+  it '#server_domain' do
+    expect(subject.server_domain).to eq URI.parse(work_type_config.dig('hydra_endpoint', 'server_domain'))
+  end
+
+  it 'has a default #server_timeout' do
+    config['server_timeout'] = nil
+    expect(subject.server_timeout).to eq 60
+  end
+
+  it '#server_timeout' do
+    expect(subject.server_timeout).to eq work_type_config.dig('hydra_endpoint', 'server_timeout')
+  end
+
   it 'has a new_work_url' do
     expect(subject.new_work_url).to eq URI.join(server_domain, work_type_config.dig('hydra_endpoint', 'new_work', 'url'))
   end

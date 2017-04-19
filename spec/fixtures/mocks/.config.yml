@@ -11,6 +11,7 @@ cache_and_logging_path: "spec/cache/processed_items"
 # Hydra server configurations for posting new works and files
 hydra_endpoint:
   server_domain: "http://hydra.server/"
+  server_timeout: 120
   # The CSRF hidden from field name to grab and use for actions such as posting file uploads. The web UI has an AJAX
   # file upload capability that makes use of this token with posting new files to the "uploads" url.
   csrf_form_field: "authenticity_token"

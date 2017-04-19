@@ -10,9 +10,10 @@ class HydraEndpoint
   def initialize(config, work_type_config, started_at = DateTime.now)
     @logger = Logging.logger[self]
     @logger.debug("initializing hydra endpoint connection")
-    @agent = Mechanize.new
     @config = config
     @work_type_config = work_type_config
+    @agent = Mechanize.new
+    @agent.read_timeout = server_timeout
     @csrf_token = get_csrf_token(login_url)
     login
     @started_at = started_at
@@ -25,6 +26,12 @@ class HydraEndpoint
     config = @work_type_config.dig('hydra_endpoint', 'workflow_actions', 'auto_advance_work')
     config = @config.dig('workflow_actions', 'auto_advance_work') if config.nil?
     config.nil? ? true : config
+  end
+
+  def server_timeout
+    timeout = @config.dig('server_timeout')
+    timeout = 60 unless timeout
+    timeout
   end
 
   def server_domain
