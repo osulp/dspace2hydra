@@ -11,7 +11,8 @@ module Mapping
     # @return [Array<Hash>] - the remapped split value
     def self.remapped_field_split(value, *args)
       field_name_one, field_name_two = args.flatten
-      matches = value.match(/(.*\)) in (.*)/)
+      # matches when zero or more spaces around the spliter
+      matches = value.match(/(.*\))\s*in\s*(.*)/)
       [
         { field_name: field_name_one,  value: matches[1] },
         { field_name: field_name_two,  value: matches[2] }
