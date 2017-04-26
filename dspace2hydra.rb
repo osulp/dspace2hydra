@@ -153,14 +153,13 @@ create_log_file_appender(started_at.strftime('%Y%m%d%H%M%S'), error: true)
 validate_arguments(CONFIG)
 
 type_config = File.open(File.join(File.dirname(__FILE__), CONFIG['type_config'])) { |f| YAML.safe_load(f) }
-# Overwrite the [TYPE_CONFIG].admin_set_id configuration if there was one passed on the commandline
 type_config['admin_set_id'] = CONFIG['admin_set_id'] unless CONFIG['admin_set_id'].nil?
 
 @logger = Logging.logger[self]
 
 # Determine if a cached json file is being reprocessed or a new number of bags
 if CONFIG['cached_json']
-  server = HydraEndpoint.new(CONFIG['hydra_endpoint'], type_config, started_at)
+  server = HydraEndpoint::Server.new(CONFIG['hydra_endpoint'], type_config, started_at)
   file = File.open(File.join(File.dirname(__FILE__), CONFIG['cached_json']))
   json = file.read
   data = JSON.parse(json)
@@ -186,14 +185,14 @@ else
       bag_start = DateTime.now
       start_logging_to(item_log_path(bag, started_at), item_id: item_id)
       @logger.info('Started')
-      server = HydraEndpoint.new(CONFIG['hydra_endpoint'], type_config, started_at)
+      server = HydraEndpoint::Server.new(CONFIG['hydra_endpoint'], type_config, started_at)
       work = process_bag(bag, server)
       @logger.warn('Not configured to advance work through workflow') unless server.should_advance_work?
       work = advance_workflow(work, server) if server.should_advance_work?
       server.clear_csrf_token
       @logger.info("Finished in #{time_since(bag_start)}")
     rescue StandardError => e
-      @logger.fatal(e.message)
+      @logger.fatal("#{e.message} : #{e.backtrace.join("\n\t")}")
     ensure
       stop_logging_to(item_log_path(bag, started_at), item_id: item_id)
     end

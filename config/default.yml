@@ -2,9 +2,6 @@
 # ETD Hyrax work type
 work_type: "default_work"
 
-# Default AdminSet.id, or "" to use Hyrax "Default Admin Set"
-admin_set_id: ""
-
 upload_data:
   - directory: ORIGINAL
     ignore_files:
@@ -26,24 +23,6 @@ hydra_endpoint:
     # which form on the page will be used for manipulation and submission.. as well as grabbing the CSRF token from it.
     form_action: "/concern/default_works?locale=en"
 
-  # Override .config.yml configuration for handling Workflow advancement for this Work type.
-  #workflow_actions:
-  #  auto_advance_work: true
-  #  url: "/concern/workflow_actions/%{id}?local=en"
-  #  name:
-  #    field:
-  #      name: name
-  #      property: "workflow_action.%{field_name}"
-  #      type: String
-  #    value: "approve"
-  #  comment:
-  #    field:
-  #      name: comment
-  #      property: "workflow_action.%{field_name}"
-  #      type: String
-  #    value: "Approved by data migration user."
-
-
 # Add this value to the migration data
 # (DEFAULT) 'always' : always add this value to the migration data
 # 'except_empty_value' : add this value except for empty/nil
@@ -55,7 +34,6 @@ value_add_to_migration: except_empty_value
 # When operating on a node, grab the value from its property. The property would likely
 # be pulling from the configuration and/or value passed to a commandline arg.
 # (DEFAULT) : Don't use a node property, use the standard value from CustomNode or Qualifier behavior
-# (EXAMPLE) admin_set_id : A CustomNode may get the AdminSet ID provided in configuration or overridden on the commandline
 value_from_node_property: ''
 
 # Custom metadata nodes to add to the data payload posted to the server

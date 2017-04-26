@@ -41,6 +41,9 @@ hydra_endpoint:
     # which form on the page will be used for manipulation and submission.. as well as grabbing the CSRF token from it.
     form_action: "/concern/generic_works?locale=en"
 
+  admin_sets:
+    url: "/admin/admin_sets?locale=en"
+
   workflow_actions:
     auto_advance_work: true
     url: "/concern/workflow_actions/%{id}?local=en"
