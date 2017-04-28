@@ -48,9 +48,9 @@ RSpec.describe HydraEndpoint::Server do
     end
 
     context 'when publishing an existing work JSON file' do
-      let(:work_response) { subject.publish_work(data) }
+      let(:work_response) { subject.publish_work(data, subject.new_work_url) }
       it 'can publish_work' do
-        expect(subject).to receive(:post_data).with(subject.new_work_action, JSON.generate(data), headers).and_return(mock_return)
+        expect(subject).to receive(:post_data).with(subject.new_work_url, JSON.generate(data), headers).and_return(mock_return)
         expect(work_response).to eq mock_hydra_endpoint_response
       end
     end
@@ -58,8 +58,8 @@ RSpec.describe HydraEndpoint::Server do
     context 'when submitting a new work' do
       let(:work_response) { subject.submit_new_work(bag, data) }
       it 'can submit_new_work' do
-        expect(subject).to receive(:cache_data).with(data, bag.item_cache_path)
-        expect(subject).to receive(:publish_work).with(data, {}).and_return(mock_hydra_endpoint_response)
+        expect(subject).to receive(:cache_data).with(data, bag.item_cache_path, 'data')
+        expect(subject).to receive(:publish_work).with(data, subject.new_work_action, {}).and_return(mock_hydra_endpoint_response)
         expect(work_response).to eq mock_hydra_endpoint_response
       end
     end

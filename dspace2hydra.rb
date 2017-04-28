@@ -8,6 +8,7 @@ require_relative 'lib/loggable'
 require_relative 'lib/timeable'
 require_relative 'lib/bag'
 require_relative 'lib/hydra_endpoint'
+require_relative 'lib/work'
 require_relative 'mapping/mapping'
 
 include Loggable
@@ -65,17 +66,6 @@ def validate_arguments(config)
   true
 end
 
-# Process the metadata, and upload the files for a bag
-# @param [Bag] bag - the bag to process
-# @param [HydraEndpoint] server - the server to submit a work and upload files to
-def process_bag(bag, server)
-  @logger.info('Processing bag')
-  data = process_bag_metadata(bag)
-  file_ids = upload_files(bag, server)
-  data[bag.uploaded_files_field_name] = bag.uploaded_files_field(file_ids)
-  page = server.submit_new_work(bag, data)
-end
-
 ##
 # Publish the work to the server
 # @param [Hash] data - the processed data to publish to the server
@@ -83,57 +73,6 @@ end
 def publish_work(data, server)
   @logger.info('Publishing work to server')
   page = server.publish_work(data)
-end
-
-##
-# Advance the work through its workflow, typically to the 'deposited' state
-# @param [Hash] response - the work response from the server after the new work was created
-# @param [HydraEndpoint] server - the endpoint to advance the work on
-def advance_workflow(response, server)
-  @logger.info('Advancing work through workflow')
-  page = server.advance_workflow(response)
-end
-
-##
-# Process the mapped as well as the custom metadata configured for this bag.
-# @param [Bag] bag - the bag to process
-# @return [Hash] - the processed metadata hash
-def process_bag_metadata(bag)
-  data = {}
-  @logger.info('Mapping item metadata')
-  bag.item.metadata.each do |_k, nodes|
-    nodes.each do |metadata_node|
-      data = metadata_node.qualifier.process_node(data)
-    end
-  end
-  @logger.info('Mapping configured custom metadata')
-  bag.item.custom_metadata.each do |_k, nodes|
-    nodes.each do |custom_metadata_node|
-      data = custom_metadata_node.process_node(data)
-    end
-  end
-  data
-end
-
-##
-# Upload the files for this bag, and return the list of file_ids that were generated
-# through the process.
-# @param [Bag] bag - the bag to process
-# @param [HydraEndpoint] server - the server to upload files to
-# @return [Array] - an array of file_id's that were generated on the server
-def upload_files(bag, server)
-  file_ids = []
-  bag.files_for_upload.each do |item_file|
-    # Make a temporary copy of the file with the proper filename, upload it, grab the file_id from the servers response
-    # and remove the temporary file
-    item_file.copy_to_metadata_full_path
-    @logger.info("Uploading filename from metadata to server: #{item_file.metadata_full_path}")
-    upload_response = server.upload(item_file.file(item_file.metadata_full_path))
-    json = JSON.parse(upload_response.body)
-    file_ids << json['files'].map { |f| f['id'] }
-    item_file.delete_metadata_full_path
-  end
-  file_ids.flatten.uniq
 end
 
 ##
@@ -186,10 +125,10 @@ else
       start_logging_to(item_log_path(bag, started_at), item_id: item_id)
       @logger.info('Started')
       server = HydraEndpoint::Server.new(CONFIG['hydra_endpoint'], type_config, started_at)
-      work = process_bag(bag, server)
-      @logger.warn('Not configured to advance work through workflow') unless server.should_advance_work?
-      work = advance_workflow(work, server) if server.should_advance_work?
-      server.clear_csrf_token
+      # single_work = Work::MigrationStrategy::SingleWork.new(bag, server, CONFIG, type_config)
+      single_work = Work::MigrationStrategy::ParentWithChildren.new(bag, server, CONFIG, type_config)
+      single_work.process_bag
+      # server.clear_csrf_token
       @logger.info("Finished in #{time_since(bag_start)}")
     rescue StandardError => e
       @logger.fatal("#{e.message} : #{e.backtrace.join("\n\t")}")

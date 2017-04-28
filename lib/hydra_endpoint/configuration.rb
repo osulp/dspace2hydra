@@ -42,6 +42,11 @@ module HydraEndpoint
       get_configuration 'form_action', @work_type_config.dig('hydra_endpoint', 'new_work'), @config.dig('new_work')
     end
 
+    def new_child_work_action(parent_id)
+      config = get_configuration 'form_action', @work_type_config.dig('hydra_endpoint', 'new_child_work'), @config.dig('new_child_work')
+      format(config, parent_id: parent_id)
+    end
+
     def uploads_url
       url = get_configuration 'url', @config.dig('uploads')
       URI.join(server_domain, url)

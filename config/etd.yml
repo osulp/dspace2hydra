@@ -12,6 +12,18 @@ uploaded_files:
     property: "%{field_name}"
     type: Array
 
+parent_work:
+  field:
+    name: "parent_id"
+    property: "%{field_name}"
+    type: String
+
+in_works:
+  field:
+    name: "in_works_ids"
+    property: "%{work_type}.%{field_name}"
+    type: Array
+
 hydra_endpoint:
   #server_domain: "http://localhost:3000"
   # Configuration for a "generic_work" on Hydra.. this configuration needs modification when operating with different
@@ -22,6 +34,9 @@ hydra_endpoint:
     # The form action used on the new work page for posting a new work. This is used as a selector to properly identify
     # which form on the page will be used for manipulation and submission.. as well as grabbing the CSRF token from it.
     form_action: "/concern/etds?locale=en"
+
+  new_child_work:
+    form_action: "/concern/parent/%{parent_id}/etds?local=en"
 
 # Add this value to the migration data
 # (DEFAULT) 'always' : always add this value to the migration data

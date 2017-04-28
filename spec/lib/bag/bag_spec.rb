@@ -43,14 +43,6 @@ RSpec.describe Bag do
     expect(subject.type_config).to eq type_config
   end
 
-  it "has a #uploaded_files_field_name" do
-    expect(subject.uploaded_files_field_name).to eq format(type_config['uploaded_files']['field']['property'], field_name: type_config['uploaded_files']['field']['name'])
-  end
-
-  it 'has a flattened array for uploaded_files_field' do
-    expect(subject.uploaded_files_field([0,[1,2,3,4]])).to eq [0,1,2,3,4]
-  end
-
   it "has a files_for_upload" do
     expect(subject.files_for_upload.length).to eq 1
   end

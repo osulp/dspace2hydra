@@ -35,23 +35,30 @@ module HydraEndpoint
     # Cache the data and submit a new work related to the bag, and processed metadata
     # @param [Metadata::Bag] bag - the bag containing the item to be migrated
     # @param [Hash] data - the metadata after mapping/lookup/processing
+    # @param [String] file_name_segment - an optional argument for specifying the cached data file_name format
     # @param [Hash] headers - any HTTP headers necessary for POST to the server
     # @return [HydraEndpoint::Response] - the work and location struct containing the result of publishing
-    def submit_new_work(bag, data, headers = {})
-      cache_data data, bag.item_cache_path
-      publish_work(data, headers)
+    def submit_new_work(bag, data, file_name_segment = 'data', headers = {})
+      cache_data data, bag.item_cache_path, file_name_segment
+      publish_work(data, new_work_action, headers)
+    end
+
+    def submit_new_child_work(bag, data, parent_id, file_name_segment = 'data', headers = {})
+      cache_data data, bag.item_cache_path, file_name_segment
+      publish_work(data, new_child_work_action(parent_id), headers)
     end
 
     ##
     # Publish the work to the server
     # @param [Hash] data - the metadata after mapping/lookup/processing
+    # @param [String] action_url - the url to post data to the server
     # @param [Hash] headers - any HTTP headers necessary for POST to the server
     # @return [HydraEndpoint::Response] - the work and location struct containing the result of publishing
-    def publish_work(data, headers = {})
+    def publish_work(data, action_url, headers = {})
       data.merge! csrf_token_data
       headers = json_headers(headers)
-      @logger.debug("publishing work to #{new_work_action}")
-      server_response = post_data(new_work_action, JSON.generate(data), headers)
+      @logger.debug("publishing work to #{action_url}")
+      server_response = post_data(action_url, JSON.generate(data), headers)
       response = Response.new JSON.parse(server_response.body), URI.join(server_domain, server_response['location'])
       @logger.info("Work #{response.dig('work', 'id')} published at #{response.dig('uri')}")
       response
@@ -139,9 +146,10 @@ module HydraEndpoint
     # Make a backup of the data being posted to the server prior to sending it.
     # @param [Hash] data - the data being posted to the server
     # @param [String] item_cache_directory - the full path to the directory for cached data
-    def cache_data(data, item_cache_directory)
+    # @param [String] file_name_segment - a specific file name fragment for the cached data
+    def cache_data(data, item_cache_directory, file_name_segment)
       timestamp = @started_at.strftime('%Y%m%d%H%M%S')
-      cache_file = File.join(item_cache_directory, "#{timestamp}_data.json")
+      cache_file = File.join(item_cache_directory, "#{timestamp}_#{file_name_segment}.json")
       @logger.debug("caching json before publishing work: #{cache_file}")
       File.open(cache_file, 'w+') do |file|
         file.write(JSON.pretty_generate(data))
