@@ -6,6 +6,9 @@ module Mapping
 
     extend Extensions::BasicValueHandler
 
+    CACHE_FILE = '../cache/admin_sets.yml'
+    CSV_FILE = '../lookup/collectionlist.csv'
+
     ##
     # Locate adminset with the passing owning_collection handle
     #
@@ -13,11 +16,27 @@ module Mapping
     # @param[Array] *args - properties passed to the method
     # return - adminset_id, a blank adminset_id maps to 'Default' adminset in Hyrax
     def self.lookup_admin_set(value, *_args)
-      csv_file = File.join(File.dirname(__FILE__), '../lookup/collectionlist.csv')
+      csv_file = File.join(File.dirname(__FILE__), CSV_FILE)
       lines = CSV.read(csv_file, headers: true, encoding: 'UTF-8').map(&:to_hash)
       line = lines.find { |l| l['collection_handle'].casecmp(value).zero? }
-      raise StandardError, "did not find admin_set_id for collection_handle '#{value}' in collectionlist.csv" if line.nil? || line['Admin_Set_ID'].to_s.empty?
-      line['Admin_Set_ID']
+      raise StandardError, "did not find admin_set_name for collection_handle '#{value}' in collectionlist.csv, specify 'Default' if you intend on using the Default Admin Set." if line.nil? || line['Admin_Set_Name'].to_s.empty?
+      admin_set_name = line['Admin_Set_Name']
+      # Currently in Hyrax, the default AdminSet is special, it has no ID, passing an empty admin_set_id associates a work to the default one.
+      # We want to explicitly map to 'default', and error on empty/missing mapped rows in the CSV
+      return '' if admin_set_name.casecmp('default').zero?
+
+      items = load_admin_sets_cache
+      found = items['admin_sets'].select { |item| item['title'].any? { |t| t.casecmp(admin_set_name).zero? } } if items
+      raise StandardError, "unable to determine which admin set to associate to, found #{found.count} in the cache. Admin sets should have unique titles on the server." if found.count != 1
+      found.first['id']
+    end
+
+    private
+
+    def self.load_admin_sets_cache
+      File.open(File.join(File.dirname(__FILE__), CACHE_FILE), 'r') do |file|
+        return YAML.safe_load(file)
+      end
     end
   end
 end

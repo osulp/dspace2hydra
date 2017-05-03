@@ -1,18 +1,19 @@
 # frozen_string_literal: true
-RSpec.describe HydraEndpoint do
-  subject { HydraEndpoint.new(config, work_type_config) }
+RSpec.describe HydraEndpoint::Server do
+  subject { HydraEndpoint::Server.new(config, work_type_config) }
   let(:file) { double(File, path: '/tmp/bogus_file') }
   let(:data) { { 'default_work' => { 'id' => 123, 'title' => 'test' } } }
-  let(:config_file) { File.open(File.join(File.dirname(__FILE__), '../fixtures/mocks/.config.yml')) { |f| YAML.safe_load(f) } }
+  let(:config_file) { File.open(File.join(File.dirname(__FILE__), '../../fixtures/mocks/.config.yml')) { |f| YAML.safe_load(f) } }
   let(:config) { config_file['hydra_endpoint'] }
-  let(:work_type_config) { File.open(File.join(File.dirname(__FILE__), '../fixtures/mocks/default.yml')) { |f| YAML.safe_load(f) } }
+  let(:work_type_config) { File.open(File.join(File.dirname(__FILE__), '../../fixtures/mocks/default.yml')) { |f| YAML.safe_load(f) } }
   let(:headers) { { 'Content-Type' => 'application/json', 'Accept' => 'application/json' } }
   let(:bag) { double('bag', item_cache_path: config_file['item_cache_path']) }
   let(:server_domain) { config_file.dig('hydra_endpoint', 'server_domain') }
   let(:mock_return) { double('Mock Server Response', body: JSON.generate(data)) }
-  let(:mock_hydra_endpoint_response) { HydraEndpoint::Response.new JSON.parse(mock_return.body), URI.join(server_domain, mock_return['location']) }
+  let(:mock_hydra_endpoint_response) { HydraEndpoint::Server::Response.new JSON.parse(mock_return.body), URI.join(server_domain, mock_return['location']) }
   before :each do
     allow_any_instance_of(described_class).to receive(:login).and_return(true)
+    allow_any_instance_of(described_class).to receive(:cache_admin_sets).and_return(true)
     allow_any_instance_of(described_class).to receive(:post_data).and_return(true)
     allow_any_instance_of(described_class).to receive(:get_csrf_token) { 'super_l33t_tok3n' }
     allow(mock_return).to receive(:[]).with('location').and_return("/default_work/#{data['id']}")
@@ -20,51 +21,6 @@ RSpec.describe HydraEndpoint do
 
   it 'initializes without errors' do
     expect { subject }.to_not raise_exception
-  end
-
-  it '#server_domain' do
-    expect(subject.server_domain).to eq URI.parse(work_type_config.dig('hydra_endpoint', 'server_domain'))
-  end
-
-  it 'has a default #server_timeout' do
-    config['server_timeout'] = nil
-    expect(subject.server_timeout).to eq 60
-  end
-
-  it '#server_timeout' do
-    expect(subject.server_timeout).to eq work_type_config.dig('hydra_endpoint', 'server_timeout')
-  end
-
-  it 'has a new_work_url' do
-    expect(subject.new_work_url).to eq URI.join(server_domain, work_type_config.dig('hydra_endpoint', 'new_work', 'url'))
-  end
-
-  it 'has a login_url' do
-    expect(subject.login_url).to eq URI.join(server_domain, config.dig('login', 'url'))
-  end
-
-  it 'has a login_form_id' do
-    expect(subject.login_form_id).to eq config.dig('login', 'form_id')
-  end
-
-  it 'has a workflow_actions_url' do
-    expect(subject.workflow_actions_url(1)).to eq URI.join(server_domain, '/concern/workflow_actions/1?local=en')
-  end
-
-  it 'has a workflow_actions_field' do
-    expect(subject.workflow_actions_data('name')).to eq('workflow_action' => { 'name' => 'approve' })
-  end
-
-  it 'has a new_work_action' do
-    expect(subject.new_work_action).to eq work_type_config.dig('hydra_endpoint', 'new_work', 'form_action')
-  end
-
-  it 'has a csrf_form_field' do
-    expect(subject.csrf_form_field).to eq config.dig('csrf_form_field')
-  end
-
-  it 'has should_advance_work? returning true by default' do
-    expect(subject.should_advance_work?).to be_truthy
   end
 
   it 'can upload a file' do

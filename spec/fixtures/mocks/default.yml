@@ -2,9 +2,6 @@
 # ETD Hyrax work type
 work_type: "default_work"
 
-# Default AdminSet.id, or "" to use Hyrax "Default Admin Set"
-admin_set_id: ""
-
 upload_data:
   - directory: ORIGINAL
     ignore_files:

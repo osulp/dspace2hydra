@@ -9,10 +9,6 @@ RSpec.describe Metadata::CustomNode do
   let(:data) { {} }
   let(:item) { Item.new File.join(File.dirname(__FILE__), '../../fixtures/ITEM@1957-57239/data'), File.open(File.join(File.dirname(__FILE__), '../../fixtures/mocks/default.yml')) { |f| YAML.safe_load(f) } }
 
-  it 'has an admin_set_id property' do
-    expect(custom_node.admin_set_id).to be_truthy
-  end
-
   it 'has an value_add_to_migration property' do
     expect(custom_node.value_add_to_migration).to be_truthy
   end
