@@ -45,10 +45,10 @@ CONFIG.merge!(options)
 ##
 # Create a standard or error based log file appender and add it to the root logger
 # @param [String] date_string - the datetime string to name the file
-# @param [Boolean] error - whether or not it's an error log (default false)
+# @param [Boolean] error - error level
 def create_log_file_appender(date_string, error = false)
-  error_string = error ? 'error.' : ''
-  log_file = File.join(File.dirname(__FILE__), 'log', "#{date_string}.#{error_string}log")
+  log_type_string = error ? 'error.' : ''
+  log_file = File.join(File.dirname(__FILE__), 'log', "#{date_string}.#{log_type_string}log")
   appender = Logging.appenders.file(log_file, layout: Loggable.basic_layout)
   appender = Logging.appenders.file(log_file, layout: Loggable.basic_layout, level: :error) if error
   Logging.logger.root.add_appenders(log_file, appender)

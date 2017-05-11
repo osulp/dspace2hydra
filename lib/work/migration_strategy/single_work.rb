@@ -8,13 +8,18 @@ module Work
       # Creates a single work for the migrated bag. All of the metadata is published along with each file that is
       # uploaded and associated to the work. This is a basic/standard migrated item.
       def process_bag
-        @logger.info('Processing bag')
+        log_to_summary('----------------------------------------------------------------------------------')
+        log_to_summary("SingleWork Migration Strategy Processing Bag ITEM@#{@bag.item.item_id}")
         data = process_bag_metadata(@bag)
         file_ids = upload_files(@bag, @server)
         data[@bag.uploaded_files_field_name] = @bag.uploaded_files_field(file_ids)
         work_response = @server.submit_new_work(@bag, data)
+        log_to_summary("Work #{work_response.dig('work', 'id')} created at #{work_response.dig('uri')}")
         @logger.warn('Not configured to advance work through workflow') unless @server.should_advance_work?
         workflow_response = advance_workflow(work, @server) if @server.should_advance_work?
+      rescue StandardError => e
+        log_to_summary("[ERROR] Failed processing: #{e.message} :\n\t #{e.backtrace.join("\n\t")}")
+        raise e
       end
 
       private

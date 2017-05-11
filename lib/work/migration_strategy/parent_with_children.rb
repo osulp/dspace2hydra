@@ -14,16 +14,21 @@ module Work
       #    bare minimum necessary for ingesting. Set 'Title' to be the filename of the uploaded file.
       # 3. Associate the child work to the parent ID from step #1, and publish the work.
       def process_bag
-        @logger.info('Processing bag')
+        log_to_summary('----------------------------------------------------------------------------------')
+        log_to_summary("ParentWithChildren Migration Strategy Processing Bag ITEM@#{@bag.item.item_id}")
         data = process_bag_metadata(@bag)
         parent_work_response = publish_parent_work(data)
         publish_children_works(parent_work_response, data)
+      rescue StandardError => e
+        log_to_summary("[ERROR] Failed processing: #{e.message} :\n\t #{e.backtrace.join("\n\t")}")
+        raise e
       end
 
       private
 
       def publish_parent_work(data)
         work_response = @server.submit_new_work(@bag, data, 'parent')
+        log_to_summary("[Parent] work #{work_response.dig('work', 'id')} created at #{work_response.dig('uri')}")
         @logger.warn('[Parent] Not configured to advance work through workflow') unless @server.should_advance_work?
         workflow_response = advance_workflow(work_response, @server) if @server.should_advance_work?
         work_response
@@ -40,6 +45,7 @@ module Work
                                          parent_id: parent_id,
                                          item_file_name: item_file.name)
           work_response = @server.submit_new_child_work(@bag, data, parent_id, "child-#{index}")
+          log_to_summary("[Child] work #{work_response.dig('work', 'id')} created at #{work_response.dig('uri')}")
           children_work_responses << work_response
           @logger.warn("[Child #{index}] Not configured to advance work through workflow") unless @server.should_advance_work?
           workflow_response = advance_workflow(work_response, @server) if @server.should_advance_work?
