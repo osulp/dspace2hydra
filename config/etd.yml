@@ -331,7 +331,6 @@ migration_nodes:
       lcsh:
         field:
           name: subject
-        method: Mapping::Subject.uri
   title:
     field:
       name: title
