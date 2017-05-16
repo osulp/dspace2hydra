@@ -9,6 +9,7 @@ Dspace2hydra (d2h) was built to facilitate bulk automated data and item migratio
 - Ruby 2.3
 - [Hyrax](https://github.com/projecthydra-labs/hyrax) based application instance (our goal is to be ready for the Hyrax 1.0 release)
 - Dspace generated BAG files (we use [dspace-replicate](https://github.com/DSpace/dspace-replicate) to generate ours)
+- Export DSpace BAGs via command line: [DSpace]/bin/dspace curate -t transmitaip -i handle -v
 
 # Is it ready for me to use?
 
