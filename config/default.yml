@@ -210,7 +210,7 @@ migration_nodes:
           name: file_format
   identifier:
     field:
-      name: identifier_uri
+      name: replaces
       property: "%{work_type}.%{field_name}"
       type: Array
     xpath: "//metadata/value[@element='identifier']"
@@ -218,7 +218,7 @@ migration_nodes:
     qualifiers:
       default:
         field:
-          name: identifier_uri
+          name: replaces
       citation:
         field:
           name: bibliographic_citation
@@ -227,7 +227,7 @@ migration_nodes:
           name: isbn
       uri:
         field:
-          name: identifier_uri
+          name: replaces
       doi:
         field:
           name: doi
