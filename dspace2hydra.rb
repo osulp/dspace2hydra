@@ -125,10 +125,16 @@ else
       start_logging_to(item_log_path(bag, started_at), item_id: item_id)
       @logger.info('Started')
       server = HydraEndpoint::Server.new(CONFIG['hydra_endpoint'], type_config, started_at)
-      # single_work = Work::MigrationStrategy::SingleWork.new(bag, server, CONFIG, type_config)
-      single_work = Work::MigrationStrategy::ParentWithChildren.new(bag, server, CONFIG, type_config)
-      single_work.process_bag
-      # server.clear_csrf_token
+
+      # We've decided that if a work has 2+ files, then it should be a Parent work with each file being a
+      # child.
+      if bag.files_for_upload.count > 1
+        work = Work::MigrationStrategy::ParentWithChildren.new(bag, server, CONFIG, type_config)
+      else
+        work = Work::MigrationStrategy::SingleWork.new(bag, server, CONFIG, type_config)
+      end
+      work.process_bag
+
       @logger.info("Finished in #{time_since(bag_start)}")
     rescue StandardError => e
       @logger.fatal("#{e.message} : #{e.backtrace.join("\n\t")}")
