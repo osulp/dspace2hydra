@@ -14,7 +14,6 @@ module HydraEndpoint
       @work_type_config = work_type_config
       @agent = Mechanize.new
       @agent.read_timeout = server_timeout
-      @csrf_token = get_csrf_token(login_url)
       login
       cache_admin_sets
       @started_at = started_at
@@ -128,11 +127,15 @@ module HydraEndpoint
     # @return [Mechanize::Page] the page result, after redirects, after logging in. (ie. Hydra dashboard)
     def login
       @logger.debug("logging into server at : #{login_url}")
-      page = @agent.get(login_url)
+      page = @agent.get(login_url, [], nil, authentication_header)
       form = page.form_with(id: @config.dig('login', 'form_id'))
-      form.field_with(name: @config.dig('login', 'username_form_field')).value = @config.dig('login', 'username')
-      form.field_with(name: @config.dig('login', 'password_form_field')).value = @config.dig('login', 'password')
-      @agent.submit form
+
+      if form
+        @csrf_token = page.at("[name='#{csrf_form_field}']").attr('value')
+        form.field_with(name: @config.dig('login', 'username_form_field')).value = @config.dig('login', 'username')
+        form.field_with(name: @config.dig('login', 'password_form_field')).value = @config.dig('login', 'password')
+        @agent.submit form
+      end
       clear_csrf_token
     rescue Mechanize::ResponseCodeError => e
       @logger.fatal("Login to #{login_url} handled HTTP Error : #{e}")

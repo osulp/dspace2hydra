@@ -23,6 +23,7 @@ hydra_endpoint:
     url: "/users/sign_in"
     username: "admin_user"
     password: "admin_user_password"
+    authentication_token: "authentication_token"
 
     # If the url is redirected to another authentication system, such as CAS, the configurations set below should be
     # relative to the form that is presented to the user for typing in their username and password.

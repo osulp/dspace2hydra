@@ -57,6 +57,12 @@ module HydraEndpoint
       URI.join(server_domain, url)
     end
 
+    def authentication_header
+      username = get_configuration 'username', @config.dig('login')
+      authentication_token = get_configuration 'authentication_token', @config.dig('login')
+      { 'D2H-AUTHENTICATION' => "#{username}|#{authentication_token}" }
+    end
+
     def csrf_form_field
       get_configuration 'csrf_form_field', @config
     end
