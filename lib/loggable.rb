@@ -2,6 +2,14 @@
 module Loggable
   @logger = Logging.logger[self]
 
+  def log_to_summary(message)
+    summary_logger = Logging.logger['summary_log']
+    log_file = File.join(File.dirname(__FILE__), '../log/summary.log')
+    appender = Logging.appenders.file(log_file, layout: Loggable.basic_layout)
+    summary_logger.add_appenders(log_file, appender) if summary_logger.appenders.empty?
+    summary_logger.info(message)
+  end
+
   ##
   # Start a file logger to any given path along with a mapped diagnostic context. This allows for
   # logging patterns to include something like %X{blah} to match the key and use its value provided in the mdc argument.
