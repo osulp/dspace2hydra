@@ -38,18 +38,22 @@ module Work
         children_work_responses = []
         parent_id = parent_work_response.work.dig('id')
         @bag.files_for_upload.each_with_index do |item_file, index|
-          item_file.copy_to_metadata_full_path
-          @logger.info("[Child #{index}] Uploading filename from metadata to server: #{item_file.metadata_full_path}")
-          file_id = upload_file(item_file)
-          data = set_work_metadata(data, file_id: file_id,
-                                         parent_id: parent_id,
-                                         item_file_name: item_file.name)
-          work_response = @server.submit_new_child_work(@bag, data, parent_id, "child-#{index}")
-          log_to_summary("[Child] work #{work_response.dig('work', 'id')} created at #{work_response.dig('uri')}")
-          children_work_responses << work_response
-          @logger.warn("[Child #{index}] Not configured to advance work through workflow") unless @server.should_advance_work?
-          workflow_response = advance_workflow(work_response, @server) if @server.should_advance_work?
-          item_file.delete_metadata_full_path
+          begin
+            item_file.copy_to_metadata_full_path
+            @logger.info("[Child #{index}] Uploading filename from metadata to server: #{item_file.metadata_full_path}")
+            file_id = upload_file(item_file)
+            data = set_work_metadata(data, file_id: file_id,
+                                           parent_id: parent_id,
+                                           item_file_name: item_file.name)
+            work_response = @server.submit_new_child_work(@bag, data, parent_id, "child-#{index}")
+            log_to_summary("[Child] work #{work_response.dig('work', 'id')} created at #{work_response.dig('uri')}")
+            children_work_responses << work_response
+            @logger.warn("[Child #{index}] Not configured to advance work through workflow") unless @server.should_advance_work?
+            workflow_response = advance_workflow(work_response, @server) if @server.should_advance_work?
+            item_file.delete_metadata_full_path
+          rescue => e
+            log_to_summary("[Child #{index}] Failed processing: #{e.message} :\n\t #{e.backtrace.join("\n\t")}")
+          end
         end
         children_work_responses
       end
