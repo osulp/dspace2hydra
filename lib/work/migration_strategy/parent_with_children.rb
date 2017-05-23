@@ -16,15 +16,31 @@ module Work
       def process_bag
         log_to_summary('----------------------------------------------------------------------------------')
         log_to_summary("ParentWithChildren Migration Strategy Processing Bag ITEM@#{@bag.item.item_id}")
+
         data = process_bag_metadata(@bag)
-        parent_work_response = publish_parent_work(data)
-        publish_children_works(parent_work_response, data)
+        parent_id = get_or_publish_parent(data)
+        publish_children_works(parent_id, data)
       rescue StandardError => e
         log_to_summary("[ERROR] Failed processing: #{e.message} :\n\t #{e.backtrace.join("\n\t")}")
         raise e
       end
 
       private
+
+      def get_or_publish_parent(data)
+        id = @config.dig('parent_id')
+        if id.nil?
+          parent_work_response = publish_parent_work(data)
+          id = parent_work_response.work.dig('id')
+        end
+        id
+      end
+
+      def skip_children_indexes
+        children_indexes = @config.dig('skip_children') || []
+        return children_indexes.split(',').map{ |index| index.to_i } unless children_indexes.empty?
+        children_indexes
+      end
 
       def publish_parent_work(data)
         work_response = @server.submit_new_work(@bag, data, 'parent')
@@ -34,25 +50,28 @@ module Work
         work_response
       end
 
-      def publish_children_works(parent_work_response, data)
+      def publish_children_works(parent_id, data)
         children_work_responses = []
-        parent_id = parent_work_response.work.dig('id')
         @bag.files_for_upload.each_with_index do |item_file, index|
-          begin
-            item_file.copy_to_metadata_full_path
-            @logger.info("[Child #{index}] Uploading filename from metadata to server: #{item_file.metadata_full_path}")
-            file_id = upload_file(item_file)
-            data = set_work_metadata(data, file_id: file_id,
-                                           parent_id: parent_id,
-                                           item_file_name: item_file.name)
-            work_response = @server.submit_new_child_work(@bag, data, parent_id, "child-#{index}")
-            log_to_summary("[Child] work #{work_response.dig('work', 'id')} created at #{work_response.dig('uri')}")
-            children_work_responses << work_response
-            @logger.warn("[Child #{index}] Not configured to advance work through workflow") unless @server.should_advance_work?
-            workflow_response = advance_workflow(work_response, @server) if @server.should_advance_work?
-            item_file.delete_metadata_full_path
-          rescue => e
-            log_to_summary("[Child #{index}] Failed processing: #{e.message} :\n\t #{e.backtrace.join("\n\t")}")
+          if skip_children_indexes.include?(index)
+            @logger.info("[Child #{index}] Command line argument indicated to skip processing this child.")
+          else
+            begin
+              item_file.copy_to_metadata_full_path
+              @logger.info("[Child #{index}] Uploading filename from metadata to server: #{item_file.metadata_full_path}")
+              file_id = upload_file(item_file)
+              data = set_work_metadata(data, file_id: file_id,
+                                             parent_id: parent_id,
+                                             item_file_name: item_file.name)
+              work_response = @server.submit_new_child_work(@bag, data, parent_id, "child-#{index}")
+              log_to_summary("[Child #{index}] work #{work_response.dig('work', 'id')} created at #{work_response.dig('uri')}")
+              children_work_responses << work_response
+              @logger.warn("[Child #{index}] Not configured to advance work through workflow") unless @server.should_advance_work?
+              workflow_response = advance_workflow(work_response, @server) if @server.should_advance_work?
+              item_file.delete_metadata_full_path
+            rescue => e
+              log_to_summary("[Child #{index}] Failed processing: #{e.message} :\n\t #{e.backtrace.join("\n\t")}")
+            end
           end
         end
         children_work_responses

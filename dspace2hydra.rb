@@ -35,6 +35,8 @@ OptionParser.new do |opts|
   opts.on('-c', '--config PATH', 'The Item type config path for each bag.') { |v| options['type_config'] = v }
   opts.on('-d', '--directory PATH', 'The directory path containing bags to bulk process.') { |v| options['bags_directory'] = v }
   opts.on('-j', '--cached_json PATH', 'Post the json file directly to the server.') { |v| options['cached_json'] = v }
+  opts.on('-p', '--parent ID', 'Use this ID as the parent work.') { |v| options['parent_id'] = v }
+  opts.on('-s', '--skip-children INDEXES', 'Comma-delimited list of children indexes to skip. (0,1,3)') { |v| options['skip_children'] = v }
   opts.on('-h', '--help', 'Display this screen') do
     puts opts
     exit
