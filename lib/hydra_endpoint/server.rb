@@ -138,7 +138,7 @@ module HydraEndpoint
       end
       clear_csrf_token
     rescue Mechanize::ResponseCodeError => e
-      @logger.fatal("Login to #{login_url} handled HTTP Error : #{e}")
+      @logger.fatal("Login to server failed.")
       raise e
     rescue StandardError => e
       @logger.fatal("Login to #{login_url} caught an unhandled exception : #{e}")
