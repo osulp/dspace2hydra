@@ -92,17 +92,16 @@ custom_nodes:
     field:
       name: license
       property: "%{work_type}.%{field_name}"
-      type: Array
-    method: Mapping::License.unprocessed
-    value: "http://www.europeana.eu/portal/rights/rr-r.html"
-    value_add_to_migration: if_form_field_value_missing
+      type: String
+    method: Mapping::License.process_metadata
+    value_from_node_property: metadata
   rights_statement:
     field:
       name: rights_statement
       property: "%{work_type}.%{field_name}"
       type: String
-    method: Mapping::Rights.unprocessed
-    value: "http://rightsstatements.org/vocab/InC/1.0/"
+    method: Mapping::Rights.process_metadata
+    value_from_node_property: metadata
   visibility:
     field:
       name: visibility
@@ -319,7 +318,7 @@ migration_nodes:
           name: in_series
   rights:
     field:
-      name: license
+      name: rights
       property: "%{work_type}.%{field_name}"
       type: String
     xpath: "//metadata/value[@element='rights']"
@@ -327,11 +326,12 @@ migration_nodes:
     qualifiers:
       default:
         field:
-          name: license
+          name: rights
         method: Mapping::Rights.ignored
       uri:
         field:
           name: license
+        method: Mapping::Rights.unprocessed
   subject:
     field:
       name: keyword
