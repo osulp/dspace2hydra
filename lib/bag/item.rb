@@ -109,7 +109,7 @@ class Item
     # so creating a new document from the mutated temp_xml is effective, albeit hackish
     remaining_xml = Nokogiri::XML.parse temp_xml.to_xml
     # TODO: consider making this error configurable by Item type
-    raise StandardError, "#{work_type} : #{metadata_xml_path} unhandled nodes:\n#{remaining_xml.to_xml}" unless remaining_xml.root.children.empty?
+    raise StandardError, "#{work_type_config.dig('work_type')} : #{metadata_xml_path} unhandled nodes:\n#{remaining_xml.to_xml}" unless remaining_xml.root.children.empty?
     h
   end
 

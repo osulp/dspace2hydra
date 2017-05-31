@@ -74,6 +74,13 @@ RSpec.describe Metadata::Qualifier do
         expect(subject.run_method).to eq 'executed test_method with value grimey and arg1,arg2'
       end
     end
+
+    context 'with a missing configuration' do
+      let(:qualifier) { 'doesntexist' }
+      it 'logs a fatal message and raises an exception' do
+        expect { subject.run_method }.to raise_error
+      end
+    end
   end
 
   context 'when get_configuration fails' do

@@ -81,13 +81,6 @@ custom_nodes:
       type: Array
     method: Mapping::Community.lookup_community_names
     value_from_node_property: collection_handles
-  keyword:
-    field:
-      name: keyword
-      property: "%{work_type}.%{field_name}"
-      type: Array
-    method: Mapping::Keyword.unprocessed
-    value: data-migration
   license:
     field:
       name: license

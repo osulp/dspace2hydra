@@ -9,6 +9,11 @@ RSpec.describe Loggable do
     end
   end
   subject { klass.new }
+  it '#log_to_summary' do
+    subject.log_to_summary('message')
+    logger = Logging.logger['summary_log']
+    expect(logger.appenders.count).to eq 1
+  end
   it '#start_logging_to' do
     logger = subject.start_logging_to('/tmp/test', {})
     expect(logger.appenders.count).to eq 1
