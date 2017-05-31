@@ -37,6 +37,10 @@ RSpec.describe HydraEndpoint::Configuration do
     expect(subject.admin_sets_url).to eq URI.join(server_domain, config.dig('admin_sets', 'url'))
   end
 
+  it 'has a authentication_header' do
+    expect(subject.authentication_header).to eq 'D2H-AUTHENTICATION' => 'admin_user|blahblah'
+  end
+
   it 'has a login_url' do
     expect(subject.login_url).to eq URI.join(server_domain, config.dig('login', 'url'))
   end

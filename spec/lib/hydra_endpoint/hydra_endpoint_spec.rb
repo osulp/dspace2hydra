@@ -64,6 +64,15 @@ RSpec.describe HydraEndpoint::Server do
       end
     end
 
+    context 'when submitting a new child work' do
+      let(:work_response) { subject.submit_new_child_work(bag, data, 'parent_id') }
+      it 'can submit_new_child_work' do
+        expect(subject).to receive(:cache_data).with(data, bag.item_cache_path, 'data')
+        expect(subject).to receive(:publish_work).with(data, subject.new_child_work_action('parent_id'), {}).and_return(mock_hydra_endpoint_response)
+        expect(work_response).to eq mock_hydra_endpoint_response
+      end
+    end
+
     context 'when advancing a work through a workflow' do
       let(:work_response) { subject.advance_workflow(mock_hydra_endpoint_response, headers) }
       it 'can advance_workflow' do

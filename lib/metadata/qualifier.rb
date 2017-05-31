@@ -14,13 +14,24 @@ module Metadata
       @work_type = work_type_config['work_type']
       @node_config = node_config
       @node_config['field'] ||= {}
-      @config = node_config['qualifiers'][qualifier]
-      @config['field'] ||= {}
+      set_config(work_type_config, node_config, qualifier)
       @value = value
     end
 
     def default?
       @qualifier == 'default'
+    end
+
+    def set_config(work_type_config, node_config, qualifier)
+      @config = node_config.dig('qualifiers', qualifier)
+      raise_config_error(work_type_config, node_config, qualifier) if @config.nil?
+      @config['field'] ||= {}
+    end
+
+    def raise_config_error(work_type_config, node_config, qualifier)
+      message = "#{work_type_config.dig('work_type')} :  Missing #{node_config.dig('field', 'name')}.#{qualifier} qualifier configuration."
+      @logger.fatal(message)
+      raise message
     end
 
     def value_add_to_migration

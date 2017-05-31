@@ -67,6 +67,10 @@ RSpec.describe Metadata::CustomNode do
     it 'can return collection_handles' do
       expect(custom_node.collection_handles).to match_array(['1957/43909', '1957/4'])
     end
+
+    it 'can return metadata' do
+      expect(custom_node.metadata).to be_a_kind_of Hash
+    end
   end
   context 'when get_configuration fails' do
     subject { custom_node }
