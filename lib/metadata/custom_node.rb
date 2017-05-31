@@ -65,5 +65,9 @@ module Metadata
     def collection_handles
       @item.collection_handles
     end
+
+    def metadata
+      @item.metadata
+    end
   end
 end
