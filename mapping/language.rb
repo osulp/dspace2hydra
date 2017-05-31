@@ -7,7 +7,7 @@ module Mapping
     extend Extensions::Cacheable
 
     LOC_LANGUAGES_CACHE_FILE = 'loc.languages.yml'
-    LOC_ISO639_1_URI = 'http://id.loc.gov/vocabulary/iso639-1/%{alpha2_code}'
+    LOC_ISO639_2_URI = 'http://id.loc.gov/vocabulary/iso639-2/%{alpha3_code}'
 
     ##
     # Get the uri from ISO-639 gem
@@ -19,9 +19,9 @@ module Mapping
       return item[:uri].to_s if item
 
       entry = find_language(value)
-      raise StandardError, "Could not find #{value} in ISO 639-1." unless entry
+      raise StandardError, "Could not find #{value} in ISO 639-2." unless entry
 
-      item = Extensions::Cacheable::Item.new(value, value, entry.english_name, format(LOC_ISO639_1_URI, alpha2_code: entry.alpha2))
+      item = Extensions::Cacheable::Item.new(value, value, entry.english_name, format(LOC_ISO639_2_URI, alpha3_code: entry.alpha3))
       add_to_cache(item, LOC_LANGUAGES_CACHE_FILE)
       item[:uri].to_s
     end
