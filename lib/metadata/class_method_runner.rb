@@ -117,6 +117,10 @@ module Metadata
       value = get_value(field_name, data, value)
       if field_array?
         data_field ||= []
+        if value_add_to_migration.casecmp('overwrite_existing').zero?
+          @logger.warn("#{method} found '#{field_name}' with 'overwrite_existing' configuration, setting value to '#{value}'")
+          data_field = []
+        end
         data_field << value unless value.nil? || data_field.any? { |v| v == value }
       else
         data_field = value unless value.nil?
