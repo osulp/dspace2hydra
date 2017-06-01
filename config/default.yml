@@ -40,10 +40,10 @@ hydra_endpoint:
 
 # Add this value to the migration data
 # (DEFAULT) 'always' : always add this value to the migration data
-# 'except_empty_value' : add this value except for empty/nil
 # 'if_form_field_value_missing' : add the value if the form_field doesn't have an existing value
 # 'never' : do not add this value to the migration data
 # 'except_empty_value' : add the value unless it is empty or nil, in which case ignore it
+# 'overwrite_existing' : add the value, overwriting any previously mapped metadata
 value_add_to_migration: except_empty_value
 
 # When operating on a node, grab the value from its property. The property would likely
