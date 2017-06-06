@@ -1,6 +1,6 @@
 ---
 # ETD Hyrax work type
-work_type: "default"
+work_type: "open_educational_resource"
 
 upload_data:
   - directory: ORIGINAL
@@ -30,13 +30,13 @@ hydra_endpoint:
   # work types, such as "Book", "ETD", "Article", etc.
   new_work:
     # The url to the page to generate a new work
-    url: "/concern/defaults/new?locale=en"
+    url: "/concern/open_educational_resources/new?locale=en"
     # The form action used on the new work page for posting a new work. This is used as a selector to properly identify
     # which form on the page will be used for manipulation and submission.. as well as grabbing the CSRF token from it.
-    form_action: "/concern/defaults?locale=en"
+    form_action: "/concern/open_educational_resources?locale=en"
 
   new_child_work:
-    form_action: "/concern/parent/%{parent_id}/defaults?local=en"
+    form_action: "/concern/parent/%{parent_id}/open_educational_resources?local=en"
 
 # Add this value to the migration data
 # (DEFAULT) 'always' : always add this value to the migration data
@@ -336,47 +336,3 @@ migration_nodes:
         method:
           - Mapping::Type.lookup_hyrax_type
           - resource_type
-  coverage:
-    field:
-      name: location
-      property: "%{work_type}.%{field_name}"
-      type: Array
-    xpath: "//metadata/value[@element='coverage']"
-    method: Mapping::Coverage.unprocessed
-    qualifiers:
-      default:
-        field:
-          name: location
-      spatialhydrologicclosedbasins:
-        field:
-          name: hydrologicUnitCode
-      spatialhydrologiccoastal:
-        field:
-          name: hydrologicUnitCode
-      spatialhydrologiclowercolumbia:
-        field:
-          name: hydrologicUnitCode
-      spatialhydrologiclowersnake:
-        field:
-          name: hydrologicUnitCode
-      spatialhydrologicmiddlecolumbia:
-        field:
-          name: hydrologicUnitCode
-      spatialhydrologicmiddlesnake:
-        field:
-          name: hydrologicUnitCode
-      spatialhydrologicnorthca:
-        field:
-          name: hydrologicUnitCode
-      spatialhydrologicwillamette:
-        field:
-          name: hydrologicUnitCode
-      spatialhydrologichumboldt:
-        field:
-          name: hydrologicUnitCode
-      spatialhydrologicsacramento:
-        field:
-          name: hydrologicUnitCode
-      spatialhydrologicnorthlahontan:
-        field:
-          name: hydrologicUnitCode                
