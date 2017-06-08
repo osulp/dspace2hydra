@@ -371,19 +371,19 @@ migration_nodes:
       type: Array
     xpath: "//metadata/value[@schema='dcterms' and @element='geoLocation']"
     method: Mapping::Coverage.ignored
-  identier:
+  identifier:
     field:
       name: doi
       property: "%{work_type}.%{field_name}"
       type: Array
-    xpath: "//metadata/value[@schema='dcterms' and @element='identier']"
+    xpath: "//metadata/value[@schema='dcterms' and @element='identifier']"
     method: Mapping::Identifier.ignored
-  identierType:
+  identifierType:
     field:
       name: doi
       property: "%{work_type}.%{field_name}"
       type: Array
-    xpath: "//metadata/value[@schema='dcterms' and @element='identierType']"
+    xpath: "//metadata/value[@schema='dcterms' and @element='identifierType']"
     method: Mapping::Identifier.ignored
   coverage:
     field:
