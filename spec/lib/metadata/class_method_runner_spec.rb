@@ -153,4 +153,21 @@ RSpec.describe Metadata::ClassMethodRunner do
       expect(subject.process_node(data)).not_to eq(work_type => { field_name => ['blah'] })
     end
   end
+  context 'configured to overwrite an existing migrated value' do
+    let(:config) do
+      {
+        'method' => 'ClassMethodRunnerClass.test_string_method',
+        'field' => {
+          'name' => field_name,
+          'property' => field_property,
+          'type' => 'Array'
+        },
+        'value' => 'overwritten',
+        'value_add_to_migration' => 'overwrite_existing'
+      }
+    end
+    it 'will overwrite custom node data' do
+      expect(subject.process_node(data)).to eq(work_type => { field_name => ['overwritten'] })
+    end
+  end
 end

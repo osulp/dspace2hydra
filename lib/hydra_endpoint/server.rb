@@ -70,16 +70,16 @@ module HydraEndpoint
     # @param [Hash] headers - any HTTP headers necessary for POST to the server
     # @return [HydraEndpoint::Response] - the work and location struct containing the result of publishing
     def advance_workflow(response, headers = {})
-      data = csrf_token_data
-      workflow_name = workflow_actions_data('name')
-      workflow_comment = workflow_actions_data('comment')
-      data.merge!(workflow_name) { |_k, a, b| a.merge b }
-      data.merge!(workflow_comment) { |_k, a, b| a.merge b }
-      headers = json_headers(headers)
+      workflow_actions = workflow_actions_data('name', 'comment')
       url = workflow_actions_url(response.dig('work', 'id'))
-      @logger.info("Advancing workflow to: #{workflow_name}")
-      response = put_data(url, JSON.generate(data), headers)
-      Response.new JSON.parse(response.body), URI.join(server_domain, response['location'])
+      workflow_response = response
+      data = csrf_token_data
+      workflow_actions.each do |action|
+        data.merge!(action) { |_k, a, b| a.merge b }
+        @logger.info("Advancing workflow to: #{action.values.first.dig('name')}")
+        workflow_response = put_data(url, JSON.generate(data), json_headers(headers))
+      end
+      Response.new JSON.parse(workflow_response.body), URI.join(server_domain, workflow_response['location'])
     end
 
     def clear_csrf_token

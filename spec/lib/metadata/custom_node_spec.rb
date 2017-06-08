@@ -71,6 +71,15 @@ RSpec.describe Metadata::CustomNode do
     it 'can return metadata' do
       expect(custom_node.metadata).to be_a_kind_of Hash
     end
+
+    it 'can return item_detail' do
+      expect(custom_node.item_detail).to be_a_kind_of Hash
+      expect(custom_node.item_detail.has_key?(:metadata)).to be_truthy
+      expect(custom_node.item_detail.has_key?(:item_id)).to be_truthy
+      expect(custom_node.item_detail.has_key?(:work_type)).to be_truthy
+      expect(custom_node.item_detail.has_key?(:owner_id)).to be_truthy
+
+    end
   end
   context 'when get_configuration fails' do
     subject { custom_node }

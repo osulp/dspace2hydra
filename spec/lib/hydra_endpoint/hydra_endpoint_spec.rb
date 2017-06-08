@@ -77,9 +77,9 @@ RSpec.describe HydraEndpoint::Server do
       let(:work_response) { subject.advance_workflow(mock_hydra_endpoint_response, headers) }
       it 'can advance_workflow' do
         expect(subject).to receive(:json_headers).and_return({})
-        expect(subject).to receive(:workflow_actions_data).with('name').and_return('workflow_action' => { 'name' => 'approve' })
-        expect(subject).to receive(:workflow_actions_data).with('comment').and_return('workflow_action' => { 'comment' => 'a comment' })
+        expect(subject).to receive(:workflow_actions_data).with('name', 'comment').and_return(['workflow_action' => { 'name' => 'approve' }])
         expect(subject).to receive(:workflow_actions_url).and_return('')
+        expect(subject).to receive(:csrf_token_data).and_return({})
         expect(subject).to receive(:put_data).and_return(mock_return)
         expect(work_response).to eq mock_hydra_endpoint_response
       end

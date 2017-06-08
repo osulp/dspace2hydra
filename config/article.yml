@@ -38,6 +38,9 @@ hydra_endpoint:
   new_child_work:
     form_action: "/concern/parent/%{parent_id}/articles?local=en"
 
+  workflow_actions:
+    auto_advance_work: false
+
 # Add this value to the migration data
 # (DEFAULT) 'always' : always add this value to the migration data
 # 'if_form_field_value_missing' : add the value if the form_field doesn't have an existing value
@@ -53,6 +56,13 @@ value_from_node_property: ''
 
 # Custom metadata nodes to add to the data payload posted to the server
 custom_nodes:
+  academic_unit:
+    field:
+      name: academic_affiliation
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    method: Mapping::AcademicUnit.get_uris
+    value_from_node_property: item_detail
   admin_set:
     field:
       name: admin_set_id
@@ -129,7 +139,7 @@ migration_nodes:
       default:
         field:
           name: not_include
-       author:
+      author:
         field:
           name: not_include
   date:
@@ -243,7 +253,7 @@ migration_nodes:
     field:
       name: replaces
       property: "%{work_type}.%{field_name}"
-      type: Array
+      type: String
     xpath: "//metadata/value[@element='identifier']"
     method: Mapping::Identifier.unprocessed
     qualifiers:

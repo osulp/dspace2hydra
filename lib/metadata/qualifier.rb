@@ -4,7 +4,7 @@ module Metadata
     include Loggable
     include ClassMethodRunner
     include NestedConfiguration
-    attr_reader :config, :type
+    attr_reader :config, :type, :qualifier
 
     def initialize(field, qualifier, work_type_config, node_config, value)
       @logger = Logging.logger[self]
@@ -19,7 +19,7 @@ module Metadata
     end
 
     def default?
-      @qualifier == 'default'
+      qualifier == 'default'
     end
 
     def set_config(work_type_config, node_config, qualifier)

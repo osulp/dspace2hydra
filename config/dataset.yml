@@ -53,6 +53,13 @@ value_from_node_property: ''
 
 # Custom metadata nodes to add to the data payload posted to the server
 custom_nodes:
+  academic_unit:
+    field:
+      name: academic_affiliation
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    method: Mapping::AcademicUnit.get_uris
+    value_from_node_property: item_detail
   admin_set:
     field:
       name: admin_set_id
@@ -102,7 +109,6 @@ custom_nodes:
       type: String
     method: Mapping::Visibility.unprocessed
     value: open
-    value_add_to_migration: if_form_field_value_missing
 
 # Migration metadata nodes extract data from the DSpace Item metadata.xml and do some
 # lookup/cleanup/mapping before posting to the server.
@@ -154,7 +160,7 @@ migration_nodes:
           # set visibility to 'embargo' and embargo_release_date to the value from the node
           - Mapping::Description.set_embargo
           - visibility
-          - embargo_release_date          
+          - embargo_release_date
   description:
     field:
       name: description
@@ -231,7 +237,7 @@ migration_nodes:
     field:
       name: replaces
       property: "%{work_type}.%{field_name}"
-      type: Array
+      type: String
     # the xpath will match both dc and dcterms schemas
     xpath: "//metadata/value[@element='identifier']"
     method: Mapping::Identifier.ignored
@@ -311,7 +317,7 @@ migration_nodes:
       reportsandpublications:
         field:
           name: in_series
-          method: Mapping::Relation.ignored        
+          method: Mapping::Relation.ignored
   rights:
     field:
       name: rights

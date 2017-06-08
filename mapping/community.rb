@@ -15,7 +15,7 @@ module Mapping
     def self.lookup_community_names(value, *_args)
       csv_file = File.join(File.dirname(__FILE__), '../lookup/collectionlist.csv')
       # array of hash
-      lines = CSV.read(csv_file, headers: true).map(&:to_hash)
+      lines = CSV.read(csv_file, headers: true, encoding: 'UTF-8').map(&:to_hash)
       lines.select { |l| value.any? { |v| l['collection_handle'].casecmp(v).zero? } }.map { |l| l['community_name'] }
     end
   end

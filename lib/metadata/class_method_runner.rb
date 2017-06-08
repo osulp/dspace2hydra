@@ -122,6 +122,7 @@ module Metadata
           data_field = []
         end
         data_field << value unless value.nil? || data_field.any? { |v| v == value }
+        data_field.flatten!
       else
         data_field = value unless value.nil?
       end

@@ -53,6 +53,13 @@ value_from_node_property: ''
 
 # Custom metadata nodes to add to the data payload posted to the server
 custom_nodes:
+  academic_unit:
+    field:
+      name: academic_affiliation
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    method: Mapping::AcademicUnit.get_uris
+    value_from_node_property: item_detail
   admin_set:
     field:
       name: admin_set_id
@@ -229,7 +236,7 @@ migration_nodes:
     field:
       name: replaces
       property: "%{work_type}.%{field_name}"
-      type: Array
+      type: String
     xpath: "//metadata/value[@element='identifier']"
     method: Mapping::Identifier.unprocessed
     qualifiers:

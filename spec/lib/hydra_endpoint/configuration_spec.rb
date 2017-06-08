@@ -54,7 +54,7 @@ RSpec.describe HydraEndpoint::Configuration do
   end
 
   it 'has a workflow_actions_field' do
-    expect(subject.workflow_actions_data('name')).to eq('workflow_action' => { 'name' => 'approve' })
+    expect(subject.workflow_actions_data('name')).to eq(['workflow_action' => { 'name' => 'approve' }])
   end
 
   it 'has a new_work_action' do
