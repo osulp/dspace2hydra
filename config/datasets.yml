@@ -101,7 +101,7 @@ custom_nodes:
       property: "%{work_type}.%{field_name}"
       type: String
     method: Mapping::Visibility.unprocessed
-    value: open
+    value: open   
 
 # Migration metadata nodes extract data from the DSpace Item metadata.xml and do some
 # lookup/cleanup/mapping before posting to the server.
@@ -278,6 +278,18 @@ migration_nodes:
       ispartofseries:
         field:
           name: in_series
+      isbasedon:
+        field:
+          name: in_series
+          method: Mapping::Relation.ignored
+      projectid:
+        field:
+          name: in_series
+          method: Mapping::Relation.ignored
+      reportsandpublications:
+        field:
+          name: in_series
+          method: Mapping::Relation.ignored        
   rights:
     field:
       name: rights
@@ -390,7 +402,7 @@ migration_nodes:
       name: location
       property: "%{work_type}.%{field_name}"
       type: Array
-    xpath: "//metadata/value[@schema='dcterms' and @element='coverage']"
+    xpath: "//metadata/value[@element='coverage']"
     method: Mapping::Coverage.unprocessed
     qualifiers:
       default:
@@ -401,4 +413,91 @@ migration_nodes:
           name: location
       spatialstates:
         field:
-          name: location    
+          name: location
+      spatial:
+        field:
+          name: location
+      spatialcities:
+        field:
+          name: location
+      spatialecoregion:
+        field:
+          name: location
+      spatialestuaries:
+        field:
+          name: location
+      spatialhydrologiccoastal:
+        field:
+          name: location
+      spatialhydrologicwillamette:
+        field:
+          name: location
+      spatialoregonplanbasins:
+        field:
+          name: location
+      spatialoregonplanbasins:
+        field:
+          name: location
+      temporal:
+        field:
+          name: location
+          method: Mapping::Coverage.ignored
+  nameIdentifierScheme:
+    field:
+      name: doi
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    xpath: "//metadata/value[@schema='datacite' and @element='nameIdentifierScheme']"
+    method: Mapping::Identifier.ignored
+  nameIdentifier:
+    field:
+      name: doi
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    xpath: "//metadata/value[@schema='datacite' and @element='nameIdentifier']"
+    method: Mapping::Identifier.ignored
+  contributor:
+    field:
+      name: creator
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    xpath: //metadata/value[@element='contributor']
+    method: Mapping::Contributor.unprocessed
+    qualifiers:
+      default:
+        field:
+          name: creator
+          method: Mapping::Contributor.unprocessed
+      other:
+        field:
+          name: creator
+          method: Mapping::Contributor.ignored
+  isCitedBy:
+    field:
+      name: doi
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    xpath: "//metadata/value[@schema='dcterms' and @element='isCitedBy']"
+    method: Mapping::Identifier.ignored
+  isIdenticalTo:
+    field:
+      name: doi
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    xpath: "//metadata/value[@schema='dcterms' and @element='isIdenticalTo']"
+    method: Mapping::Relation.ignored
+  isPartOf:
+    field:
+      name: doi
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    xpath: "//metadata/value[@schema='dcterms' and @element='isPartOf']"
+    method: Mapping::Relation.ignored
+  isVersionOf:
+    field:
+      name: doi
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    xpath: "//metadata/value[@schema='dcterms' and @element='isVersionOf']"
+    method: Mapping::Relation.ignored
+

@@ -194,7 +194,7 @@ migration_nodes:
           name: degree_discipline
       grantor:
         field:
-          name: degree_grantor
+          name: degree_grantors
   description:
     field:
       name: description
