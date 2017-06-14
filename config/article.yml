@@ -117,6 +117,20 @@ migration_nodes:
       default:
         field:
           name: creator
+  contributor:
+    field:
+      name: not_include
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    xpath: //metadata/value[@element='contributor']
+    method: Mapping::Contributor.ignored
+    qualifiers:
+      default:
+        field:
+          name: not_include
+       author:
+        field:
+          name: not_include
   date:
     field:
       name: date_created

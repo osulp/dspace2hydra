@@ -122,12 +122,20 @@ migration_nodes:
       name: date_created
       property: "%{work_type}.%{field_name}"
       type: Array
+    # The xpath will match any element named date without taking schema, if match both element and schema:
+    # xpath: "//metadata/value[@schema='dcterms' and @element='date']"
     xpath: "//metadata/value[@element='date']"
     method: Mapping::Date.unprocessed
     qualifiers:
       default:
         field:
           name: date_created
+      updated:
+        field:
+          name: date_updated
+      copyright:
+        field:
+          name: date_copyright
       accessioned:
         field:
           name: date_uploaded
@@ -137,12 +145,6 @@ migration_nodes:
       issued:
         field:
           name: date_issued
-      updated:
-        field:
-          name: date_updated
-      copyright:
-        field:
-          name: date_copyright
   description:
     field:
       name: description
@@ -220,24 +222,34 @@ migration_nodes:
       name: replaces
       property: "%{work_type}.%{field_name}"
       type: Array
+    # the xpath will match both dc and dcterms schemas
     xpath: "//metadata/value[@element='identifier']"
-    method: Mapping::Identifier.unprocessed
+    method: Mapping::Identifier.ignored
     qualifiers:
       default:
         field:
           name: replaces
+          method: Mapping::Identifier.ignored
       citation:
         field:
           name: bibliographic_citation
+          method: Mapping::Identifier.unprocessed
       isbn:
         field:
           name: isbn
+          method: Mapping::Identifier.unprocessed
       uri:
         field:
           name: replaces
+          method: Mapping::Identifier.unprocessed
       doi:
         field:
           name: doi
+          method: Mapping::Identifier.unprocessed
+      orcid:
+        field:
+          name: oricd
+          method: Mapping::Identifier.ignored
   language:
     field:
       name: language
@@ -348,6 +360,7 @@ migration_nodes:
         method:
           - Mapping::Type.lookup_hyrax_type
           - resource_type
+  # Each field must have a qualifier, most dcterms just have default qualifier
   bibliographicCitation:
     field:
       name: bibliographic_citation
@@ -355,48 +368,54 @@ migration_nodes:
       type: Array
     xpath: "//metadata/value[@schema='dcterms' and @element='bibliographicCitation']"
     method: Mapping::Identifier.unprocessed
+    qualifiers:
+      default:
+        field:
+          name: bibliographic_citation
   isPartOf:
     field:
-      name: in_series
+      name: not_include
       property: "%{work_type}.%{field_name}"
       type: Array
     xpath: "//metadata/value[@schema='dcterms' and @element='isPartOf']"
-    method: Mapping::Relation.unprocessed
+    method: Mapping::Relation.ignored
+    qualifiers:
+      default:
+        field:
+          name: not_include
   isReferencedBy:
     field:
-      name: isReferencedBy
+      name: not_include
       property: "%{work_type}.%{field_name}"
       type: Array
     xpath: "//metadata/value[@schema='dcterms' and @element='isReferencedBy']"
-    method: Mapping::Identifier.unprocessed
-  date:
-    field:
-      name: date
-      property: "%{work_type}.%{field_name}"
-      type: Array
-    xpath: "//metadata/value[@schema='dcterms' and @element='date']"
-    method: Mapping::Date.ignored
+    method: Mapping::Relation.ignored
+    qualifiers:
+      default:
+        field:
+          name: not_include
   geoLocation:
     field:
-      name: location
+      name: not_include
       property: "%{work_type}.%{field_name}"
       type: Array
     xpath: "//metadata/value[@schema='dcterms' and @element='geoLocation']"
     method: Mapping::Coverage.ignored
-  identifier:
-    field:
-      name: doi
-      property: "%{work_type}.%{field_name}"
-      type: Array
-    xpath: "//metadata/value[@schema='dcterms' and @element='identifier']"
-    method: Mapping::Identifier.ignored
+    qualifiers:
+      default:
+        field:
+          name: not_include
   identifierType:
     field:
-      name: doi
+      name: not_include
       property: "%{work_type}.%{field_name}"
       type: Array
     xpath: "//metadata/value[@schema='dcterms' and @element='identifierType']"
     method: Mapping::Identifier.ignored
+    qualifiers:
+      default:
+        field:
+          name: not_include
   coverage:
     field:
       name: location
@@ -444,18 +463,26 @@ migration_nodes:
           method: Mapping::Coverage.ignored
   nameIdentifierScheme:
     field:
-      name: doi
+      name: not_include
       property: "%{work_type}.%{field_name}"
       type: Array
     xpath: "//metadata/value[@schema='datacite' and @element='nameIdentifierScheme']"
     method: Mapping::Identifier.ignored
+    qualifiers:
+      default:
+        field:
+          name: not_include
   nameIdentifier:
     field:
-      name: doi
+      name: not_include
       property: "%{work_type}.%{field_name}"
       type: Array
     xpath: "//metadata/value[@schema='datacite' and @element='nameIdentifier']"
     method: Mapping::Identifier.ignored
+    qualifiers:
+      default:
+        field:
+          name: not_include
   contributor:
     field:
       name: creator
@@ -471,33 +498,37 @@ migration_nodes:
       other:
         field:
           name: creator
-          method: Mapping::Contributor.ignored
+          method: Mapping::Contributor.unprocessed
   isCitedBy:
     field:
-      name: doi
+      name: not_include
       property: "%{work_type}.%{field_name}"
       type: Array
     xpath: "//metadata/value[@schema='dcterms' and @element='isCitedBy']"
     method: Mapping::Identifier.ignored
+    qualifiers:
+      default:
+        field:
+          name: not_include
   isIdenticalTo:
     field:
-      name: doi
+      name: not_include
       property: "%{work_type}.%{field_name}"
       type: Array
     xpath: "//metadata/value[@schema='dcterms' and @element='isIdenticalTo']"
-    method: Mapping::Relation.ignored
-  isPartOf:
-    field:
-      name: doi
-      property: "%{work_type}.%{field_name}"
-      type: Array
-    xpath: "//metadata/value[@schema='dcterms' and @element='isPartOf']"
-    method: Mapping::Relation.ignored
+    method: Mapping::Identifier.ignored
+    qualifiers:
+      default:
+        field:
+          name: not_include
   isVersionOf:
     field:
-      name: doi
+      name: not_include
       property: "%{work_type}.%{field_name}"
       type: Array
     xpath: "//metadata/value[@schema='dcterms' and @element='isVersionOf']"
     method: Mapping::Relation.ignored
-
+    qualifiers:
+      default:
+        field:
+          name: not_include
