@@ -32,13 +32,13 @@ module Mapping
         return 'http://rightsstatements.org/vocab/NoC-US/1.0/'
       # return in copyright if published after 1923 and license in DSpace is not empty
       elsif DateTime.parse(date_issued) > DateTime.new(1923, 12, 31) && rights_uri.include?('creativecommons.org/licenses')
-        return 'http://rightsstatements.org/vocab/InC-NC/1.0/'
+        return 'http://rightsstatements.org/vocab/InC/1.0/'
       # return copyright not evaluated if published after 1923 and no license in DSpace
       elsif DateTime.parse(date_issued) > DateTime.new(1923, 12, 31) && rights_uri.empty?
         return 'http://rightsstatements.org/vocab/CNE/1.0/'
       # return in copyright if published 1923 and license in DSpace is all rights reserved
       elsif DateTime.parse(date_issued) > DateTime.new(1923, 12, 31) && rights_uri.include?('http://www.europeana.eu/portal/rights/rr-r.html')
-        return 'http://rightsstatements.org/vocab/InC-NC/1.0/'
+        return 'http://rightsstatements.org/vocab/InC/1.0/'
       end
     end
   end
