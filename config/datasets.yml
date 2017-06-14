@@ -238,6 +238,10 @@ migration_nodes:
       doi:
         field:
           name: doi
+      orcid:
+        field:
+          name: oricd
+          method: Mapping::Identifier.ignored
   language:
     field:
       name: language
@@ -348,6 +352,7 @@ migration_nodes:
         method:
           - Mapping::Type.lookup_hyrax_type
           - resource_type
+  # Each field must have a qualifier, most dcterms just have default qualifier
   bibliographicCitation:
     field:
       name: bibliographic_citation
@@ -355,6 +360,10 @@ migration_nodes:
       type: Array
     xpath: "//metadata/value[@schema='dcterms' and @element='bibliographicCitation']"
     method: Mapping::Identifier.unprocessed
+    qualifiers:
+      default:
+        field:
+          name: bibliographic_citation
   isPartOf:
     field:
       name: in_series
@@ -362,6 +371,10 @@ migration_nodes:
       type: Array
     xpath: "//metadata/value[@schema='dcterms' and @element='isPartOf']"
     method: Mapping::Relation.unprocessed
+    qualifiers:
+      default:
+        field:
+          name: in_series
   isReferencedBy:
     field:
       name: isReferencedBy
@@ -369,13 +382,21 @@ migration_nodes:
       type: Array
     xpath: "//metadata/value[@schema='dcterms' and @element='isReferencedBy']"
     method: Mapping::Identifier.unprocessed
+    qualifiers:
+      default:
+        field:
+          name: isReferencedBy
   date:
     field:
-      name: date
+      name: date_created
       property: "%{work_type}.%{field_name}"
       type: Array
     xpath: "//metadata/value[@schema='dcterms' and @element='date']"
     method: Mapping::Date.ignored
+    qualifiers:
+      default:
+        field:
+          name: date_created
   geoLocation:
     field:
       name: location
@@ -383,6 +404,10 @@ migration_nodes:
       type: Array
     xpath: "//metadata/value[@schema='dcterms' and @element='geoLocation']"
     method: Mapping::Coverage.ignored
+    qualifiers:
+      default:
+        field:
+          name: location
   identifier:
     field:
       name: doi
@@ -390,6 +415,10 @@ migration_nodes:
       type: Array
     xpath: "//metadata/value[@schema='dcterms' and @element='identifier']"
     method: Mapping::Identifier.ignored
+    qualifiers:
+      default:
+        field:
+          name: doi
   identifierType:
     field:
       name: doi
@@ -397,6 +426,10 @@ migration_nodes:
       type: Array
     xpath: "//metadata/value[@schema='dcterms' and @element='identifierType']"
     method: Mapping::Identifier.ignored
+    qualifiers:
+      default:
+        field:
+          name: doi
   coverage:
     field:
       name: location
@@ -449,6 +482,10 @@ migration_nodes:
       type: Array
     xpath: "//metadata/value[@schema='datacite' and @element='nameIdentifierScheme']"
     method: Mapping::Identifier.ignored
+    qualifiers:
+      default:
+        field:
+          name: doi
   nameIdentifier:
     field:
       name: doi
@@ -456,6 +493,10 @@ migration_nodes:
       type: Array
     xpath: "//metadata/value[@schema='datacite' and @element='nameIdentifier']"
     method: Mapping::Identifier.ignored
+    qualifiers:
+      default:
+        field:
+          name: doi
   contributor:
     field:
       name: creator
@@ -479,13 +520,21 @@ migration_nodes:
       type: Array
     xpath: "//metadata/value[@schema='dcterms' and @element='isCitedBy']"
     method: Mapping::Identifier.ignored
+    qualifiers:
+      default:
+        field:
+          name: doi
   isIdenticalTo:
     field:
       name: doi
       property: "%{work_type}.%{field_name}"
       type: Array
     xpath: "//metadata/value[@schema='dcterms' and @element='isIdenticalTo']"
-    method: Mapping::Relation.ignored
+    method: Mapping::Identifier.ignored
+    qualifiers:
+      default:
+        field:
+          name: doi
   isPartOf:
     field:
       name: doi
@@ -493,6 +542,10 @@ migration_nodes:
       type: Array
     xpath: "//metadata/value[@schema='dcterms' and @element='isPartOf']"
     method: Mapping::Relation.ignored
+    qualifiers:
+      default:
+        field:
+          name: doi
   isVersionOf:
     field:
       name: doi
@@ -500,4 +553,7 @@ migration_nodes:
       type: Array
     xpath: "//metadata/value[@schema='dcterms' and @element='isVersionOf']"
     method: Mapping::Relation.ignored
-
+    qualifiers:
+      default:
+        field:
+          name: doi

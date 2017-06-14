@@ -182,10 +182,7 @@ migration_nodes:
       name:
         field:
           name: degree_name
-        method:
-          - Mapping::Degree.remapped_field_split
-          - degree_name
-          - degree_field
+        method: Mapping::Degree.unprocessed
       level:
         field:
           name: degree_level

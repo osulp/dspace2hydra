@@ -14,18 +14,22 @@ module Mapping
       date_issued_node = value['date'].find { |n| n.qualifier.field_name.casecmp('date_issued').zero? }
       date_issued = date_issued_node.qualifier.run_method
       rights_uri_node = value['rights'].find { |n| n.qualifier.field_name.casecmp('license').zero? }
-      return nil if rights_uri_node.nil?
+      if rights_uri_node.nil? && DateTime.parse(date_issued) > DateTime.new(1923, 12, 31)
+        return 'http://rightsstatements.org/vocab/CNE/1.0/'
+      elsif rights_uri_node.nil? && DateTime.parse(date_issued) < DateTime.new(1923, 12, 31)
+        return 'http://rightsstatements.org/vocab/NoC-US/1.0/'
+      end
       rights_uri = rights_uri_node.qualifier.run_method
 
       # process rights_statement
       # https://docs.google.com/spreadsheets/d/1_Mj90z_abGrmn_xz-fnM8mF_NWGDv9br7kNIs6FfQWw/edit#gid=0
 
       # return rights_statement as public domain if published before 1923
-      if DateTime.parse(date_issued) < DateTime.new(1923, 1, 1)
-        return 'http://rightsstatements.org/vocab/NoC-NC/1.0/'
+      if DateTime.parse(date_issued) < DateTime.new(1923, 12, 31)
+        return 'http://rightsstatements.org/vocab/NoC-US/1.0/'
       # return public domain if license in DSpace is CC0
       elsif rights_uri.include? 'creativecommons.org/publicdomain/zero/1.0/'
-        return 'http://rightsstatements.org/vocab/NoC-NC/1.0/'
+        return 'http://rightsstatements.org/vocab/NoC-US/1.0/'
       # return in copyright if published after 1923 and license in DSpace is not empty
       elsif DateTime.parse(date_issued) > DateTime.new(1923, 12, 31) && rights_uri.include?('creativecommons.org/licenses')
         return 'http://rightsstatements.org/vocab/InC-NC/1.0/'
