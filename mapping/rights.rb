@@ -21,13 +21,13 @@ module Mapping
         return 'http://rightsstatements.org/vocab/NoC-US/1.0/'
       end
       rights_uri = rights_uri_node.qualifier.run_method
-
-      # journal article most likely has issued date at year month
-      date_issued << '-31' if date_issued =~ /^\d{4}\-\d{2}$/
-      raise StandardError, "The value of date_issued only have year, the system expects at least year, month in YYYY-MM format." if date_issued =~ /^\d{4}$/
       
       # process rights_statement
       # https://docs.google.com/spreadsheets/d/1_Mj90z_abGrmn_xz-fnM8mF_NWGDv9br7kNIs6FfQWw/edit#gid=0
+
+      # journal article most likely has issued date at year month
+      date_issued << '-01' if date_issued =~ /^\d{4}\-\d{2}$/
+      raise StandardError, "The value of date_issued only have year, the system expects at least year, month in YYYY-MM format." if date_issued =~ /^\d{4}$/
 
       # return rights_statement as public domain if published before 1923
       if DateTime.parse(date_issued) < DateTime.new(1923, 12, 31)
