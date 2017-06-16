@@ -14,8 +14,13 @@ module Mapping
       date_issued_node = value['date'].find { |n| n.qualifier.field_name.casecmp('date_issued').zero? }
       date_issued = date_issued_node.qualifier.run_method
       rights_uri_node = value['rights'].find { |n| n.qualifier.field_name.casecmp('license').zero? }
+      # return nil for license if there is no input from DSpace
       return nil if rights_uri_node.nil?
       rights_uri = rights_uri_node.qualifier.run_method
+
+      # journal article most likely has issued date at year month
+      date_issued << '-31' if date_issued =~ /^\d{4}\-\d{2}$/
+      raise StandardError, "The value of date_issued only have year, the system expects at least year, month in YYYY-MM format." if date_issued =~ /^\d{4}$/
 
       # process license
       # https://docs.google.com/spreadsheets/d/1_Mj90z_abGrmn_xz-fnM8mF_NWGDv9br7kNIs6FfQWw/edit#gid=0
