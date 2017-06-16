@@ -14,6 +14,7 @@ module Mapping
       date_issued_node = value['date'].find { |n| n.qualifier.field_name.casecmp('date_issued').zero? }
       date_issued = date_issued_node.qualifier.run_method
       rights_uri_node = value['rights'].find { |n| n.qualifier.field_name.casecmp('license').zero? }
+      # return nil for license if there is no input from DSpace
       return nil if rights_uri_node.nil?
       rights_uri = rights_uri_node.qualifier.run_method
 
@@ -23,6 +24,10 @@ module Mapping
       # return public domain as-is
       return rights_uri if rights_uri.downcase.include?('http://creativecommons.org/publicdomain/zero/1.0/')
 
+      # journal article most likely has issued date at year month
+      date_issued << '-01' if date_issued =~ /^\d{4}\-\d{2}$/
+      raise StandardError, "The value of date_issued only have year, the system expects at least year, month in YYYY-MM format." if date_issued =~ /^\d{4}$/
+      
       # anything after 1923, with creativecommons return the rights_uri
       if DateTime.parse(date_issued) > DateTime.new(1923, 12, 31) && rights_uri.include?('creativecommons.org')
         return rights_uri
