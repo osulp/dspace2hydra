@@ -102,6 +102,7 @@ custom_nodes:
       type: String
     method: Mapping::Visibility.unprocessed
     value: open
+    value_add_to_migration: if_form_field_value_missing
 
 # Migration metadata nodes extract data from the DSpace Item metadata.xml and do some
 # lookup/cleanup/mapping before posting to the server.
@@ -143,6 +144,15 @@ migration_nodes:
       copyright:
         field:
           name: date_copyright
+      embargo:
+        field:
+          name: visibility
+          type: String
+        method:
+          # set visibility to 'embargo' and embargo_release_date to the value from the node
+          - Mapping::Description.set_embargo
+          - visibility
+          - embargo_release_date          
   description:
     field:
       name: description
