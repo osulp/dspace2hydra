@@ -30,19 +30,21 @@ hydra_endpoint:
   workflow_actions:
     auto_advance_work: true
     url: "/concern/workflow_actions/%{id}?local=en"
-    name:
-      field:
-        name: name
-        property: "workflow_action.%{field_name}"
-        type: String
-      value: "approve"
-    comment:
-      field:
-        name: comment
-        property: "workflow_action.%{field_name}"
-        type: String
-      value: "Approved by data migration user."
-
+    actions:
+      # Workflow action name, such as 'approve'
+      - name:
+          field:
+            name: name
+            property: "workflow_action.%{field_name}"
+            type: String
+          value: "approve"
+        # Workflow action comment field
+        comment:
+          field:
+            name: comment
+            property: "workflow_action.%{field_name}"
+            type: String
+          value: "Approved by data migration user."
 
 # Add this value to the migration data
 # (DEFAULT) 'always' : always add this value to the migration data

@@ -69,5 +69,9 @@ module Metadata
     def metadata
       @item.metadata
     end
+
+    def item_detail
+      { metadata: @item.metadata, item_id: @item.item_id, work_type: @work_type, owner_id: @item.owner_id }
+    end
   end
 end

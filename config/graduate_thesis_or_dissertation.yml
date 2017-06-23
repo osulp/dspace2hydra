@@ -38,6 +38,39 @@ hydra_endpoint:
   new_child_work:
     form_action: "/concern/parent/%{parent_id}/graduate_thesis_or_dissertations?local=en"
 
+  workflow_actions:
+    # Should the work be advanced in its workflow after being published to the server?
+    # (DEFAULT) true unless explicitly set to false here
+    auto_advance_work: true
+    # The URL format, including the work ID to "PUT" a workflow update to.
+    url: "/concern/workflow_actions/%{id}?locale=en"
+    actions:
+      - name:
+          field:
+            name: name
+            property: "workflow_action.%{field_name}"
+            type: String
+          value: "advance"
+        comment:
+          field:
+            name: comment
+            property: "workflow_action.%{field_name}"
+            type: String
+          value: "Advanced by data migration user."
+      - name:
+          field:
+            name: name
+            property: "workflow_action.%{field_name}"
+            type: String
+          value: "approve"
+        comment:
+          field:
+            name: comment
+            property: "workflow_action.%{field_name}"
+            type: String
+          value: "Approved by data migration user."
+
+
 # Add this value to the migration data
 # (DEFAULT) 'always' : always add this value to the migration data
 # 'if_form_field_value_missing' : add the value if the form_field doesn't have an existing value
@@ -53,6 +86,13 @@ value_from_node_property: ''
 
 # Custom metadata nodes to add to the data payload posted to the server
 custom_nodes:
+  academic_unit:
+    field:
+      name: academic_affiliation
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    method: Mapping::AcademicUnit.get_uris
+    value_from_node_property: item_detail
   admin_set:
     field:
       name: admin_set_id
@@ -182,7 +222,7 @@ migration_nodes:
     field:
       name: degree_name
       property: "%{work_type}.%{field_name}"
-      type: Array
+      type: String
     xpath: //metadata/value[@element='degree']
     method: Mapping::Degree.unprocessed
     qualifiers:
@@ -216,6 +256,7 @@ migration_nodes:
       default:
         field:
           name: description
+          type: String
         method:
           - Mapping::Description.process_if_grad_date
           - graduation_year
@@ -268,7 +309,7 @@ migration_nodes:
     field:
       name: replaces
       property: "%{work_type}.%{field_name}"
-      type: Array
+      type: String
     xpath: "//metadata/value[@element='identifier']"
     method: Mapping::Identifier.unprocessed
     qualifiers:

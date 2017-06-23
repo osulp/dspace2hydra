@@ -83,29 +83,41 @@ module HydraEndpoint
 
     ##
     # Generate the workflow_action field with value from configuration
-    # @param [String] property_name - the field.name from configuration with preference to setting found in the work_type specific file
-    # @return [Hash] - the workflow_action property and value, like {workflow_action: { comment: "Some comment"}}
-    def workflow_actions_data(property_name)
+    # @param [Array<String>] property_names - the field.names from configuration with preference to setting found in the work_type specific file
+    # @return [Hash] - the workflow_action properties and values, like {workflow_action: { comment: "Some comment", action: "approve" }}
+    def workflow_actions_data(*property_names)
       # property config example:
       #
       # hydra_endpoint:
       #   workflow_actions:
-      #     name:
-      #       field:
-      #         name: name                                  #for use with property string format
-      #         property: 'workflow_action.%{field_name}'   #to create properly formed data
-      #         type: String
-      #       value: approve                                #the value expected for this data
-      property_config = @config.dig('workflow_actions', property_name)
-      name = get_configuration 'name', property_config.dig('field')
-      property = get_configuration 'property', property_config.dig('field')
-      type = get_configuration 'type', property_config.dig('field')
-      value = get_configuration 'value', property_config
-      value = [value] if type.casecmp('array').zero?
+      #     actions:
+      #       - name:
+      #         field:
+      #           name: name                                  #for use with property string format
+      #           property: 'workflow_action.%{field_name}'   #to create properly formed data
+      #           type: String
+      #         value: approve                                #the value expected for this data
+      workflow_actions = get_configuration 'workflow_actions', @work_type_config.dig('hydra_endpoint'), @config
+      actions = workflow_actions.dig('actions')
+      data = []
+      actions.each do |action|
+        action_data = {}
+        property_names.each do |property_name|
+          property_config = action.dig(property_name)
+          name = get_configuration 'name', property_config.dig('field')
+          property = get_configuration 'property', property_config.dig('field')
+          type = get_configuration 'type', property_config.dig('field')
+          value = get_configuration 'value', property_config
+          value = [value] if type.casecmp('array').zero?
 
-      # "workflow_action.comment" becomes { workflow_action: { comment: "Some value from configuration" }}
-      workflow_action, prop = format(property, field_name: name).split('.')
-      { workflow_action.to_s => { prop.to_s => value } }
+          # "workflow_action.comment" becomes { workflow_action: { comment: "Some value from configuration" }}
+          workflow_action, prop = format(property, field_name: name).split('.')
+          action_data[workflow_action.to_s] ||= {}
+          action_data[workflow_action.to_s].merge!(prop.to_s => value)
+        end
+        data << action_data
+      end
+      data
     end
   end
 end

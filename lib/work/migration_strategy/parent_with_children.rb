@@ -83,6 +83,7 @@ module Work
         item_file_name = values[:item_file_name]
         creator = data.dig(@work_type, 'creator')
         keyword = data.dig(@work_type, 'keyword')
+        visibility = data.dig(@work_type, 'visibility')
         rights_statement = data.dig(@work_type, 'rights_statement')
         admin_set_id = data.dig(@work_type, 'admin_set_id')
 
@@ -95,6 +96,7 @@ module Work
         data[@work_type]['keyword'] = keyword
         data[@work_type]['rights_statement'] = rights_statement
         data[@work_type]['admin_set_id'] = admin_set_id
+        data[@work_type]['visibility'] = visibility
         data
       end
 
