@@ -129,7 +129,7 @@ migration_nodes:
     field:
       name: date_created
       property: "%{work_type}.%{field_name}"
-      type: Array
+      type: String
     xpath: "//metadata/value[@element='date']"
     method: Mapping::Date.unprocessed
     qualifiers:
@@ -147,19 +147,18 @@ migration_nodes:
           name: date_issued
       updated:
         field:
-          name: date_updated
+          name: date_modified
       copyright:
         field:
           name: date_copyright
       embargo:
         field:
           name: visibility
-          type: String
         method:
           # set visibility to 'embargo' and embargo_release_date to the value from the node
           - Mapping::Description.set_embargo
           - visibility
-          - embargo_release_date          
+          - embargo_release_date
   description:
     field:
       name: description
@@ -197,6 +196,7 @@ migration_nodes:
       peerreview:
         field:
           name: peerreviewed
+          type: String
       peerreviewnotes:
         field:
           name: additional_information
@@ -246,9 +246,15 @@ migration_nodes:
       citation:
         field:
           name: bibliographic_citation
+          type: Array
       isbn:
         field:
           name: isbn
+          type: Array
+      issn:
+        field:
+          name: issn
+          type: Array
       uri:
         field:
           name: replaces
@@ -283,7 +289,7 @@ migration_nodes:
           name: publisher
   relation:
     field:
-      name: relation
+      name: related_url
       property: "%{work_type}.%{field_name}"
       type: Array
     xpath: "//metadata/value[@element='relation']"
@@ -291,7 +297,7 @@ migration_nodes:
     qualifiers:
       default:
         field:
-          name: relation
+          name: related_url
       ispartofseries:
         field:
           name: in_series
