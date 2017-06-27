@@ -68,3 +68,6 @@
 -
   from: Thesis/Dissertation
   to: Thesis
+-
+  from: Book
+  to: Book
