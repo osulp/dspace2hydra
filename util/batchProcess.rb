@@ -5,7 +5,7 @@ require 'optparse'
 require 'fileutils'
 require 'zip'
 
-UPDATE_SPREADSHEET = false
+UPDATE_SPREADSHEET = true
 
 started_at = DateTime.now
 
@@ -29,14 +29,21 @@ if options['spreadsheet'].nil? || options['count'].nil? || options['archives_dir
   raise 'Missing an argument. Try again.'
 end
 
+#TODO : Move this to its own configuration file
 work_type_configs = {
-  'Undergraduate Thesis or Project' => 'undergraduate_thesis_or_project.yml',
-  'Datasets' => 'datasets.yml',
+  'Administrative Report or Publication' => 'administrative_report_or_publication.yml',
+  'Conference Proceedings or Journal' => 'conference_proceeding_or_journal.yml',
+  'Dataset' => 'datasets.yml',
+  'Default' => 'default.yml',
   'Faculty Article - OA Policy Implementation' => 'article.yml',
-  'Graduate Thesis or Dissertation' => 'graduate_thesis_or_dissertation.yml'
+  'Graduate Project' => 'graduate_project.yml',
+  'Graduate Thesis or Dissertation' => 'graduate_thesis_or_dissertation.yml',
+  'Open Educational resource' => 'open_educational_resource.yml',
+  'Technical Report' => 'technical_report.yml',
+  'Undergraduate Thesis or Project' => 'undergraduate_thesis_or_project.yml'
 }
-started_at_directory = "#{options['archives_directory']}/#{started_at.strftime('%Y%m%d%H%M%S')}"
-started_at_path = File.join(File.dirname(__FILE__), '../', started_at_directory)
+started_at_directory = File.join(options['archives_directory'], started_at.strftime('%Y%m%d%H%M%S'))
+started_at_path = File.join(started_at_directory)
 raise "#{started_at_path} already exists, cannot proceed with processing." if Dir.exist?(started_at_path)
 Dir.mkdir(started_at_path) unless Dir.exist?(started_at_path)
 
@@ -57,7 +64,7 @@ FileUtils.mv("#{options['spreadsheet']}.tmp", (options['spreadsheet']).to_s) if 
 
 commands = []
 csv = CSV.read(File.join(started_at_path, 'bags.csv'), headers: true, encoding: 'UTF-8').map(&:to_hash)
-bags_with_config = csv.map { |c| c.merge('config' => work_type_configs[c['work_type']]) }
+bags_with_config = csv.map { |c| c.merge('config' => work_type_configs[c['admin_set_name']]) }
 grouped_bags = bags_with_config.group_by { |h| h['config'] }
 grouped_bags.each_key do |key|
   config_dir = File.join(started_at_path, key.gsub(/\.yml$/, ''))

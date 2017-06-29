@@ -228,7 +228,7 @@ migration_nodes:
           - description
       abstract:
         field:
-          name: description
+          name: abstract
       digitization:
         field:
           name: digitization_spec
