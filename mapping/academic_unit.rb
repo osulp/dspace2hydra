@@ -3,7 +3,7 @@
 module Mapping
   class AcademicUnit
     require 'csv'
-    require 'Date'
+    require 'date'
 
     extend Extensions::BasicValueHandler
 

@@ -109,6 +109,7 @@ custom_nodes:
       type: String
     method: Mapping::Visibility.unprocessed
     value: open
+    value_add_to_migration: if_form_field_value_missing
 
 # Migration metadata nodes extract data from the DSpace Item metadata.xml and do some
 # lookup/cleanup/mapping before posting to the server.
@@ -128,7 +129,7 @@ migration_nodes:
     field:
       name: date_created
       property: "%{work_type}.%{field_name}"
-      type: Array
+      type: String
     # The xpath will match any element named date without taking schema, if match both element and schema:
     # xpath: "//metadata/value[@schema='dcterms' and @element='date']"
     xpath: "//metadata/value[@element='date']"
@@ -137,12 +138,6 @@ migration_nodes:
       default:
         field:
           name: date_created
-      updated:
-        field:
-          name: date_updated
-      copyright:
-        field:
-          name: date_copyright
       accessioned:
         field:
           name: date_uploaded
@@ -152,10 +147,15 @@ migration_nodes:
       issued:
         field:
           name: date_issued
+      updated:
+        field:
+          name: date_modified
+      copyright:
+        field:
+          name: date_copyright
       embargo:
         field:
           name: visibility
-          type: String
         method:
           # set visibility to 'embargo' and embargo_release_date to the value from the node
           - Mapping::Description.set_embargo
@@ -198,6 +198,7 @@ migration_nodes:
       peerreview:
         field:
           name: peerreviewed
+          type: String
       peerreviewnotes:
         field:
           name: additional_information
@@ -245,7 +246,6 @@ migration_nodes:
       default:
         field:
           name: replaces
-          method: Mapping::Identifier.ignored
       citation:
         field:
           name: bibliographic_citation
@@ -253,6 +253,12 @@ migration_nodes:
       isbn:
         field:
           name: isbn
+          type: Array
+          method: Mapping::Identifier.unprocessed
+      issn:
+        field:
+          name: issn
+          type: Array
           method: Mapping::Identifier.unprocessed
       uri:
         field:
@@ -294,7 +300,7 @@ migration_nodes:
           name: publisher
   relation:
     field:
-      name: relation
+      name: related_url
       property: "%{work_type}.%{field_name}"
       type: Array
     xpath: "//metadata/value[@element='relation']"
@@ -302,7 +308,7 @@ migration_nodes:
     qualifiers:
       default:
         field:
-          name: relation
+          name: related_url
       ispartofseries:
         field:
           name: in_series
@@ -324,12 +330,12 @@ migration_nodes:
       property: "%{work_type}.%{field_name}"
       type: String
     xpath: "//metadata/value[@element='rights']"
-    method: Mapping::License.unprocessed
+    method: Mapping::Rights.unprocessed
     qualifiers:
       default:
         field:
           name: rights
-        method: Mapping::License.ignored
+        method: Mapping::Rights.ignored
       uri:
         field:
           name: license
