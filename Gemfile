@@ -7,7 +7,7 @@ gem 'nokogiri'
 gem 'rdf'
 gem 'rdf-vocab'
 gem 'logging'
-gem 'zip'
+gem 'rubyzip'
 
 group :development, :test do
   gem 'rake'

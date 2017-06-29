@@ -15,7 +15,7 @@ module Mapping
       date_issued = date_issued_node.qualifier.run_method
       # journal article most likely has issued date at year month
       date_issued << '-01' if date_issued =~ /^\d{4}\-\d{2}$/
-      raise StandardError, 'The value of date_issued only has year, the system expects at least year, month in YYYY-MM format.' if date_issued =~ /^\d{4}$/
+      date_issued << '-01-01' if date_issued =~ /^\d{4}$/
 
       rights_uri_node = value['rights'].find { |n| n.qualifier.field_name.casecmp('license').zero? }
       # rights statement is required and the code below assigns one even it is empty in DSpace
