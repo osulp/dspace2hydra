@@ -43,10 +43,19 @@ module Mapping
       if match_data.nil?
         # not found, unprocessed
         return [ { field_name: field_name_two, value: value } ]
-      else 
+      else
         # found "graduation date"
-        return [ { field_name: field_name_one, value: value.split(':')[1].strip } ]                     
+        return [ { field_name: field_name_one, value: value.split(':')[1].strip } ]
       end
+    end
+
+    ##
+    # Translate the DSpace 'yes', 'no' or other related values to 'TRUE', or 'FALSE'
+    # to match the servers local vocabulary for this field.
+    # @param [String] value - the original Dspace value for the node
+    # @return [String] - the 'TRUE' or 'FALSE' for this field
+    def translate_peerreviewed(value, *args)
+      %w(1 true yes y).include?(value.to_s.downcase).to_s.upcase
     end
   end
 end
