@@ -253,6 +253,7 @@ migration_nodes:
         field:
           name: peerreviewed
           type: String
+        method: Mapping::Description.translate_peerreviewed
       peerreviewnotes:
         field:
           name: additional_information
