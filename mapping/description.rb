@@ -54,7 +54,7 @@ module Mapping
     # to match the servers local vocabulary for this field.
     # @param [String] value - the original Dspace value for the node
     # @return [String] - the 'TRUE' or 'FALSE' for this field
-    def translate_peerreviewed(value, *args)
+    def self.translate_peerreviewed(value, *args)
       %w(1 true yes y).include?(value.to_s.downcase).to_s.upcase
     end
   end

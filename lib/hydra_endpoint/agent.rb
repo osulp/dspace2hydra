@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 class Mechanize::HTTP::Agent
-  MAX_RESET_RETRIES = 10
+  MAX_RESET_RETRIES = 3
 
   # We need to replace the core Mechanize HTTP method:
   #

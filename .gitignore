@@ -36,3 +36,5 @@ Gemfile.lock
 lookup/collectionlist.csv
 /log/*
 !/log/.keep
+/bags*
+*.out

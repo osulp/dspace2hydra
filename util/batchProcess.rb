@@ -29,6 +29,18 @@ if options['spreadsheet'].nil? || options['count'].nil? || options['archives_dir
   raise 'Missing an argument. Try again.'
 end
 
+def zip_files_exist?(grouped_bags, options)
+  missing_files = []
+  grouped_bags.each_key do |key|
+    grouped_bags[key].each do |group|
+      file = group['bag_file']
+      missing_files << file unless File.exist?(File.join(options['source_directory'], file))
+    end
+  end
+  missing_files.each { |f| puts "Missing #{f}" }
+  missing_files.empty?
+end
+
 #TODO : Move this to its own configuration file
 work_type_configs = {
   'Administrative Report or Publication' => 'administrative_report_or_publication.yml',
@@ -60,28 +72,32 @@ open(options['spreadsheet'], 'r') do |original|
   end
 end
 
-FileUtils.mv("#{options['spreadsheet']}.tmp", (options['spreadsheet']).to_s) if UPDATE_SPREADSHEET
-
 commands = []
 csv = CSV.read(File.join(started_at_path, 'bags.csv'), headers: true, encoding: 'UTF-8').map(&:to_hash)
 bags_with_config = csv.map { |c| c.merge('config' => work_type_configs[c['admin_set_name']]) }
 grouped_bags = bags_with_config.group_by { |h| h['config'] }
-grouped_bags.each_key do |key|
-  config_dir = File.join(started_at_path, key.gsub(/\.yml$/, ''))
-  Dir.mkdir(config_dir)
-  # Now unzip each bag from its original directory into the config_dir
-  grouped_bags[key].each do |group|
-    Dir.mkdir(File.join(config_dir, group['bag_file'].gsub(/\.zip/, '')))
-    Zip::File.open(File.join(options['source_directory'], group['bag_file'])) do |zip_file|
-      zip_file.each do |f|
-        fpath = File.join(config_dir, f.name)
-        FileUtils.mkdir_p(File.dirname(fpath))
-        zip_file.extract(f, fpath) unless File.exist?(fpath)
+
+if(zip_files_exist?(grouped_bags, options))
+
+  grouped_bags.each_key do |key|
+    config_dir = File.join(started_at_path, key.gsub(/\.yml$/, ''))
+    Dir.mkdir(config_dir)
+    # Now unzip each bag from its original directory into the config_dir
+    grouped_bags[key].each do |group|
+      Dir.mkdir(File.join(config_dir, group['bag_file'].gsub(/\.zip/, '')))
+      Zip::File.open(File.join(options['source_directory'], group['bag_file'])) do |zip_file|
+        zip_file.each do |f|
+          fpath = File.join(config_dir, f.name)
+          FileUtils.mkdir_p(File.dirname(fpath))
+          zip_file.extract(f, fpath) unless File.exist?(fpath)
+        end
       end
     end
+    commands << "dspace2hydra.rb -d #{File.expand_path(config_dir)} -c config/#{key}"
   end
-  commands << "dspace2hydra.rb -d #{File.expand_path(config_dir)} -c config/#{key}"
-end
 
-puts "Batch processing of #{options['count']} bags complete, the following commands will migrate each of the prepared directories."
-commands.each { |c| puts c }
+  FileUtils.mv("#{options['spreadsheet']}.tmp", (options['spreadsheet']).to_s) if UPDATE_SPREADSHEET
+
+  puts "Batch processing of #{options['count']} bags complete, the following commands will migrate each of the prepared directories."
+  commands.each { |c| puts c }
+end
