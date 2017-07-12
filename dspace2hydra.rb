@@ -9,10 +9,12 @@ require_relative 'lib/timeable'
 require_relative 'lib/bag'
 require_relative 'lib/hydra_endpoint'
 require_relative 'lib/work'
+require_relative 'lib/extract'
 require_relative 'mapping/mapping'
 
 include Loggable
 include Timeable
+include Extract
 
 started_at = DateTime.now
 
@@ -37,6 +39,7 @@ OptionParser.new do |opts|
   opts.on('-j', '--cached_json PATH', 'Post the json file directly to the server.') { |v| options['cached_json'] = v }
   opts.on('-p', '--parent ID', 'Use this ID as the parent work.') { |v| options['parent_id'] = v }
   opts.on('-s', '--skip-children INDEXES', 'Comma-delimited list of children indexes to skip. (0,1,3)') { |v| options['skip_children'] = v }
+  opts.on('-e', '--extract_csv PATH', 'Extract metadata from bags into a CSV, to a folder.') { |v| options['extract_csv'] = v }
   opts.on('-f', '--extract_files PATH', 'Extract content files to a folder.') { |v| options['extract_files'] = v }
   opts.on('-h', '--help', 'Display this screen') do
     puts opts
@@ -120,40 +123,46 @@ else
 
   @logger.info('DSpace2Hydra started processing bags.')
 
-  # Process all of the bags individually
-  bags.each do |bag|
-    item_id = "ITEM@#{bag.item.item_id}"
+  if CONFIG['extract_csv']
+    records = Array.new (0)
+    records = extract_records_metadata(bags)
+    build_csv(records)
+  else
+    # Process all of the bags individually
+    bags.each do |bag|
+      item_id = "ITEM@#{bag.item.item_id}"
 
-    if CONFIG['extract_files']
-      bag.files_for_upload.each do |f|
-        @logger.info(f.metadata_full_path)
+      if CONFIG['extract_files']
+        bag.files_for_upload.each do |f|
+          @logger.info(f.metadata_full_path)
+          begin
+            FileUtils.copy f.full_path, File.join(CONFIG['extract_files'], "#{bag.item.item_id}_#{f.name}")
+          rescue StandardError => e
+            @logger.fatal("#{e.message}")
+          end
+        end
+      else
         begin
-          FileUtils.copy f.full_path, File.join(CONFIG['extract_files'], "#{bag.item.item_id}_#{f.name}")
+          bag_start = DateTime.now
+          start_logging_to(item_log_path(bag, started_at), item_id: item_id)
+          @logger.info('Started')
+          server = HydraEndpoint::Server.new(CONFIG['hydra_endpoint'], type_config, started_at)
+
+          # We've decided that if a work has 2+ files, then it should be a Parent work with each file being a
+          # child.
+          if bag.files_for_upload.count > 1
+            work = Work::MigrationStrategy::ParentWithChildren.new(bag, server, CONFIG, type_config)
+          else
+            work = Work::MigrationStrategy::SingleWork.new(bag, server, CONFIG, type_config)
+          end
+          work.process_bag
+
+          @logger.info("Finished in #{time_since(bag_start)}")
         rescue StandardError => e
-          @logger.fatal("#{e.message}")
+          @logger.fatal("#{e.message} : #{e.backtrace.join("\n\t")}")
+        ensure
+          stop_logging_to(item_log_path(bag, started_at), item_id: item_id)
         end
-      end
-    else
-      begin
-        bag_start = DateTime.now
-        start_logging_to(item_log_path(bag, started_at), item_id: item_id)
-        @logger.info('Started')
-        server = HydraEndpoint::Server.new(CONFIG['hydra_endpoint'], type_config, started_at)
-
-        # We've decided that if a work has 2+ files, then it should be a Parent work with each file being a
-        # child.
-        if bag.files_for_upload.count > 1
-          work = Work::MigrationStrategy::ParentWithChildren.new(bag, server, CONFIG, type_config)
-        else
-          work = Work::MigrationStrategy::SingleWork.new(bag, server, CONFIG, type_config)
-        end
-        work.process_bag
-
-        @logger.info("Finished in #{time_since(bag_start)}")
-      rescue StandardError => e
-        @logger.fatal("#{e.message} : #{e.backtrace.join("\n\t")}")
-      ensure
-        stop_logging_to(item_log_path(bag, started_at), item_id: item_id)
       end
     end
   end
