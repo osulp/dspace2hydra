@@ -125,6 +125,20 @@ migration_nodes:
       default:
         field:
           name: creator
+  contributor:
+    field:
+      name: editor
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    xpath: //metadata/value[@element='contributor']
+    method: Mapping::Contributor.unprocessed
+    qualifiers:
+      default:
+        field:
+          name: editor
+      editor:
+        field:
+          name: editor
   date:
     field:
       name: date_created
