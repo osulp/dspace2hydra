@@ -239,7 +239,7 @@ migration_nodes:
       property: "%{work_type}.%{field_name}"
       type: Array
     xpath: "//metadata/value[@element='format']"
-    method: Mapping::format.unprocessed
+    method: Mapping::Format.unprocessed
     qualifiers:
       default:
         field:
