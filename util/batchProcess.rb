@@ -76,6 +76,7 @@ commands = []
 csv = CSV.read(File.join(started_at_path, 'bags.csv'), headers: true, encoding: 'UTF-8').map(&:to_hash)
 bags_with_config = csv.map { |c| c.merge('config' => work_type_configs[c['admin_set_name']]) }
 grouped_bags = bags_with_config.group_by { |h| h['config'] }
+raise "Spreadsheet contains #{grouped_bags[nil].count} lines missing an admin_set_name." if grouped_bags.has_key? nil
 
 if(zip_files_exist?(grouped_bags, options))
 
