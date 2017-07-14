@@ -44,7 +44,7 @@ end
 #TODO : Move this to its own configuration file
 work_type_configs = {
   'Administrative Report or Publication' => 'administrative_report_or_publication.yml',
-  'Conference Proceedings or Journal' => 'conference_proceeding_or_journal.yml',
+  'Conference Proceedings or Journal' => 'conference_proceedings_or_journal.yml',
   'Dataset' => 'datasets.yml',
   'Default' => 'default.yml',
   'Faculty Article - OA Policy Implementation' => 'article.yml',
