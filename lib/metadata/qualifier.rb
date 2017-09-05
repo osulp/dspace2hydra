@@ -29,7 +29,7 @@ module Metadata
     end
 
     def raise_config_error(work_type_config, node_config, qualifier)
-      message = "#{work_type_config.dig('work_type')} :  Missing #{node_config.dig('field', 'name')}.#{qualifier} qualifier configuration."
+      message = "#{work_type_config.dig('work_type')} :  Missing #{@field}.#{qualifier} qualifier configuration."
       @logger.fatal(message)
       raise message
     end
