@@ -141,7 +141,10 @@ migration_nodes:
           name: editor
       advisor:
         field:
-          name: keyword    
+          name: keyword
+      author:
+        field:
+          name: keyword            
   date:
     field:
       name: date_created
@@ -233,13 +236,7 @@ migration_nodes:
       tableofcontents:
         field:
           name: tableofcontents
-      graduationdate:
-        field:
-          name: additional_information
       other:
-        field:
-          name: additional_information
-      uri:
         field:
           name: additional_information
   format:

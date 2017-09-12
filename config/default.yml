@@ -125,6 +125,23 @@ migration_nodes:
       default:
         field:
           name: creator
+  contributor:
+    field:
+      name: contributor
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    xpath: //metadata/value[@element='contributor']
+    method: Mapping::Contributor.unprocessed
+    qualifiers:
+      default:
+        field:
+          name: contributor 
+      advisor:
+        field:
+          name: contributor
+      author:
+        field:
+          name: contributor          
   date:
     field:
       name: date_created
@@ -216,15 +233,13 @@ migration_nodes:
       tableofcontents:
         field:
           name: tableofcontents
-      graduationdate:
-        field:
-          name: additional_information
       other:
         field:
           name: additional_information
-      uri:
+      printable:
         field:
-          name: additional_information          
+          name: additional_information
+          method: Mapping::Description.ignored
   format:
     field:
       name: file_format
@@ -530,4 +545,16 @@ migration_nodes:
     qualifiers:
       default:
         field:
-          name: identifier                                                                      
+          name: identifier
+  address:
+    field:
+      name: description
+      property: "%{work_type}.%{field_name}"
+      type: String
+    xpath: "//metadata/value[@element='address']"
+    method: Mapping::Description.ignored
+    qualifiers:
+      default:
+        field:
+          name: description
+          method: Mapping::Description.ignored                                                                        

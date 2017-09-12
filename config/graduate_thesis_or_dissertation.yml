@@ -183,6 +183,9 @@ migration_nodes:
       committeemember:
         field:
           name: contributor_committeemember
+      other:
+        field:
+          name: contributor
   date:
     field:
       name: date_created
@@ -309,12 +312,14 @@ migration_nodes:
       graduationdate:
         field:
           name: additional_information
+          method: Mapping::Description.ignored
       other:
         field:
           name: additional_information
       uri:
         field:
-          name: additional_information          
+          name: additional_information
+          method: Mapping::Description.ignored       
   format:
     field:
       name: file_format
@@ -480,3 +485,15 @@ migration_nodes:
         method:
           - Mapping::Type.lookup_hyrax_type
           - resource_type
+  address:
+    field:
+      name: description
+      property: "%{work_type}.%{field_name}"
+      type: String
+    xpath: "//metadata/value[@element='address']"
+    method: Mapping::Description.ignored
+    qualifiers:
+      default:
+        field:
+          name: description
+          method: Mapping::Description.ignored           
