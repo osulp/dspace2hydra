@@ -215,6 +215,9 @@ migration_nodes:
       tableofcontents:
         field:
           name: tableofcontents
+      other:
+        field:
+          name: additional_information      
   format:
     field:
       name: file_format
@@ -261,6 +264,15 @@ migration_nodes:
       doi:
         field:
           name: doi
+      govdoc:
+        field:
+          name: identifier
+      orcid:
+        field:
+          name: identifier
+      other:
+        field:
+          name: identifier              
   language:
     field:
       name: language
@@ -301,6 +313,18 @@ migration_nodes:
       ispartofseries:
         field:
           name: in_series
+      ispartof:
+        field:
+          name: in_series
+      photosandvideos:
+        field:
+          name: additional_information
+      reportsandpublications:
+        field:
+          name: additional_information
+      statisticsanddata:
+        field:
+          name: additional_information              
   rights:
     field:
       name: rights
@@ -331,6 +355,15 @@ migration_nodes:
       lcsh:
         field:
           name: subject
+      other:
+        field:
+          name: keyword
+      cab:
+        field:
+          name: keyword
+      lcc:
+        field:
+          name: keyword          
   title:
     field:
       name: title
