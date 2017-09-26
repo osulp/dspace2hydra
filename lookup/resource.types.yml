@@ -9,6 +9,9 @@
   from: Dataset
   to: Dataset
 -
+  from: Datasets
+  to: Dataset
+-
   from: Learning Object
   to: Learning Object
 -
@@ -35,6 +38,9 @@
 -
   from: Presentation
   to: Presentation
+-
+  from: Proceedings
+  to: Other
 -
   from: Recording, acoustical
   to: Audio

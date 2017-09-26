@@ -17,13 +17,13 @@ module Mapping
     def self.remapped_field_split(value, *args)
       field_name_one, field_name_two = args.flatten
       # matches when zero or more spaces around the spliter
-      matches = value.match(/(.*\))\s*in\s*(.*)/)
+      matches = value.match(/(.*\))\s*(in|n|iin|-n|i)*\s*(.*)/i)
       degree_name_value = matches ? matches[1] : value
       lookup = File.open(File.join(File.dirname(__FILE__), DEGREE_NAMES_FILE)) { |f| YAML.safe_load(f) }
       degree_name_map = lookup.find { |l| l['from'].casecmp(degree_name_value).zero? }
       degree_name = degree_name_map['to']
       fields = [ { field_name: field_name_one, value: degree_name } ]
-      fields << { field_name: field_name_two, value: matches[2] } if matches
+      fields << { field_name: field_name_two, value: matches[3] } unless matches[3].nil? || matches[3].empty?
       fields
     end
   end
