@@ -1,5 +1,8 @@
 ---
 -
+  from: Bachelor's of Science (B.S.)
+  to: Bachelor of Science (B.S.)
+-
   from: Bachelor of Science (B.S.)
   to: Bachelor of Science (B.S.)
 -
@@ -20,6 +23,9 @@
 -
   from: Doctor of Education (EDD)
   to: Doctor of Education (Ed.D.)
+-
+  from: Philosophy (Ph. D.)
+  to: Doctor of Philosophy (Ph.D.)
 -
   from: Doctor of Philosophy (Ed. D.)
   to: Doctor of Philosophy (Ph.D.)
@@ -63,10 +69,22 @@
   from: Master of Arts in Interdisciplinary Studies (M.A.I.S)
   to: Master of Arts in Interdisciplinary Studies (M.A.I.S.)
 -
+  from: Master of Arts in Interdisciplinary Studies (MAIS)
+  to: Master of Arts in Interdisciplinary Studies (M.A.I.S.)
+-
+  from: Master of Arts in Interdisciplinary Studies
+  to: Master of Arts in Interdisciplinary Studies (M.A.I.S.)
+-
+  from: Master of Arts in Interdisciplinary &#13;
+  to: Master of Arts in Interdisciplinary Studies (M.A.I.S.)
+-
   from: Master of Business Administration (M.B.A.)
   to: Master of Business Administration (M.B.A.)
 -
   from: Master of Education (Ed. M.)
+  to: Master of Education (Ed.M.)
+-
+  from: Master of Education (E.D.M.)
   to: Master of Education (Ed.M.)
 -
   from: Master of Fine Arts (M.F.A.)
@@ -102,6 +120,18 @@
   from: Master of Public Health (M.P.H.)
   to: Master of Public Health (M.P.H.)
 -
+  from: Master of Public Policy (M.P.P.)
+  to: Master of Public Policy (M.P.P.)
+-
+  from: Master of Public Policy (MPP)
+  to: Master of Public Policy (M.P.P.)
+-
+  from: Master of Natural Resources (M.N.R.)
+  to: Master of Natural Resources (M.N.R.)
+-
+  from: Professional Science Masters (PS)
+  to: Professional Science Masters
+-
   from: Master of Science (M.S.)
   to: Master of Science (M.S.)
 -
@@ -123,6 +153,9 @@
   from: Honors Bachelor of Arts (HBA)
   to: Honors Bachelor of Arts (H.B.A.)
 -
+  from: Honors Bachelor of Arts
+  to: Honors Bachelor of Arts (H.B.A.)
+-
   from: Honors Bachelor of Science (HBS)
   to: Honors Bachelor of Science (H.B.S.)
 -
@@ -134,3 +167,9 @@
 -
   from: Undergraduate Thesis
   to: Bachelor of Science (B.S.)
+-
+  from: Honors Bachelor of Science (H.B.S.)
+  to: Honors Bachelor of Science (H.B.S.)
+-
+  from: Honors Bachelor of Fine Arts (HBFA)
+  to: Honors Bachelor of Fine Arts (H.B.F.A.)

@@ -26,9 +26,9 @@ module Mapping
       return '' if admin_set_name.casecmp('default').zero?
 
       items = load_admin_sets_cache
-      found = items['admin_sets'].select { |item| item['title'].any? { |t| t.casecmp(admin_set_name).zero? } } if items
-      raise StandardError, "unable to determine which admin set to associate to, found #{found.count} in the cache. Admin sets should have unique titles on the server." if found.count != 1
-      found.first['id']
+      found = items['admin_sets'].find { |item| item['title'].any? { |t| t.casecmp(admin_set_name).zero? } } if items
+      raise StandardError, "#{admin_set_name} not found on server, unable to process this item." if found.nil?
+      found['id']
     end
 
     private

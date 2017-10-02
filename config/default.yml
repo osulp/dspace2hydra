@@ -540,7 +540,7 @@ migration_nodes:
       name: identifier
       property: "%{work_type}.%{field_name}"
       type: String
-    xpath: "//metadata/value[@element='identifier']"
+    xpath: "//metadata/value[@element='identifier-stationid']"
     method: Mapping::Identifier.unprocessed
     qualifiers:
       default:
