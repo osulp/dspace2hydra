@@ -26,7 +26,7 @@ module Mapping
 
       # journal article most likely has issued date at year month
       date_issued << '-01' if date_issued =~ /^\d{4}\-\d{2}$/
-      raise StandardError, 'The value of date_issued only has year, the system expects at least year, month in YYYY-MM format.' if date_issued =~ /^\d{4}$/
+      date_issued << '-01-01' if date_issued =~ /^\d{4}$/
 
       # anything after 1923, with creativecommons return the rights_uri
       if DateTime.parse(date_issued) > DateTime.new(1923, 12, 31) && rights_uri.include?('creativecommons.org')

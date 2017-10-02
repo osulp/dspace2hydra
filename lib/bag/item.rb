@@ -26,6 +26,7 @@ class Item
   end
 
   def owner_id
+    log_and_raise 'missing ownerId in this items object.properties' if object_properties['ownerId'].nil?
     object_properties['ownerId'].first
   end
 

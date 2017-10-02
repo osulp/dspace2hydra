@@ -29,8 +29,10 @@ module Mapping
       if item_detail[:work_type].casecmp('graduate_thesis_or_dissertation').zero? && found_academic_units.nil?
         graduation_year = graduation_date(item_detail[:metadata])
         degree_name = degree_name(item_detail[:metadata])
-        etd = etd_csv.find { |e| e['Degree Name'].to_s.casecmp(degree_name).zero? && e['Grad Year'].to_s.casecmp(graduation_year).zero? }
-        found_academic_units = etd['Final URI'].to_s.gsub(/\s/,'').split(';')
+        if !graduation_year.nil? && !degree_name.nil?
+          etd = etd_csv.find { |e| e['Degree Name'].to_s.casecmp(degree_name).zero? && e['Grad Year'].to_s.casecmp(graduation_year).zero? }
+          found_academic_units = etd['Final URI'].to_s.gsub(/\s/,'').split(';')
+        end
       end
 
       [
@@ -44,12 +46,14 @@ module Mapping
     def self.degree_name(metadata)
       degree_node = metadata['degree'].find { |n| n.qualifier.qualifier.casecmp('name').zero? }
       degree_name = degree_node.qualifier.run_method.find { |fields| fields[:field_name].casecmp('degree_field').zero? }
+      return nil if degree_name.nil?
       degree_name[:value]
     end
 
     def self.graduation_date(metadata)
       graduation_date_node = metadata['description'].select { |n| n.qualifier.qualifier.casecmp('default').zero? }
       graduation_date = graduation_date_node.map { |n| n.qualifier.run_method }.find { |f| f.first[:field_name].casecmp('graduation_year').zero? }
+      return nil if graduation_date.nil?
       graduation_date.first[:value]
     end
 
@@ -78,10 +82,11 @@ module Mapping
 
     def self.find_other_affiliation(collections, owner_id, other_affiliations)
       dspace_collection = collections.find { |c| c['collection_handle'] === owner_id }
+      return nil unless dspace_collection
       label = dspace_collection['Other Affiliation']
       return nil unless label
       found = other_affiliations.find { |row| row['Name'].casecmp(label).zero? }
-      raise "#{OTHER_AFFILIATIONS_CSV_FILE} missing expected entry and uri, '#{label}'" unless found.count
+      raise "#{OTHER_AFFILIATIONS_CSV_FILE} missing expected entry and uri for: '#{label}'" if found.nil?
       found['URI']
     end
 
