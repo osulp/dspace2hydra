@@ -12,6 +12,9 @@
   from: Repository Administrators
   to: Repository Administrator Embargo
 -
+  from: Repository Administrator
+  to: Repository Administrator Embargo
+-
   from: SA Administrators
   to: Repository Administrator Embargo
 -
