@@ -24,7 +24,7 @@
   from: DPU Administrator
   to: Repository Administrator Embargo
 -
-  from: Repository Administators
+  from: Repository Administator
   to: Repository Administrator Embargo
 -
   from: DPU Administrators
