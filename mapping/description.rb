@@ -5,13 +5,14 @@ module Mapping
     ##
     # Set the visiblity to "embargo" and the embargo release date to the value from Dspace
     # @param [String] value - the original Dspace value for the node
-    # @param [Array] *args - the two field names to map values to
-    # @return [Array[Hash]] - the two fields in hydra with the new values
+    # @param [Array] *args - the three field names to map values to
+    # @return [Array[Hash]] - the three fields in hydra with the new values
     def self.set_embargo(value, *args)
-      field_name_one, field_name_two = args.flatten
+      field_name_one, field_name_two, field_name_three = args.flatten
       [
         { field_name: field_name_one, value: 'embargo' },
-        { field_name: field_name_two, value: value }
+        { field_name: field_name_two, value: value },
+        { field_name: field_name_three, value: 'Existing Confidentiality Agreement'}
       ]
     end
 
