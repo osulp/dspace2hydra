@@ -1,0 +1,631 @@
+---
+- from: Adult Education
+  to: http://opaquenamespace.org/ns/osuDegreeFields/OGvwFaYi
+- from: Aeronautical Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/h17mdAyY
+- from: Agricultural Bacteriology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/oFEEwUkk
+- from: Agricultural Chemistry
+  to: http://opaquenamespace.org/ns/osuDegreeFields/2j9jzFJJ
+- from: Agricultural Economics
+  to: http://opaquenamespace.org/ns/osuDegreeFields/EyJ4npVX
+- from: Agricultural Economics and Dairy Manufacturing
+  to: http://opaquenamespace.org/ns/osuDegreeFields/4JZUDEem
+- from: Agricultural Education
+  to: http://opaquenamespace.org/ns/osuDegreeFields/Vl3rhaU2
+- from: Agricultural Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/6jJMIG5D
+- from: Agricultural and Resource Economics
+  to: http://opaquenamespace.org/ns/osuDegreeFields/xVaavcnH
+- from: Agricultural and Resource Economics and Geography
+  to: http://opaquenamespace.org/ns/osuDegreeFields/5lxcWCm2
+- from: Agriculture
+  to: http://opaquenamespace.org/ns/osuDegreeFields/SI1eCX0d
+- from: Agronomic Crop Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/0ujjmW9P
+- from: Agronomy
+  to: http://opaquenamespace.org/ns/osuDegreeFields/wtcwVchw
+- from: Animal Breeding
+  to: http://opaquenamespace.org/ns/osuDegreeFields/KWzvXUyz
+- from: Animal Husbandry
+  to: http://opaquenamespace.org/ns/osuDegreeFields/OhWpZ9fL
+- from: Animal Industries
+  to: http://opaquenamespace.org/ns/osuDegreeFields/L5df5cGz
+- from: Animal Nutrition
+  to: http://opaquenamespace.org/ns/osuDegreeFields/urkrkTUy
+- from: Animal Science (Nutrition)
+  to: http://opaquenamespace.org/ns/osuDegreeFields/4QGjGXDe
+- from: Animal Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/ZfhfkCsy
+- from: Animal Sciences
+  to: http://opaquenamespace.org/ns/osuDegreeFields/6UkQ0fd4
+- from: Anthropology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/uWcU7XNs
+- from: Apparel, Interiors, Housing, and Merchandising
+  to: http://opaquenamespace.org/ns/osuDegreeFields/aAynzoLm
+- from: Apparel, Interiors, and Merchandising
+  to: http://opaquenamespace.org/ns/osuDegreeFields/O5sXIL5K
+- from: Applied Anthropology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/iPVxZthZ
+- from: Applied Economics
+  to: http://opaquenamespace.org/ns/osuDegreeFields/LadD13bk
+- from: Applied Ethics
+  to: http://opaquenamespace.org/ns/osuDegreeFields/anT08Cgv
+- from: Applied Mathematics
+  to: http://opaquenamespace.org/ns/osuDegreeFields/m0dVUKke
+- from: Applied Physics
+  to: http://opaquenamespace.org/ns/osuDegreeFields/kfG76Jz2
+- from: Atmospheric Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/wjumKmKM
+- from: Atmospheric Sciences
+  to: http://opaquenamespace.org/ns/osuDegreeFields/XRUAakIE
+- from: Automotive Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/T2NgrYg1
+- from: Bacteriology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/on81oQFO
+- from: Biochemistry and Biophysics
+  to: http://opaquenamespace.org/ns/osuDegreeFields/Fmcpchl8
+- from: Biochemistry
+  to: http://opaquenamespace.org/ns/osuDegreeFields/0Kamj8EG
+- from: Biochemistry and Biophysics
+  to: http://opaquenamespace.org/ns/osuDegreeFields/UFS6fuiE
+- from: Biochemistry/Biophysics
+  to: http://opaquenamespace.org/ns/osuDegreeFields/wSFbCzAA
+- from: Biological Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/dJtIgrkd
+- from: Biological and Ecological Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/3y9Jx8eo
+- from: Biological and Organic Chemistry
+  to: http://opaquenamespace.org/ns/osuDegreeFields/0ARiezTD
+- from: Bioresource Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/wzOLMDwF
+- from: Botany
+  to: http://opaquenamespace.org/ns/osuDegreeFields/cL3TfKTX
+- from: Botany and Plant Pathology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/tcOW28Iw
+- from: Business Administration
+  to: http://opaquenamespace.org/ns/osuDegreeFields/kWNi9kiI
+- from: Business Education
+  to: http://opaquenamespace.org/ns/osuDegreeFields/DG63gSrH
+- from: Cellular Biology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/0RxJxQrr
+- from: Chemical Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/0TSDqTjg
+- from: Chemical and Metallurgical Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/4H55NiYU
+- from: Chemistry
+  to: http://opaquenamespace.org/ns/osuDegreeFields/cJCsPNPy
+- from: Chemistry and Soils
+  to: http://opaquenamespace.org/ns/osuDegreeFields/BeZkdFcx
+- from: Child Development
+  to: http://opaquenamespace.org/ns/osuDegreeFields/lJF4pafm
+- from: Civil Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/Kuxj7Apf
+- from: Civil Engineering and Wood Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/PVMesOzw
+- from: Civil and Construction Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/UZiTUqT0
+- from: Clothing
+  to: http://opaquenamespace.org/ns/osuDegreeFields/ESYJ3dgv
+- from: Clothing and Textiles
+  to: http://opaquenamespace.org/ns/osuDegreeFields/poo332U0
+- from: Clothing, Textiles, and Related Arts
+  to: http://opaquenamespace.org/ns/osuDegreeFields/Qkh08a4r
+- from: College Student Services
+  to: http://opaquenamespace.org/ns/osuDegreeFields/o8Vpwam2
+- from: College Student Services Administration
+  to: http://opaquenamespace.org/ns/osuDegreeFields/tgd2Kird
+- from: Commercial Education
+  to: http://opaquenamespace.org/ns/osuDegreeFields/QNQ5QxZK
+- from: Communication Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/NO50P2hJ
+- from: Communications
+  to: http://opaquenamespace.org/ns/osuDegreeFields/AYAN7U8V
+- from: Communications Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/qTOVpSoV
+- from: Comparative Health Sciences
+  to: http://opaquenamespace.org/ns/osuDegreeFields/4DoWDJrS
+- from: Comparative Veterinary Medicine
+  to: http://opaquenamespace.org/ns/osuDegreeFields/mW6zKxBh
+- from: Computer Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/VSIWUNfp
+- from: Computer Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/QSuyE4pX
+- from: Computer programs
+  to: http://opaquenamespace.org/ns/osuDegreeFields/91DicYiC
+- from: Counseling
+  to: http://opaquenamespace.org/ns/osuDegreeFields/36ndRbKj
+- from: Counseling and Guidance
+  to: http://opaquenamespace.org/ns/osuDegreeFields/3UEPxWet
+- from: Counselor Education
+  to: http://opaquenamespace.org/ns/osuDegreeFields/ieuQEKXL
+- from: Creative Writing
+  to: http://opaquenamespace.org/ns/osuDegreeFields/tBpACMAj
+- from: Crop Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/dS4cz8yW
+- from: Crop and Soil Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/iES6NyvH
+- from: Curriculum and Instruction
+  to: http://opaquenamespace.org/ns/osuDegreeFields/wXevYGag
+- from: Dairy
+  to: http://opaquenamespace.org/ns/osuDegreeFields/q6R3lPtN
+- from: Dairy Bacteriology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/mHkeL6L3
+- from: Dairy Husbandry
+  to: http://opaquenamespace.org/ns/osuDegreeFields/lNzhf86X
+- from: Dairy Manufacturing
+  to: http://opaquenamespace.org/ns/osuDegreeFields/UHms5yKI
+- from: Dairy Products Industries
+  to: http://opaquenamespace.org/ns/osuDegreeFields/j2OLpQTd
+- from: Dairy Technology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/HBVtgibq
+- from: Dairy and Animal Husbandry
+  to: http://opaquenamespace.org/ns/osuDegreeFields/qT5i2kys
+- from: Dairying
+  to: http://opaquenamespace.org/ns/osuDegreeFields/iQC5izmr
+- from: Design and Human Environment
+  to: http://opaquenamespace.org/ns/osuDegreeFields/FoGZNnPh
+- from: Design and the Human Environment
+  to: http://opaquenamespace.org/ns/osuDegreeFields/V1hJBrF2
+- from: Domestic Art
+  to: http://opaquenamespace.org/ns/osuDegreeFields/NkxJIaa9
+- from: Domestic Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/a3yDSjqL
+- from: Domestic Science and Art
+  to: http://opaquenamespace.org/ns/osuDegreeFields/pLKpSdID
+- from: Earth, Ocean, and Atmospheric Sciences
+  to: http://opaquenamespace.org/ns/osuDegreeFields/QGBFl6IV
+- from: Ecology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/sVdyBCqg
+- from: Economics
+  to: http://opaquenamespace.org/ns/osuDegreeFields/5ZzHIg3o
+- from: Education
+  to: http://opaquenamespace.org/ns/osuDegreeFields/JaUoFRlf
+- from: Educational Foundations
+  to: http://opaquenamespace.org/ns/osuDegreeFields/fSitNyXs
+- from: Educational Psychology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/AioZPhTc
+- from: Electrical Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/VtLWmG2t
+- from: Electrical Engineering and Computer Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/1AWDT4tl
+- from: Electrical and Computer Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/Iyd25vfm
+- from: Electrical and Computer Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/MNZJykks
+- from: Electrical and Electronics Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/4JvsGKNW
+- from: Electrical communications
+  to: http://opaquenamespace.org/ns/osuDegreeFields/DQ2prZae
+- from: Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/jxY1B1Ke
+- from: Engineering Materials
+  to: http://opaquenamespace.org/ns/osuDegreeFields/VPfkVSB4
+- from: English
+  to: http://opaquenamespace.org/ns/osuDegreeFields/7wO25V6w
+- from: Entomology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/nHvyZi7s
+- from: Environmental Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/YtrMset3
+- from: Environmental Health
+  to: http://opaquenamespace.org/ns/osuDegreeFields/4SfayB1O
+- from: Environmental Health Management
+  to: http://opaquenamespace.org/ns/osuDegreeFields/MQ7Owpbc
+- from: Environmental Health and Occupational Safety Management
+  to: http://opaquenamespace.org/ns/osuDegreeFields/JjpnJhM7
+- from: Environmental Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/TsGa4Gtt
+- from: Environmental Sciences
+  to: http://opaquenamespace.org/ns/osuDegreeFields/RDjSM0NX
+- from: Exercise and Sport Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/UgjXGtBh
+- from: Exercise and Sports Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/STHOkLrB
+- from: Family Life
+  to: http://opaquenamespace.org/ns/osuDegreeFields/AW4Mx5Us
+- from: Family Life and Home Administration
+  to: http://opaquenamespace.org/ns/osuDegreeFields/DoqN95fe
+- from: Family Life and Home Management
+  to: http://opaquenamespace.org/ns/osuDegreeFields/OTiHJYW1
+- from: Family Resource Management
+  to: http://opaquenamespace.org/ns/osuDegreeFields/sJvBNFOf
+- from: Family Studies
+  to: http://opaquenamespace.org/ns/osuDegreeFields/viiMQyka
+- from: Farm Crops
+  to: http://opaquenamespace.org/ns/osuDegreeFields/Ks2sqGhr
+- from: Farm Management
+  to: http://opaquenamespace.org/ns/osuDegreeFields/D5wWgnOy
+- from: Field Crops
+  to: http://opaquenamespace.org/ns/osuDegreeFields/QRhfvCsY
+- from: Fish and Game
+  to: http://opaquenamespace.org/ns/osuDegreeFields/7DEPCKEX
+- from: Fish and Game Management
+  to: http://opaquenamespace.org/ns/osuDegreeFields/bDPSKEm0
+- from: Fisheries
+  to: http://opaquenamespace.org/ns/osuDegreeFields/OqVnu8DD
+- from: Fisheries Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/6x5jGAqI
+- from: Fisheries and Wildlife
+  to: http://opaquenamespace.org/ns/osuDegreeFields/QVugGmGJ
+- from: Food Industries
+  to: http://opaquenamespace.org/ns/osuDegreeFields/VVLmlfR8
+- from: Food Industry
+  to: http://opaquenamespace.org/ns/osuDegreeFields/4S5aorQw
+- from: Food Products Industries
+  to: http://opaquenamespace.org/ns/osuDegreeFields/GcGMbrj8
+- from: Food Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/I4BiabW6
+- from: Food Science and Technology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/qyorwK13
+- from: Food Technology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/EQ8Fel9a
+- from: Food and Dairy Technology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/ustgFwKe
+- from: Food and Nutrition
+  to: http://opaquenamespace.org/ns/osuDegreeFields/Cn0Tpxyq
+- from: Foods and Nutrition
+  to: http://opaquenamespace.org/ns/osuDegreeFields/59YrQd7I
+- from: Forage Breeding
+  to: http://opaquenamespace.org/ns/osuDegreeFields/UeU5z1Q4
+- from: Forest Ecology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/vBwQByyF
+- from: Forest Economics
+  to: http://opaquenamespace.org/ns/osuDegreeFields/Gs9zkp70
+- from: Forest Ecosystems and Society
+  to: http://opaquenamespace.org/ns/osuDegreeFields/Zo55UpwR
+- from: Forest Engineering (Hydrology)
+  to: http://opaquenamespace.org/ns/osuDegreeFields/JCs70zwq
+- from: Forest Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/fF6vU1rw
+- from: Forest Engineering and Civil, Construction, and Environmental Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/3nyWrQgB
+- from: Forest Engineering, Resources and Management
+  to: http://opaquenamespace.org/ns/osuDegreeFields/W8RSyWSw
+- from: Forest Entomology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/zfttV2nC
+- from: Forest Management
+  to: http://opaquenamespace.org/ns/osuDegreeFields/AG9bPz3i
+- from: Forest Products
+  to: http://opaquenamespace.org/ns/osuDegreeFields/Ea1pi1cX
+- from: Forest Resources
+  to: http://opaquenamespace.org/ns/osuDegreeFields/n74DImcH
+- from: Forest Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/HngnnHhZ
+- from: Forestry
+  to: http://opaquenamespace.org/ns/osuDegreeFields/ZPdoptEv
+- from: General Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/TFs2K1vV
+- from: General Studies
+  to: http://opaquenamespace.org/ns/osuDegreeFields/J42tvb7d
+- from: Genetics
+  to: http://opaquenamespace.org/ns/osuDegreeFields/rS6CpxMu
+- from: Geography
+  to: http://opaquenamespace.org/ns/osuDegreeFields/cigKHRCh
+- from: Geology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/2pqeKTSY
+- from: Geophysics
+  to: http://opaquenamespace.org/ns/osuDegreeFields/PpIMQP19
+- from: Geosciences
+  to: http://opaquenamespace.org/ns/osuDegreeFields/jxaV6eEe
+- from: Guidance
+  to: http://opaquenamespace.org/ns/osuDegreeFields/Mv1xY8cz
+- from: Guidance Education
+  to: http://opaquenamespace.org/ns/osuDegreeFields/P1eY7zDu
+- from: Guidance and Counseling
+  to: http://opaquenamespace.org/ns/osuDegreeFields/AShDcFCX
+- from: Guidance and Personnel
+  to: http://opaquenamespace.org/ns/osuDegreeFields/dp70nIEw
+- from: Health
+  to: http://opaquenamespace.org/ns/osuDegreeFields/ng9M5ZzX
+- from: Health Education
+  to: http://opaquenamespace.org/ns/osuDegreeFields/tkGh2Mcx
+- from: Health and Human Performance
+  to: http://opaquenamespace.org/ns/osuDegreeFields/HpC6C8md
+- from: Health and Safety Administration
+  to: http://opaquenamespace.org/ns/osuDegreeFields/5PD9MfWv
+- from: History
+  to: http://opaquenamespace.org/ns/osuDegreeFields/YpB9KqZG
+- from: History of Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/4SvH50EL
+- from: Home Administration
+  to: http://opaquenamespace.org/ns/osuDegreeFields/bDjom7ab
+- from: Home Economics
+  to: http://opaquenamespace.org/ns/osuDegreeFields/GDbPCXVb
+- from: Home Economics Education
+  to: http://opaquenamespace.org/ns/osuDegreeFields/SzK6MXFZ
+- from: Home Economics Extension
+  to: http://opaquenamespace.org/ns/osuDegreeFields/eQdnz5OO
+- from: Home Management
+  to: http://opaquenamespace.org/ns/osuDegreeFields/CxTtvCAP
+- from: Horticultural Products
+  to: http://opaquenamespace.org/ns/osuDegreeFields/DbjtMSEK
+- from: Horticulture
+  to: http://opaquenamespace.org/ns/osuDegreeFields/CBF8DnzJ
+- from: Household Administration
+  to: http://opaquenamespace.org/ns/osuDegreeFields/MjxCbYg4
+- from: Household Arts
+  to: http://opaquenamespace.org/ns/osuDegreeFields/chwNWDmW
+- from: Household Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/SvjIdGoz
+- from: Human Development
+  to: http://opaquenamespace.org/ns/osuDegreeFields/fepZXnte
+- from: Human Development and Family Sciences
+  to: http://opaquenamespace.org/ns/osuDegreeFields/57puPkr9
+- from: Human Development and Family Studies
+  to: http://opaquenamespace.org/ns/osuDegreeFields/f1qpQERV
+- from: Human Performance
+  to: http://opaquenamespace.org/ns/osuDegreeFields/U6Bopati
+- from: Human Resources
+  to: http://opaquenamespace.org/ns/osuDegreeFields/FfAAhd5V
+- from: Hydraulic Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/6C2NHu3A
+- from: Industrial Arts
+  to: http://opaquenamespace.org/ns/osuDegreeFields/omtRjTjb
+- from: Industrial Arts Education
+  to: http://opaquenamespace.org/ns/osuDegreeFields/6nhTqCfc
+- from: Industrial Arts and Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/MJaD4lvu
+- from: Industrial Chemistry
+  to: http://opaquenamespace.org/ns/osuDegreeFields/nNMvSKhZ
+- from: Industrial Education
+  to: http://opaquenamespace.org/ns/osuDegreeFields/isnCMV8g
+- from: Industrial Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/1l7eEOqs
+- from: Industrial and General Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/GJVvm6oR
+- from: Industrial and Manufacturing Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/yByL0ezS
+- from: Inorganic Chemistry
+  to: http://opaquenamespace.org/ns/osuDegreeFields/jY9OAn0u
+- from: Institution Economics
+  to: http://opaquenamespace.org/ns/osuDegreeFields/C1xz4Og0
+- from: Institution Management
+  to: http://opaquenamespace.org/ns/osuDegreeFields/FOUY0RgE
+- from: Institutional Economics
+  to: http://opaquenamespace.org/ns/osuDegreeFields/IJwm4pUX
+- from: Integrative Biology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/KhFIkND8
+- from: Interdisciplinary Studies (M.A.I.S.)
+  to: http://opaquenamespace.org/ns/osuDegreeFields/TsB6Zk5J
+- from: Interdisciplinary Studies
+  to: http://opaquenamespace.org/ns/osuDegreeFields/WGU9NjSo
+- from: Interdisciplinary Studies in Anthropology, Historic Preservation and Forest
+    Resources
+  to: http://opaquenamespace.org/ns/osuDegreeFields/cnkjcX55
+- from: Interdisciplinary Studies in Anthropology, History and Eduction
+  to: http://opaquenamespace.org/ns/osuDegreeFields/Ds14Er58
+- from: Interdisciplinary Studies in Anthropology, Resource Recreation Managment and
+    Sociology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/EM0KRcPP
+- from: Interdisciplinary Studies in Philosophy, Philosophy and Anthropology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/BjGuYiyq
+- from: Interdisciplinary Studies in Philosophy, Sociology and Sociology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/Sijmh3pu
+- from: Interdisciplinary Studies in Speech Communication, Speech Communication and
+    English
+  to: http://opaquenamespace.org/ns/osuDegreeFields/DA0Cp3tN
+- from: Interdisciplinary Studies in Speech Communication, Speech Communication and
+    Women Studies
+  to: http://opaquenamespace.org/ns/osuDegreeFields/JOj8WP84
+- from: Kinesiology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/vtOOSWkG
+- from: Literary Commerce
+  to: http://opaquenamespace.org/ns/osuDegreeFields/IklyrFh8
+- from: Logging Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/noqxS7gI
+- from: Lumber Manufacture
+  to: http://opaquenamespace.org/ns/osuDegreeFields/oYojuFoU
+- from: Marine Resource Management
+  to: http://opaquenamespace.org/ns/osuDegreeFields/WLQmSVkI
+- from: Material Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/cgJ1Grci
+- from: Materials Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/o07wFul5
+- from: Mathematical models
+  to: http://opaquenamespace.org/ns/osuDegreeFields/EesmNTHv
+- from: Mathematics (Computer Science)
+  to: http://opaquenamespace.org/ns/osuDegreeFields/whlCjwts
+- from: Mathematics
+  to: http://opaquenamespace.org/ns/osuDegreeFields/DFKfu868
+- from: Mathematics Education
+  to: http://opaquenamespace.org/ns/osuDegreeFields/rmbLfAPt
+- from: Mechanical Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/tBtTFZYR
+- from: Mechanical and Industrial Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/y5swqZa3
+- from: Mechanical and Metallurgical Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/vq3hDs8c
+- from: Mechanical and Nuclear Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/sLs4DrSq
+- from: Mechanical, Industrial, and Nuclear Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/kJwcPS21
+- from: Mechanics
+  to: http://opaquenamespace.org/ns/osuDegreeFields/94jAfyub
+- from: Mechanics and Materials
+  to: http://opaquenamespace.org/ns/osuDegreeFields/HHErEW8g
+- from: Medical Physics
+  to: http://opaquenamespace.org/ns/osuDegreeFields/EWPo9CVB
+- from: Metallurgical Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/3WyyXGbS
+- from: Meteorology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/qqAex7Ui
+- from: Microbiology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/89lxK1cH
+- from: Microbiology and Hygiene
+  to: http://opaquenamespace.org/ns/osuDegreeFields/Bb1NRR1m
+- from: Mining Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/ZvNZ12qf
+- from: Modern Languages
+  to: http://opaquenamespace.org/ns/osuDegreeFields/n4gGfLR1
+- from: Molecular and Cellular Biology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/MwnMSope
+- from: Movement Studies for the Disabled
+  to: http://opaquenamespace.org/ns/osuDegreeFields/0U8MnVFr
+- from: Movement Studies in Disability
+  to: http://opaquenamespace.org/ns/osuDegreeFields/EYNrBPC3
+- from: Natural Resources
+  to: http://opaquenamespace.org/ns/osuDegreeFields/PaMzWtWM
+- from: Nuclear Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/CUym1fyq
+- from: Nursing Education
+  to: http://opaquenamespace.org/ns/osuDegreeFields/ZAFLniob
+- from: Nutrition
+  to: http://opaquenamespace.org/ns/osuDegreeFields/StlcIyXa
+- from: Nutrition and Exercise Sciences
+  to: http://opaquenamespace.org/ns/osuDegreeFields/gnJUP4Rl
+- from: Nutrition and Food Management
+  to: http://opaquenamespace.org/ns/osuDegreeFields/OiKbQRju
+- from: Nutrition and Health Management
+  to: http://opaquenamespace.org/ns/osuDegreeFields/BgL5ZHV3
+- from: Ocean Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/sJNzapHd
+- from: Ocean, Earth, and Atmospheric Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/5pnGgj8o
+- from: Oceanography
+  to: http://opaquenamespace.org/ns/osuDegreeFields/S3LgKhiC
+- from: Organic Chemistry
+  to: http://opaquenamespace.org/ns/osuDegreeFields/MjnsYuhF
+- from: Paleontology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/ru7QqFTc
+- from: Pharmaceutical Chemistry
+  to: http://opaquenamespace.org/ns/osuDegreeFields/UqNLzfuV
+- from: Pharmaceutical Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/jcmYsmjr
+- from: Pharmacognosy
+  to: http://opaquenamespace.org/ns/osuDegreeFields/kg1MAW08
+- from: Pharmacology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/N1ugzGRN
+- from: Pharmacology and Toxicology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/ljoW7KJ5
+- from: Pharmacy
+  to: http://opaquenamespace.org/ns/osuDegreeFields/issmogTq
+- from: Pharmacy Administration
+  to: http://opaquenamespace.org/ns/osuDegreeFields/Qnh6TlLv
+- from: Philosophy
+  to: http://opaquenamespace.org/ns/osuDegreeFields/yPhygIqZ
+- from: Physical Chemistry
+  to: http://opaquenamespace.org/ns/osuDegreeFields/M8VdgsM5
+- from: Physical Education
+  to: http://opaquenamespace.org/ns/osuDegreeFields/PJzIxSfq
+- from: Physics
+  to: http://opaquenamespace.org/ns/osuDegreeFields/u3hgeDG5
+- from: Plant Ecology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/oz9aEH8l
+- from: Plant Pathology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/XnPLuq0Z
+- from: Plant Physiology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/9sKLJ5KI
+- from: Political Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/iHHXzTkX
+- from: Pomology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/IZDdsPRr
+- from: Post-Secondary Education
+  to: http://opaquenamespace.org/ns/osuDegreeFields/xQklC4xJ
+- from: Postsecondary and Technological Education
+  to: http://opaquenamespace.org/ns/osuDegreeFields/gUdb1uOP
+- from: Poultry
+  to: http://opaquenamespace.org/ns/osuDegreeFields/cnERdrxW
+- from: Poultry Husbandry
+  to: http://opaquenamespace.org/ns/osuDegreeFields/hez8JIJo
+- from: Poultry Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/h497cgSO
+- from: Psychology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/VlQXe2qK
+- from: Public Health
+  to: http://opaquenamespace.org/ns/osuDegreeFields/NDA987jA
+- from: Public Policy
+  to: http://opaquenamespace.org/ns/osuDegreeFields/oS61A3Rb
+- from: Radiation Health
+  to: http://opaquenamespace.org/ns/osuDegreeFields/D3mfCUXV
+- from: Radiation Health Physics
+  to: http://opaquenamespace.org/ns/osuDegreeFields/UVi0QnUf
+- from: Radio Communications
+  to: http://opaquenamespace.org/ns/osuDegreeFields/XIgW34y1
+- from: Range Management
+  to: http://opaquenamespace.org/ns/osuDegreeFields/7DXvzotE
+- from: Rangeland Ecology and Management
+  to: http://opaquenamespace.org/ns/osuDegreeFields/M0TlJt7v
+- from: Rangeland Resources
+  to: http://opaquenamespace.org/ns/osuDegreeFields/5hLRdgAO
+- from: Rangeland Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/ToAZQb7H
+- from: Recreational Forestry
+  to: http://opaquenamespace.org/ns/osuDegreeFields/mWsB0oqq
+- from: Resource Economics
+  to: http://opaquenamespace.org/ns/osuDegreeFields/IO3lm4bh
+- from: Robotics
+  to: http://opaquenamespace.org/ns/osuDegreeFields/hSmich3Z
+- from: Sanitary Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/f73cC9X3
+- from: Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/1P0WyTaa
+- from: Science Education
+  to: http://opaquenamespace.org/ns/osuDegreeFields/tYBNnyLj
+- from: Scientific and Technical Communication
+  to: http://opaquenamespace.org/ns/osuDegreeFields/fe3pZfcI
+- from: Silviculture
+  to: http://opaquenamespace.org/ns/osuDegreeFields/98D7sZbX
+- from: Sociology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/2UifjgFu
+- from: Soil
+  to: http://opaquenamespace.org/ns/osuDegreeFields/V5jLVULe
+- from: Soil Bacteriology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/dVdZCmDl
+- from: Soil Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/xsouZrPY
+- from: Soils
+  to: http://opaquenamespace.org/ns/osuDegreeFields/YMdx5uD4
+- from: Statistics
+  to: http://opaquenamespace.org/ns/osuDegreeFields/Kpo76j5q
+- from: Structural Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/NX9XejCz
+- from: Study and teaching
+  to: http://opaquenamespace.org/ns/osuDegreeFields/ivGbnh4Y
+- from: Sustainable Forest Management
+  to: http://opaquenamespace.org/ns/osuDegreeFields/UCg3Lu2a
+- from: Systematic Botany
+  to: http://opaquenamespace.org/ns/osuDegreeFields/NKyjBHvK
+- from: Toxicology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/dfk0jHpi
+- from: Trade and Industrial Education
+  to: http://opaquenamespace.org/ns/osuDegreeFields/usefpL66
+- from: Veterinary Medicine
+  to: http://opaquenamespace.org/ns/osuDegreeFields/NOJubCiX
+- from: Veterinary Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/c5N0uCrh
+- from: Vocational Education
+  to: http://opaquenamespace.org/ns/osuDegreeFields/S2VKuzgA
+- from: Vocational-Technical Education
+  to: http://opaquenamespace.org/ns/osuDegreeFields/pYPsxQHg
+- from: Water Resource Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/m1LpfXuZ
+- from: Water Resource Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/y2iLjlMs
+- from: Water Resources Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/YiyzHWGi
+- from: Water Resources Policy and Management
+  to: http://opaquenamespace.org/ns/osuDegreeFields/5ifb2xho
+- from: Water Resources Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/sNFE6MNj
+- from: Wildlife Ecology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/OW1vFsmz
+- from: Wildlife Management
+  to: http://opaquenamespace.org/ns/osuDegreeFields/ADsVa0W1
+- from: Wildlife Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/0T081zgJ
+- from: Wildlife Sciences
+  to: http://opaquenamespace.org/ns/osuDegreeFields/0w5f5ZAU
+- from: Women Studies
+  to: http://opaquenamespace.org/ns/osuDegreeFields/anwacuOT
+- from: Women, Gender, and Sexuality Studies
+  to: http://opaquenamespace.org/ns/osuDegreeFields/IoQIjQsc
+- from: Wood Products
+  to: http://opaquenamespace.org/ns/osuDegreeFields/mPOhm0sU
+- from: Wood Science
+  to: http://opaquenamespace.org/ns/osuDegreeFields/pGVva2em
+- from: Wood Science and Civil Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/hDzMHF2t
+- from: Wood Science and Engineering
+  to: http://opaquenamespace.org/ns/osuDegreeFields/hqfl9clj
+- from: Zoology
+  to: http://opaquenamespace.org/ns/osuDegreeFields/k1QEWX4l
