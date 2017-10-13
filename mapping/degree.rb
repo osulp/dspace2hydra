@@ -4,6 +4,7 @@ module Mapping
     extend Extensions::BasicValueHandler
 
     DEGREE_NAMES_FILE = '../lookup/degree_names.yml'
+    DEGREE_FIELDS_FILE = '../lookup/degree_fields.yml'
 
     ##
     # Split the Degree value and remap values to new field names,
@@ -23,8 +24,13 @@ module Mapping
       degree_name_map = lookup.find { |l| l['from'].casecmp(degree_name_value).zero? }
       degree_name = degree_name_map['to']
       fields = [ { field_name: field_name_one, value: degree_name } ]
-      # important to check array is nil first
-      fields << { field_name: field_name_two, value: matches[3] } unless matches.nil? || matches.empty? || matches[3].nil? || matches[3].empty?
+      unless matches.nil? || matches[3].nil? || matches[3].empty?
+        degree_field_value = matches[3]
+        lookup_degree_field = File.open(File.join(File.dirname(__FILE__), DEGREE_FIELDS_FILE)) { |f| YAML.safe_load(f) 
+        degree_field_map = lookup_degree_field.find { |l| l['from'].casecmp(degree_field_value).zero? } 
+        degree_field_uri = degree_field_map['to']
+        fields << { field_name: field_name_two, value: degree_field_uri }
+      end
       fields
     end
   end
