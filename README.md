@@ -6,14 +6,11 @@
 Dspace2hydra (d2h) was built to facilitate bulk automated data and item migration from Dspace to a Hydra based server instance, such as Hyrax. D2h uses a combination of YAML configurations and Ruby mapping methods to translate, lookup, query, or otherwise process metadata values present in a Dspace metadata file. Every value in a Dspace item metadata file must be explicitly configured for migration to help prevent missing data during the process. Dspace data files are uploaded into Hydra and the metadata is transformed into the appropriate shape before being posted to the Hydra server to create a new instance of a configured type of work.
 
 # Dependencies
+
 - Ruby 2.3
-- [Hyrax](https://github.com/projecthydra-labs/hyrax) based application instance (our goal is to be ready for the Hyrax 1.0 release)
+- [Hyrax](https://github.com/samvera/hyrax) based application instance 
 - Dspace generated BAG files (we use [dspace-replicate](https://github.com/DSpace/dspace-replicate) to generate ours)
 - Export DSpace BAGs via command line: [DSpace]/bin/dspace curate -t transmitaip -i handle -v
-
-# Is it ready for me to use?
-
-Not yet. We're getting closer by the day, and our migration timeline depends on this application as well as Hyrax 1.0. We are targeting May - June for our migration.
 
 # How can I help?
 
