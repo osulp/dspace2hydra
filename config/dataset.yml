@@ -187,6 +187,7 @@ migration_nodes:
           - Mapping::Description.set_embargo
           - visibility
           - embargo_release_date
+          - embargo_reason
       embargopolicy:
         field:
           name: visibility_during_embargo
