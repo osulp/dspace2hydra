@@ -33,5 +33,10 @@ module Mapping
       end
       fields
     end
+
+    def self.add_default_grantor(value, *args)
+      default_grantor = 'http://id.loc.gov/authorities/names/n80017721' if value.match(/^Oregon State University$/)
+    end
+
   end
 end

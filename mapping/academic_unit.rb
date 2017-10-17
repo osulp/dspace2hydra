@@ -15,6 +15,7 @@ module Mapping
     OTHER_AFFILIATIONS_CSV_FILE = '../lookup/other_affiliations_academic_unit.csv'
     # opaquenamespace.org/ns/osuAcademicUnits.jsonld
     ACADEMIC_UNITS_JSONLD_FILE = '../lookup/osuAcademicUnits.jsonld'
+    DEGREE_FIELDS_FILE = '../lookup/degree_fields.yml'
 
     def self.get_uris(item_detail, *_args)
       collections = collection_csv
@@ -47,7 +48,10 @@ module Mapping
       degree_node = metadata['degree'].find { |n| n.qualifier.qualifier.casecmp('name').zero? }
       degree_name = degree_node.qualifier.run_method.find { |fields| fields[:field_name].casecmp('degree_field').zero? }
       return nil if degree_name.nil?
-      degree_name[:value]
+      degree_field_uri = degree_name[:value]
+      lookup_degree_field = File.open(File.join(File.dirname(__FILE__), DEGREE_FIELDS_FILE)) { |f| YAML.safe_load(f) }
+      degree_field_map = lookup_degree_field.find { |l| l['to'].casecmp(degree_field_uri).zero? }
+      degree_field_value = degree_field_map['from']
     end
 
     def self.graduation_date(metadata)

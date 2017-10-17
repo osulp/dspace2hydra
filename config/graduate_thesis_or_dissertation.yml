@@ -247,6 +247,9 @@ migration_nodes:
       grantor:
         field:
           name: degree_grantors
+        method:
+          - Mapping::Degree.add_default_grantor
+          - degree_grantors
   description:
     field:
       name: description
