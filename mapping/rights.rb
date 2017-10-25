@@ -13,6 +13,23 @@ module Mapping
     def self.process_metadata(value, *_args)
       date_issued_node = value['date'].find { |n| n.qualifier.field_name.casecmp('date_issued').zero? }
       date_issued = date_issued_node.qualifier.run_method
+
+      if date_issued =~ /00-00/
+        date_issued = "#{date_issued.split('-')[0]}-01-01"
+      elsif date_issued =~ /00/
+        date_issued = "#{date_issued.split('-')[0]}-#{date_issued.split('-')[1]}-01"
+      elsif date_issued.downcase =~ /circa/
+        date_issued = "#{date_issued.split(' ')[0]}-01-01"
+      elsif date_issued =~ /\?/
+        date_issued = "#{date_issued.split('?')[0]}-01-01"
+      elsif date_issued =~ /\d{4}-\d{4}/
+        date_issued = "#{date_issued.split('-')[0]}-01-01"
+      elsif date_issued =~ /\d{4}-\d{1}/
+        date_issued = "#{date_issued.split('-')[0]}-0#{date_issued.split('-')[1]}-01"
+      elsif date_issued.downcase =~ /spring/
+        date_issued = "#{date_issued.split('-')[0]}-01-01"
+      end       
+
       # journal article most likely has issued date at year month
       date_issued << '-01' if date_issued =~ /^\d{4}\-\d{2}$/
       date_issued << '-01-01' if date_issued =~ /^\d{4}$/
