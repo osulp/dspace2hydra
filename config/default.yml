@@ -480,6 +480,9 @@ migration_nodes:
       spatialstates:
         field:
           name: location
+      spatialestuaries:
+        field:
+          name: location
       spatialwatershedcouncils:
         field:
           name: location

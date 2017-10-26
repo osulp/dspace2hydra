@@ -416,3 +416,77 @@ migration_nodes:
         method:
           - Mapping::Type.lookup_hyrax_type
           - resource_type
+  coverage:
+    field:
+      name: location
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    xpath: "//metadata/value[@element='coverage']"
+    method: Mapping::Coverage.unprocessed
+    qualifiers:
+      default:
+        field:
+          name: location
+      spatialhydrologicclosedbasins:
+        field:
+          name: hydrologicUnitCode
+      spatialhydrologiccoastal:
+        field:
+          name: hydrologicUnitCode
+      spatialhydrologiclowercolumbia:
+        field:
+          name: hydrologicUnitCode
+      spatialhydrologiclowersnake:
+        field:
+          name: hydrologicUnitCode
+      spatialhydrologicmiddlecolumbia:
+        field:
+          name: hydrologicUnitCode
+      spatialhydrologicmiddlesnake:
+        field:
+          name: hydrologicUnitCode
+      spatialhydrologicnorthca:
+        field:
+          name: hydrologicUnitCode
+      spatialhydrologicwillamette:
+        field:
+          name: hydrologicUnitCode
+      spatialhydrologichumboldt:
+        field:
+          name: hydrologicUnitCode
+      spatialhydrologicsacramento:
+        field:
+          name: hydrologicUnitCode
+      spatialhydrologicnorthlahontan:
+        field:
+          name: hydrologicUnitCode
+      spatial:
+        field:
+          name: location
+      spatial-ecoregion:
+        field:
+          name: location
+      spatialcities:
+        field:
+          name: location
+      spatialcounties:
+        field:
+          name: location
+      spatialecoregion:
+        field:
+          name: location
+      spatialoregonplanbasins:
+        field:
+          name: location
+      spatialstates:
+        field:
+          name: location
+      spatialestuaries:
+        field:
+          name: location
+      spatialwatershedcouncils:
+        field:
+          name: location
+      temporal:
+        field:
+          name: date_created
