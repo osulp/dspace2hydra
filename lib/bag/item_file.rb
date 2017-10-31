@@ -2,11 +2,12 @@
 class ItemFile
   include Loggable
 
-  attr_accessor :full_path, :metadata_full_path
+  attr_accessor :full_path, :metadata_full_path, :upload_file_path
 
-  def initialize(full_path)
+  def initialize(full_path, upload_file_path = nil)
     @logger = Logging.logger[self]
     @full_path = full_path
+    @upload_file_path = upload_file_path
   end
 
   ##
@@ -40,6 +41,10 @@ class ItemFile
     FileUtils.copy @full_path, metadata_full_path
   end
 
+  def copy_to_upload_full_path
+    FileUtils.copy @full_path, upload_full_path
+  end
+
   ##
   # Delete the temporary copy of the file and unset the class attribute
   def delete_metadata_full_path
@@ -66,7 +71,19 @@ class ItemFile
   ##
   # Within the same directory as the original file, return a full path using the filename from this ItemFile's metadata
   def metadata_full_path
-    @metadata_full_path ||= "#{File.dirname(@full_path)}/#{name}"
+    @metadata_full_path ||= File.join(File.dirname(@full_path), name)
+  end
+
+  ##
+  # Return the full path to the file upload directory using the filename from this ItemFile's metadata
+  def upload_full_path
+    @upload_full_path ||= File.join(File.dirname(@upload_file_path), name)
+  end
+
+  ##
+  # Return a file:// url for the upload full path
+  def upload_file_url
+    "file://#{upload_full_path}"
   end
 
   def metadata_xml
