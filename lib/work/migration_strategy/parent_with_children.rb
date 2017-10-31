@@ -57,10 +57,8 @@ module Work
             @logger.info("[Child #{index}] Command line argument indicated to skip processing this child.")
           else
             begin
-              item_file.copy_to_metadata_full_path
-              @logger.info("[Child #{index}] Uploading filename from metadata to server: #{item_file.metadata_full_path}")
-              file_id = upload_file(item_file)
-              data = set_work_metadata(data, file_id: file_id,
+              file = process_file(item_file)
+              data = set_work_metadata(data, file: file,
                                              parent_id: parent_id,
                                              item_file_name: item_file.name)
               work_response = @server.submit_new_child_work(@bag, data, parent_id, "child-#{index}")
@@ -68,7 +66,6 @@ module Work
               children_work_responses << work_response
               @logger.warn("[Child #{index}] Not configured to advance work through workflow") unless @server.should_advance_work?
               workflow_response = advance_workflow(work_response, @server) if @server.should_advance_work?
-              item_file.delete_metadata_full_path
             rescue => e
               log_to_summary("[Child #{index}] Failed processing: #{e.message} :\n\t #{e.backtrace.join("\n\t")}")
             end
@@ -78,7 +75,7 @@ module Work
       end
 
       def set_work_metadata(data, values = {})
-        file_id = values[:file_id]
+        file = values[:file]
         parent_id = values[:parent_id]
         item_file_name = values[:item_file_name]
         creator = data.dig(@work_type, 'creator')
@@ -88,7 +85,7 @@ module Work
         admin_set_id = data.dig(@work_type, 'admin_set_id')
 
         data[@work_type] = {}
-        data[@work_type_node.uploaded_files_field_name] = @work_type_node.uploaded_files_field(file_id)
+        data[@work_type_node.uploaded_files_field_name] = @work_type_node.uploaded_files_field(file)
         data[@work_type_node.parent_field_name] = parent_id
         data = set_deep_field_property(data, @work_type_node.in_works_field(parent_id), *@work_type_node.in_works_field_name.split('.'))
         data[@work_type]['title'] = [item_file_name]
@@ -98,6 +95,25 @@ module Work
         data[@work_type]['admin_set_id'] = admin_set_id
         data[@work_type]['visibility'] = visibility
         data
+      end
+
+      ##
+      # Depending on if the commandline argument for file upload path was set (-u PATH), either
+      # copy the file into place, or upload the file over the wire.
+      # @param [ItemFile] item_file - the file to upload
+      # @return String - the id that was assigned on the server, or the file url for the copied file
+      def process_file(item_file)
+        if item_file.upload_file_path
+          @logger.info("[Child #{index}] Copying file in bag to path: #{item_file.upload_full_path}")
+          item_file.copy_to_upload_full_path
+          file = item_file.upload_file_url
+        else
+          item_file.copy_to_metadata_full_path
+          @logger.info("[Child #{index}] Uploading filename from metadata to server: #{item_file.metadata_full_path}")
+          file = upload_file(item_file)
+          item_file.delete_metadata_full_path
+        end
+        file
       end
 
       ##

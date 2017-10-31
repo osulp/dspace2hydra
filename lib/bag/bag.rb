@@ -70,7 +70,7 @@ class Bag
   def load_files
     pattern = @application_config['bag']['item']['item_file']['metadata_file_name_template'].gsub '{item_file_name}', ''
     files = load_data_paths.reject { |key| key.match(/#{pattern}$/) }.map do |file_path|
-      ItemFile.new File.join(@path, file_path)
+      ItemFile.new(File.join(@path, file_path), @application_config['upload_file_path'])
     end
     files.sort_by!(&:sequence_id)
   end

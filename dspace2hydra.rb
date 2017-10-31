@@ -34,10 +34,11 @@ OptionParser.new do |opts|
   opts.on('-b', '--bag PATH', 'The Dspace bag path to process.') { |v| options['bag_path'] = v }
   opts.on('-c', '--config PATH', 'The Item type config path for each bag.') { |v| options['type_config'] = v }
   opts.on('-d', '--directory PATH', 'The directory path containing bags to bulk process.') { |v| options['bags_directory'] = v }
+  opts.on('-f', '--extract_files PATH', 'Extract content files to a folder.') { |v| options['extract_files'] = v }
   opts.on('-j', '--cached_json PATH', 'Post the json file directly to the server.') { |v| options['cached_json'] = v }
   opts.on('-p', '--parent ID', 'Use this ID as the parent work.') { |v| options['parent_id'] = v }
   opts.on('-s', '--skip-children INDEXES', 'Comma-delimited list of children indexes to skip. (0,1,3)') { |v| options['skip_children'] = v }
-  opts.on('-f', '--extract_files PATH', 'Extract content files to a folder.') { |v| options['extract_files'] = v }
+  opts.on('-u', '--upload_file_path PATH', 'The path to copy uploaded files to. (depends on BrowseEverything installed on server)') { |v| options['upload_file_path'] = v }
   opts.on('-h', '--help', 'Display this screen') do
     puts opts
     exit
