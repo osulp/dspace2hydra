@@ -12,6 +12,12 @@ uploaded_files:
     property: "%{field_name}"
     type: Array
 
+selected_files:
+  field:
+    name: "selected_files"
+    property: "%{field_name}"
+    type: Hash
+
 parent_work:
   field:
     name: "parent_id"
@@ -144,7 +150,7 @@ migration_nodes:
           name: contributor_committeemember
       editor:
         field:
-          name: contributor                    
+          name: contributor
   date:
     field:
       name: date_created
@@ -247,7 +253,7 @@ migration_nodes:
       printable:
         field:
           name: additional_information
-          method: Mapping::Description.ignored          
+          method: Mapping::Description.ignored
   format:
     field:
       name: file_format
@@ -296,7 +302,7 @@ migration_nodes:
           name: doi
       govdoc:
         field:
-          name: identifier    
+          name: identifier
   language:
     field:
       name: language
@@ -348,7 +354,7 @@ migration_nodes:
           name: additional_information
       statisticsanddata:
         field:
-          name: additional_information                
+          name: additional_information
   rights:
     field:
       name: rights

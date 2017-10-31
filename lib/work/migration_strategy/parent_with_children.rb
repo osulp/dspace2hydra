@@ -86,6 +86,7 @@ module Work
 
         data[@work_type] = {}
         data[@work_type_node.uploaded_files_field_name] = @work_type_node.uploaded_files_field(file)
+        data[@work_type_node.selected_files_field_name] = @work_type_node.selected_files_field(file) if file =~ "file://"
         data[@work_type_node.parent_field_name] = parent_id
         data = set_deep_field_property(data, @work_type_node.in_works_field(parent_id), *@work_type_node.in_works_field_name.split('.'))
         data[@work_type]['title'] = [item_file_name]

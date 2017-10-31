@@ -51,6 +51,10 @@ module Metadata
       field_type.casecmp('array').zero?
     end
 
+    def field_hash?
+      field_type.casecmp('hash').zero?
+    end
+
     def field_type
       log_and_raise "#{@field} : missing 'field.type' configuration" if field['type'].to_s.empty?
       field['type']
@@ -123,6 +127,13 @@ module Metadata
         end
         data_field << value unless value.nil? || data_field.any? { |v| v == value }
         data_field.flatten!
+      elsif field_hash?
+        data_field ||= {}
+        if value_add_to_migration.casecmp('overwrite_existing').zero?
+          @logger.warn("#{method} found '#{field_name}' with 'overwrite_existing' configuration, setting value to '#{value}'")
+          data_field = {}
+        end
+        data_field[data_field.length + 1] = value unless value.nil?
       else
         data_field = value unless value.nil?
       end
