@@ -77,7 +77,7 @@ class ItemFile
   ##
   # Return the full path to the file upload directory using the filename from this ItemFile's metadata
   def upload_full_path
-    @upload_full_path ||= File.join(File.dirname(@upload_file_path), name)
+    @upload_full_path ||= File.join(@upload_file_path, name)
   end
 
   ##
