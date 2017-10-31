@@ -45,7 +45,7 @@ module Metadata
     def selected_files_field(urls)
       raise 'Cannot configure selected_files.field.type as anything other than a hash.' unless @work_type_config.dig('selected_files', 'field', 'type').casecmp('hash').zero?
       # convert array of urls to hash (ie. { 0 => { :url => "file://path/to/file" }, 1 => { :url => "file://path/to/file2" } })
-      urls.map.with_index { |u, i| [i, {url: u}] }.to_h
+      [urls].flatten.map.with_index { |u, i| [i, {url: u}] }.to_h
     end
   end
 end
