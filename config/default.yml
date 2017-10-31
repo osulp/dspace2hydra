@@ -12,6 +12,12 @@ uploaded_files:
     property: "%{field_name}"
     type: Array
 
+selected_files:
+  field:
+    name: "selected_files"
+    property: "%{field_name}"
+    type: Hash
+
 parent_work:
   field:
     name: "parent_id"
@@ -135,13 +141,13 @@ migration_nodes:
     qualifiers:
       default:
         field:
-          name: contributor 
+          name: contributor
       advisor:
         field:
           name: contributor
       author:
         field:
-          name: contributor          
+          name: contributor
   date:
     field:
       name: date_created
@@ -295,7 +301,7 @@ migration_nodes:
           name: identifier
       other:
         field:
-          name: identifier            
+          name: identifier
   language:
     field:
       name: language
@@ -347,7 +353,7 @@ migration_nodes:
           name: additional_information
       statisticsanddata:
         field:
-          name: additional_information              
+          name: additional_information
   rights:
     field:
       name: rights
@@ -386,7 +392,7 @@ migration_nodes:
           name: keyword
       lcc:
         field:
-          name: keyword          
+          name: keyword
   title:
     field:
       name: title
@@ -558,4 +564,4 @@ migration_nodes:
       default:
         field:
           name: description
-          method: Mapping::Description.ignored                                                                        
+          method: Mapping::Description.ignored

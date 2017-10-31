@@ -17,6 +17,7 @@ module Work
           files = upload_files(@bag, @server)
         end
         data[@work_type_node.uploaded_files_field_name] = @work_type_node.uploaded_files_field(files)
+        data[@work_type_node.selected_files_field_name] = @work_type_node.selected_files_field(file) if file =~ "file://"
         work_response = @server.submit_new_work(@bag, data)
         log_to_summary("Work #{work_response.dig('work', 'id')} created at #{work_response.dig('uri')}")
         @logger.warn('Not configured to advance work through workflow') unless @server.should_advance_work?
