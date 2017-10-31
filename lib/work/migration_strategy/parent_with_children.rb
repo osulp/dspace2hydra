@@ -57,7 +57,7 @@ module Work
             @logger.info("[Child #{index}] Command line argument indicated to skip processing this child.")
           else
             begin
-              file = process_file(item_file)
+              file = process_file(item_file, index)
               data = set_work_metadata(data, file: file,
                                              parent_id: parent_id,
                                              item_file_name: item_file.name)
@@ -86,7 +86,7 @@ module Work
 
         data[@work_type] = {}
         data[@work_type_node.uploaded_files_field_name] = @work_type_node.uploaded_files_field(file)
-        data[@work_type_node.selected_files_field_name] = @work_type_node.selected_files_field(file) if file =~ "file://"
+        data[@work_type_node.selected_files_field_name] = @work_type_node.selected_files_field(file) if file.include?("file://")
         data[@work_type_node.parent_field_name] = parent_id
         data = set_deep_field_property(data, @work_type_node.in_works_field(parent_id), *@work_type_node.in_works_field_name.split('.'))
         data[@work_type]['title'] = [item_file_name]
@@ -103,7 +103,7 @@ module Work
       # copy the file into place, or upload the file over the wire.
       # @param [ItemFile] item_file - the file to upload
       # @return String - the id that was assigned on the server, or the file url for the copied file
-      def process_file(item_file)
+      def process_file(item_file, index)
         if item_file.upload_file_path
           @logger.info("[Child #{index}] Copying file in bag to path: #{item_file.upload_full_path}")
           item_file.copy_to_upload_full_path
