@@ -175,10 +175,7 @@ migration_nodes:
         field:
           name: visibility
         method:
-          # set visibility to 'embargo' and embargo_release_date to the value from the node
-          - Mapping::Description.set_embargo
-          - visibility
-          - embargo_release_date
+          Mapping::Description.ignored
   description:
     field:
       name: description
