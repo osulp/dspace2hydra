@@ -22,12 +22,14 @@ module Mapping
       degree_name_value = matches ? matches[1] : value
       lookup = File.open(File.join(File.dirname(__FILE__), DEGREE_NAMES_FILE)) { |f| YAML.safe_load(f) }
       degree_name_map = lookup.find { |l| l['from'].casecmp(degree_name_value).zero? }
+      puts degree_name_value if degree_name_map.nil?
       degree_name = degree_name_map['to']
       fields = [ { field_name: field_name_one, value: degree_name } ]
       unless matches.nil? || matches[3].nil? || matches[3].empty?
         degree_field_value = matches[3]
         lookup_degree_field = File.open(File.join(File.dirname(__FILE__), DEGREE_FIELDS_FILE)) { |f| YAML.safe_load(f) } 
         degree_field_map = lookup_degree_field.find { |l| l['from'].casecmp(degree_field_value).zero? } 
+        puts degree_field_value if degree_field_map.nil?
         degree_field_uri = degree_field_map['to']
         fields << { field_name: field_name_two, value: degree_field_uri }
       end

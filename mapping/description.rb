@@ -7,16 +7,33 @@ module Mapping
     # @param [String] value - the original Dspace value for the node
     # @param [Array] *args - the field names to map values to
     # - visibility
-    # - embargo_release_date
+    # - value
     # - embargo_reason
     # - additional_information
     # - visibility_during_embargo
-    # - visibility_after_embargo    
+    # - visibility_after_embargo
     # @return [Array[Hash]] - the three fields in hydra with the new values
     # SA@OSU requires embargo date must a future date, script will compare DSpace embargo date with today
     # set embargo date if later than today, otherwise copy embargo date addtional_information
     def self.set_embargo(value, *args)
       field_name_one, field_name_two, field_name_three, field_name_four, field_name_five, field_name_six = args.flatten
+    
+      if value =~ /00-00/
+        value = "#{value.split('-')[0]}-01-01"
+      elsif value =~ /00/
+        value = "#{value.split('-')[0]}-#{value.split('-')[1]}-01"
+      elsif value.downcase =~ /circa/
+        value = "#{value.split(' ')[0]}-01-01"
+      elsif value =~ /\?/
+        value = "#{value.split('?')[0]}-01-01"
+      elsif value =~ /\d{4}-\d{4}/
+        value = "#{value.split('-')[0]}-01-01"
+      elsif value =~ /\d{4}-\d{1}/
+        value = "#{value.split('-')[0]}-0#{value.split('-')[1]}-01"
+      elsif value.downcase =~ /spring/
+        value = "#{value.split('-')[0]}-01-01"
+      end
+
       if DateTime.parse(value) > DateTime.now.to_date
         [
           { field_name: field_name_one, value: 'embargo' },
@@ -32,6 +49,7 @@ module Mapping
           { field_name: field_name_four, value: 'Embargo policy: Oregon State University' }
         ]
       end
+
     end
 
     ##
@@ -43,7 +61,7 @@ module Mapping
     def self.lookup_embargo_policy(value, *args)
       field_name_one, field_name_two = args.flatten
       lookup = File.open(File.join(File.dirname(__FILE__), '../lookup/description.embargopolicy.yml')) { |f| YAML.safe_load(f) }
-      embargo_map = lookup.find { |l| l['from'].casecmp(value).zero? }
+      embargo_map = lookup.find { |l| l['from'].casecmp(embargo_policy).zero? }
       [
         { field_name: field_name_one, value: embargo_map['to'] },
         { field_name: field_name_two, value: 'open access' },
