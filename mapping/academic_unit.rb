@@ -32,6 +32,7 @@ module Mapping
         degree_name = degree_name(item_detail[:metadata])
         if !graduation_year.nil? && !degree_name.nil?
           etd = etd_csv.find { |e| e['Degree Name'].to_s.casecmp(degree_name).zero? && e['Grad Year'].to_s.casecmp(graduation_year).zero? }
+          puts degree_name + ' ' + graduation_year if etd.nil? 
           found_academic_units = etd['Final URI'].to_s.gsub(/\s/,'').split(';')
         end
       end
