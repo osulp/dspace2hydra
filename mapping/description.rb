@@ -29,7 +29,7 @@ module Mapping
         [
           { field_name: field_name_one, value: 'open' },
           { field_name: field_name_four, value: 'Embargo date: ' + "#{value}" },
-          { field_name: field_name_four, value: 'Emabargo policy: Oregon State University' }
+          { field_name: field_name_four, value: 'Embargo policy: Oregon State University' }
         ]
       end
     end
