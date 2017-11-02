@@ -223,9 +223,14 @@ migration_nodes:
           name: visibility
         method:
           # set visibility to 'embargo' and embargo_release_date to the value from the node
+          # set embargo policy during and after embargo
           - Mapping::Description.set_embargo
           - visibility
           - embargo_release_date
+          - embargo_reason
+          - additional_information
+          - visibility_during_embargo
+          - visibility_after_embargo
   degree:
     field:
       name: degree_name
@@ -284,18 +289,19 @@ migration_nodes:
           type: String
         method:
           # set visibility to 'embargo' and embargo_release_date to the value from the node
+          # set embargo policy during and after embargo
           - Mapping::Description.set_embargo
           - visibility
           - embargo_release_date
           - embargo_reason
+          - additional_information
+          - visibility_during_embargo
+          - visibility_after_embargo
       embargopolicy:
         field:
           name: visibility_during_embargo
         method:
-          # set embargo policy during and after embargo
-          - Mapping::Description.lookup_embargo_policy
-          - visibility_during_embargo
-          - visibility_after_embargo
+          Mapping::Description.ignored
       peerreview:
         field:
           name: peerreviewed
