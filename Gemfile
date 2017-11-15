@@ -20,6 +20,8 @@ group :development do
   gem 'debride'
   gem 'fasterer'
   gem 'rubocop'
+  gem 'rdebug'
+  gem 'ruby-debug-ide'
 end
 
 group :test do
