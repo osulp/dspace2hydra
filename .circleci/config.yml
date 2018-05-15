@@ -1,0 +1,38 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/ruby:2.3
+    working_directory: ~/app
+    steps:
+      - run:
+          name: Update Debian Packages
+          command: |
+            sudo apt-get update -qq
+            sudo apt-get install -y build-essential libpq-dev nodejs
+      - checkout
+      - restore_cache:
+          key: gemfile-{{ checksum "Gemfile.lock" }}
+      - run:
+          name: Install Ruby Dependencies
+          command: bundle check --path=vendor/bundle || bundle install --path=vendor/bundle --jobs=4 --retry=3
+      - run:
+          name: Create .config.yml
+          command: cp ~/app/.config.example.yml ~/app/.config.yml
+      - save_cache:
+          key: gemfile-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+      - run:
+          name: Run Tests
+          command: |
+            bundle exec rspec --profile 10 \
+                              --format RspecJunitFormatter \
+                              --out /tmp/test-results/rspec.xml \
+                              --format progress \
+                              $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)
+      - store_artifacts:
+          path: coverage
+          destination: coverage
+      - store_test_results:
+          path: /tmp/circle-junit
