@@ -1,0 +1,214 @@
+---
+# REQUIRED
+# ETD Hyrax work type
+work_type: "default_work"
+
+# REQUIRED
+# Array of data sub-directories to upload files (ie. data/ORIGINAL) and ignore_files array of regex's to ignore files
+# - directory: ORIGINAL
+#   ignore_files:
+#     - virus*.*
+#     - MobyDick.pdf
+upload_data:
+  - directory: ORIGINAL
+    ignore_files:
+
+# REQUIRED
+# Array of uploaded file ID's from HTTP file uploading, and/or file url paths
+uploaded_files:
+  field:
+    name: "uploaded_files"
+    property: "%{field_name}"
+    type: Array
+
+# REQUIRED
+# Array of uploaded file url paths
+selected_files:
+  field:
+    name: "selected_files"
+    property: "%{field_name}"
+    type: Hash
+
+# OPTIONAL
+# The parent work ID when publishing a child work
+parent_work:
+  field:
+    name: "parent_id"
+    property: "%{field_name}"
+    type: String
+
+# OPTIONAL
+# An array of (parent) work IDs when publishing a child work
+in_works:
+  field:
+    name: "in_works_ids"
+    property: "%{work_type}.%{field_name}"
+    type: Array
+
+# REQUIRED
+# Server configuration overridding defaults set in ../.config.yml
+hydra_endpoint:
+  new_work:
+    # The url to the page to generate a new work
+    url: "/concern/default_works/new?locale=en"
+    # The form action used on the new work page for posting a new work. This is used as a selector to properly identify
+    # which form on the page will be used for manipulation and submission.. as well as grabbing the CSRF token from it.
+    form_action: "/concern/default_works?locale=en"
+  new_child_work:
+    form_action: "/concern/parent/%{parent_id}/default_works?local=en"
+
+# REQUIRED
+# When processing metadata, evaluate whether or not to include the value in migration
+# (DEFAULT) 'always' : always add this value to the migration data
+# 'if_form_field_value_missing' : add the value if the form_field doesn't have an existing value
+# 'never' : do not add this value to the migration data
+# 'except_empty_value' : add the value unless it is empty or nil, in which case ignore it
+# 'overwrite_existing' : add the value, overwriting any previously mapped metadata
+value_add_to_migration: except_empty_value
+
+# REQUIRED
+# When operating on either a migration or custom node, grab the value from Node/CustomNode property. The property would likely
+# be pulling from the configuration and/or value passed to a commandline arg.
+# (DEFAULT) : Don't use a node property, just use the value parsed from metadata
+value_from_node_property: ''
+
+# REQUIRED
+# Custom metadata nodes to add to the data payload posted to the server
+custom_nodes:
+  # REQUIRED
+  admin_set:
+    field:
+      name: admin_set_id
+      property: "%{work_type}.%{field_name}"
+      type: String
+    method: Mapping::AdminSet.lookup_admin_set
+    value_from_node_property: owner_id
+  # REQUIRED
+  agreement:
+    field:
+      name: agreement
+      property: "%{field_name}"
+      type: Integer
+    method: Mapping::Agreement.unprocessed
+    value: 1
+  # REQUIRED
+  license:
+    field:
+      name: license
+      property: "%{work_type}.%{field_name}"
+      type: String
+    method: Mapping::License.process_metadata
+    value_from_node_property: metadata
+  # REQUIRED
+  rights_statement:
+    field:
+      name: rights_statement
+      property: "%{work_type}.%{field_name}"
+      type: String
+    method: Mapping::Rights.process_metadata
+    value_from_node_property: metadata
+  # REQUIRED
+  visibility:
+    field:
+      name: visibility
+      property: "%{work_type}.%{field_name}"
+      type: String
+    method: Mapping::Visibility.unprocessed
+    value: open
+    value_add_to_migration: if_form_field_value_missing
+
+# REQUIRED
+# Migration metadata nodes extract data from the DSpace Item metadata.xml and do some
+# lookup/cleanup/mapping before posting to the server.
+#
+# Migration Node keys can be any unique YAML parsable value. The examples just demonstrate
+# a tight correlation to the key matching the field name.
+migration_nodes:
+
+  # A simple example that extracts the value of the creator(s) and migrates them as-is.
+  # XML from metadata.xml file:
+  #   <value schema="dc" element="creator" language="">Ross, Bob</value>
+  #   <value schema="dc" element="creator" language="">Ross, Steve</value>
+  creator:
+    # Work type property name, json payload data shape, and data type.
+    field:
+      name: creator
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    # The xpath for extracting the value(s) from the metadata.xml file
+    xpath: "//metadata/value[@element='creator']"
+    # The method to run on the extracted value which intends to return the new metadata
+    # value after any type of processing has occurred.
+    method: Mapping::Creator.unprocessed
+    # Metadata.xml file qualifiers related the the xpath. This allows for mapping
+    # or processing metadata differently when the original metadata has mixed values.
+    #
+    # 'default' is required for when metadata.xml has no qualifiers
+    qualifiers:
+      default:
+        field:
+          name: creator
+
+  # A slightly more complex migration node mapping data from the DSpace Item to one of
+  # two different properties in Hyrax. Notice the qualifier values in the metadata and in the
+  # qualifiers configuration block.
+  # XML from metadata.xml file:
+  #   <value schema="dc" element="format" qualifier="mimetype" language="">application/pdf</value>
+  #   <value schema="dc" element="format" qualifier="extent" language="">8675309 bytes</value>
+  format:
+    # Work type property name, json payload data shape, and data type.
+    field:
+      name: file_format
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    # The xpath for extracting the value(s) from the metadata.xml file
+    xpath: "//metadata/value[@element='format']"
+    # The method to run on the extracted value which intends to return the new metadata
+    # value after any type of processing has occurred.
+    method: Mapping::Format.unprocessed
+    # Metadata.xml file qualifiers related the the xpath. This allows for mapping
+    # or processing metadata differently when the original metadata has mixed values.
+    #
+    # 'default' is required for when metadata.xml has no qualifiers
+    qualifiers:
+      default:
+        field:
+          name: file_format
+      extent:
+        field:
+          name: file_extent
+      mimetype:
+        field:
+          name: file_format
+
+  # A complex migration node requiring a custom method to use a lookup table for crosswalking
+  # values from the metadata.xml to expected values for the property in Hyrax.
+  #
+  # XML from metadata.xml file:
+  # <value schema="dc" element="type" language="en_US">Thesis/Dissertation</value>
+  type:
+    # Work type property name, json payload data shape, and data type.
+    field:
+      name: resource_type
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    # The xpath for extracting the value(s) from the metadata.xml file
+    xpath: "//metadata/value[@element='type']"
+    # The method to run on the extracted value which intends to return the new metadata
+    # value after any type of processing has occurred.
+    #
+    # Note: This example is demonstrating a qualifer override for running an arbitrary method on
+    # on the metadata. The custom method could just be configured here instead as well.
+    # method: Mapping::Type.lookup_hyrax_type
+    method: Mapping::Type.unprocessed
+    # Metadata.xml file qualifiers related the the xpath. This allows for mapping
+    # or processing metadata differently when the original metadata has mixed values.
+    #
+    # 'default' is required for when metadata.xml has no qualifiers
+    qualifiers:
+      default:
+        field:
+          name: resource_type
+        method:
+          - Mapping::Type.lookup_hyrax_type
+          - resource_type
