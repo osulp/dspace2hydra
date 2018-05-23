@@ -1,0 +1,6 @@
+8256deabbffb72d14216b03be4d7dcbe data/object.properties
+222d0b1383ea7225492a26e1f05f4a03 data/metadata.xml
+7f920018996c380e26ea36bffb600094 data/ORIGINAL/1-metadata.xml
+a06b8e06d40e29148dc8402f0681c1f9 data/ORIGINAL/1
+3067d944815178bf4ba298672ac177ca data/LICENSE/4-metadata.xml
+ee0ad690a83faa9b2db9ac632815b919 data/LICENSE/4
