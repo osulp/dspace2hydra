@@ -46,7 +46,7 @@ hydra_endpoint:
     form_action: "/concern/defaults?locale=en"
 
   # Similar to configurations for a new work, this form action creates a child of a specific work type.
-  child_work:
+  new_child_work:
     form_action: "/concern/parent/%{parent_id}/defaults?locale=en"
 
   # The URL for querying a list of admin sets in the system.
