@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+  <value schema="dc" element="creator">Astley, Rick</value>
+  <value schema="dc" element="creator" qualifier="advisor">Ross, Bob</value>
+  <value schema="dc" element="identifier" qualifier="uri">https://en.wikipedia.org/wiki/Never_Gonna_Give_You_Up</value>
+  <value schema="dc" element="description" language="en_US">A beautiful and timeless song.. this man will never give you up, and he's never going to let you down.</value>
+  <value schema="dc" element="language" qualifier="iso" language="en_US">en_US</value>
+  <value schema="dc" element="title" language="en_US">Never Gonna Give You Up</value>
+  <value schema="dc" element="type" language="en_US">Audio</value>
+</metadata>

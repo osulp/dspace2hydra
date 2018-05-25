@@ -1,7 +1,6 @@
 ---
 # REQUIRED
-# Hyrax work type
-work_type: "default_work"
+work_type: "default"
 
 # REQUIRED
 # Array of data sub-directories to upload files (ie. data/ORIGINAL) and ignore_files array of regex's to ignore files
@@ -50,12 +49,17 @@ in_works:
 hydra_endpoint:
   new_work:
     # The url to the page to generate a new work
-    url: "/concern/default_works/new?locale=en"
+    url: "/concern/defaults/new?locale=en"
     # The form action used on the new work page for posting a new work. This is used as a selector to properly identify
     # which form on the page will be used for manipulation and submission.. as well as grabbing the CSRF token from it.
-    form_action: "/concern/default_works?locale=en"
+    form_action: "/concern/defaults?locale=en"
   new_child_work:
-    form_action: "/concern/parent/%{parent_id}/default_works?local=en"
+    form_action: "/concern/parent/%{parent_id}/defaults?local=en"
+
+  workflow_actions:
+    # Should the work be advanced in its workflow after being published to the server?
+    # (DEFAULT) true unless explicitly set to false here
+    auto_advance_work: false
 
 # REQUIRED
 # When processing metadata, evaluate whether or not to include the value in migration
@@ -97,16 +101,16 @@ custom_nodes:
       name: license
       property: "%{work_type}.%{field_name}"
       type: String
-    method: Mapping::License.process_metadata
-    value_from_node_property: metadata
+    method: Mapping::License.unprocessed
+    value: http://www.europeana.eu/portal/rights/rr-r.html
   # REQUIRED
   rights_statement:
     field:
       name: rights_statement
       property: "%{work_type}.%{field_name}"
       type: String
-    method: Mapping::Rights.process_metadata
-    value_from_node_property: metadata
+    method: Mapping::Rights.unprocessed
+    value: http://rightsstatements.org/vocab/InC/1.0/
   # REQUIRED
   visibility:
     field:
@@ -148,6 +152,22 @@ migration_nodes:
       default:
         field:
           name: creator
+      advisor:
+        field:
+          name: creator
+
+  description:
+    field:
+      name: description
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    xpath: "//metadata/value[@element='description']"
+    method: Mapping::Keyword.unprocessed
+    qualifiers:
+      default:
+          field:
+            name: description
+
 
   # A slightly more complex migration node mapping data from the DSpace Item to one of
   # two different properties in Hyrax. Notice the qualifier values in the metadata and in the
@@ -180,6 +200,48 @@ migration_nodes:
       mimetype:
         field:
           name: file_format
+
+  identifier:
+    field:
+      name: identifier
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    xpath: "//metadata/value[@element='identifier']"
+    method: Mapping::Keyword.unprocessed
+    qualifiers:
+      default:
+          field:
+            name: identifier
+      uri:
+          field:
+            name: identifier
+
+  language:
+    field:
+      name: language
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    xpath: "//metadata/value[@element='language']"
+    method: Mapping::Keyword.unprocessed
+    qualifiers:
+      default:
+          field:
+            name: language
+      iso:
+          field:
+            name: language
+
+  title:
+    field:
+      name: title
+      property: "%{work_type}.%{field_name}"
+      type: Array
+    xpath: "//metadata/value[@element='title']"
+    method: Mapping::Keyword.unprocessed
+    qualifiers:
+      default:
+          field:
+            name: title
 
   # A complex migration node requiring a custom method to use a lookup table for crosswalking
   # values from the metadata.xml to expected values for the property in Hyrax.
